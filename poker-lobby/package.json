@@ -7,5 +7,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Vidovitsch",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.2",
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1",
+    "socket.io": "^2.1.0"
+  }
 }
