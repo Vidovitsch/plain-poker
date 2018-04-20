@@ -1,9 +1,19 @@
-require('dotenv').config();
-const io = require('socket.io').listen(process.env.PORT);
+'use strict';
 
-io.on('connection', (client) => {
-    console.log('Client connected...');
-    client.on('join', (data) => {
-        console.log(data);
+require('dotenv').config();
+
+const gateway = require('plain-poker-gateway');
+
+const clientGateway = gateway.createClientGateway({
+    websocket: {
+        port: process.env.PORT,
+    }
+});
+
+clientGateway.onClientConnected(client => {
+    console.log('connected: ' + client.id);
+
+    clientGateway.onClientDisconnected(client, (client) => {
+        console.log('diconnected: ' + client.id);
     });
 });

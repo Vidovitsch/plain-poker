@@ -9,10 +9,11 @@
   "author": "Vidovitsch",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.2",
+    "dotenv": "^5.0.1",
+    "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
-    "eslint-config-google": "^0.9.1",
+    "eslint-config-google": "^0.9.1"
   }
 }
