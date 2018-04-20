@@ -30,7 +30,8 @@
     "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
-    "react-scripts": "1.1.4"
+    "react-scripts": "1.1.4",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "concurrently": "^3.5.1",
