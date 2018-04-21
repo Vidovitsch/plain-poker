@@ -40,6 +40,10 @@ app.on('activate', () => {
     }
 });
 
-lobbyGateway.onConnected((data) => {
-    console.log(data);
+lobbyGateway.onConnected(() => {
+    lobbyGateway.requestLobby().then((reply) => {
+        console.log(reply);
+    }).catch((err) => {
+        console.log(err);
+    });
 });

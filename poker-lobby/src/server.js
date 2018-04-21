@@ -7,7 +7,7 @@ const gateway = require('plain-poker-gateway');
 const Lobby = require('./models/lobby');
 
 // Only one instance in the entire module!
-const lobby = new Lobby();
+const lobby = new Lobby('Henkie');
 
 // Create a gateway to communicate with client components
 const clientGateway = gateway.createClientGateway({
@@ -22,7 +22,7 @@ clientGateway.onClientConnected((client) => {
     clientGateway.onClientDisconnected(client, (client) => {
         console.log('diconnected: ' + client.id);
     });
-    clientGateway.onLobbyRequest(client, (data) => {
+    clientGateway.onLobbyRequest(client, () => {
         clientGateway.replyLobby(lobby);
     });
 });

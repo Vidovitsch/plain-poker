@@ -2,10 +2,10 @@
  * [Lobby description]
  * @constructor
  */
-function Lobby() {
+function Lobby(name) {
+    // for testing
+    this.name = name;
     this.tables = [];
 }
 
-Lobby.prototype.addTable(table) {
-    
-}
+module.exports = Lobby;
