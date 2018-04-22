@@ -19,7 +19,7 @@ const clientGateway = gateway.createClientGateway({
 // Set listeners and handlers
 clientGateway.onClientConnected((client) => {
     console.log('connected: ' + client.id);
-    clientGateway.onClientDisconnected(client, (client) => {
+    clientGateway.onClientDisconnected(client, () => {
         console.log('diconnected: ' + client.id);
     });
     clientGateway.onLobbyRequest(client, () => {

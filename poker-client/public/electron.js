@@ -6,12 +6,20 @@ const gateway = require('plain-poker-gateway');
 const electron = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
+const uuidv4 = require('uuid/v4');
 
 const {app, BrowserWindow} = electron;
+const sessionId = uuidv4();
 const lobbyGateway = gateway.createLobbyGateway({
     websocket: {
         host: process.env.LOBBY_HOST,
         port: process.env.LOBBY_PORT,
+    },
+});
+const tableGateway = gateway.createTableGateway({
+    amqp: {
+        port: process.env.RMQ_PORT,
+        exchange: process.env.EXCHNAGE,
     },
 });
 
@@ -43,6 +51,8 @@ app.on('activate', () => {
 lobbyGateway.onConnected(() => {
     lobbyGateway.requestLobby().then((reply) => {
         console.log(reply);
+
+        tableGateway.requestTableCreation({name: 'testTable'}, sessionId);
     }).catch((err) => {
         console.log(err);
     });
