@@ -3,7 +3,10 @@
 // Load set environment variables from .env file
 require('dotenv').config();
 
-const gateway = require('plain-poker-gateway');
+// const gateway = require('plain-poker-gateway');
+// Dev
+const gateway = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway');
+
 const Lobby = require('./models/lobby');
 
 // Only one instance in the entire module!

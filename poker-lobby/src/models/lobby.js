@@ -1,5 +1,6 @@
 /**
  * [Lobby description]
+ * @param       {[type]} name [description]
  * @constructor
  */
 function Lobby(name) {

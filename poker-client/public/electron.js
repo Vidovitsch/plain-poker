@@ -2,7 +2,10 @@
 
 require('dotenv').config();
 
-const gateway = require('plain-poker-gateway');
+// const gateway = require('plain-poker-gateway');
+// Dev
+const gateway = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway');
+
 const electron = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
@@ -18,8 +21,8 @@ const lobbyGateway = gateway.createLobbyGateway({
 });
 const tableGateway = gateway.createTableGateway({
     amqp: {
-        port: process.env.RMQ_PORT,
-        exchange: process.env.EXCHNAGE,
+        host: process.env.RMQ_HOST,
+        exchange: process.env.RMQ_EXCHANGE,
     },
 });
 
@@ -52,7 +55,7 @@ lobbyGateway.onConnected(() => {
     lobbyGateway.requestLobby().then((reply) => {
         console.log(reply);
 
-        tableGateway.requestTableCreation({name: 'testTable'}, sessionId);
+        tableGateway.createTable({name: 'testTable'}, sessionId);
     }).catch((err) => {
         console.log(err);
     });
