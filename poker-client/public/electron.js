@@ -50,12 +50,21 @@ app.on('activate', () => {
         createWindow();
     }
 });
-
 lobbyGateway.onConnected(() => {
     lobbyGateway.requestLobby().then((reply) => {
         console.log(reply);
 
-        tableGateway.createTable({name: 'testTable'}, sessionId);
+        tableGateway.requestTableCreation(sessionId, {
+            name: 'SuperTable123',
+            minPlayerNo: 3,
+            maxPlayerNo: 5,
+            minBet: 5,
+            initialAmount: 55,
+        }).then((reply) => {
+            console.log(reply);
+        }).catch((err) => {
+            console.log(err);
+        });
     }).catch((err) => {
         console.log(err);
     });

@@ -22,14 +22,10 @@ const clientGateway = gateway.createClientGateway({
     },
 });
 
-clientGateway.connectReceiverToBroker().then(() => {
-    clientGateway.onMessage((err, message) => {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(message);
-        }
-    });
-}).catch((err) => {
-    console.log(err);
+clientGateway.listenToTableDefault((err, message) => {
+    if (err) {
+        console.log(err);
+    } else {
+        console.log(message);
+    }
 });
