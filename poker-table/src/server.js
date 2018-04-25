@@ -21,11 +21,24 @@ const clientGateway = gateway.createClientGateway({
         exchange: process.env.RMQ_EXCHANGE,
     },
 });
+const lobbyGateway = gateway.createLobbyGateway({
+    amqp: {
+        host: process.env.RMQ_HOST,
+        exchange: process.env.RMQ_EXCHANGE,
+    },
+});
 
-clientGateway.listenToTableDefault((err, message) => {
+clientGateway.onTableCreationRequest((err, request) => {
     if (err) {
         console.log(err);
     } else {
-        console.log(message);
+        const table = new Table(request.data);
+        table.players.push(request.replyTo);
+        clientGateway.sendTableCreationReply(table, request).then(() => {
+            lobbyGateway.sendLobbyUpdate(table);
+            console.log('table creation reply sent');
+        }).catch((err) => {
+            console.log(err);
+        });
     }
 });

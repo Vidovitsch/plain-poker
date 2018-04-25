@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^5.0.1",
+    "node-random-name": "^1.0.1",
     "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git"
   },
   "devDependencies": {

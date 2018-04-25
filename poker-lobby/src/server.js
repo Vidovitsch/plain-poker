@@ -18,6 +18,12 @@ const clientGateway = gateway.createClientGateway({
         port: process.env.PORT,
     },
 });
+const tableGateway = gateway.createTableGateway({
+    amqp: {
+        host: process.env.RMQ_HOST,
+        exchange: process.env.RMQ_EXCHANGE,
+    },
+});
 
 // Set listeners and handlers
 clientGateway.onClientConnected((client) => {
@@ -28,4 +34,9 @@ clientGateway.onClientConnected((client) => {
     clientGateway.onLobbyRequest(client, () => {
         clientGateway.replyLobby(lobby);
     });
+});
+
+tableGateway.onLobbyUpdate((err, message) => {
+    console.log('update received');
+    console.log(message);
 });

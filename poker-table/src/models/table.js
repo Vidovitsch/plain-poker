@@ -1,4 +1,5 @@
 const uuidv4 = require('uuid/v4');
+const randomName = require('node-random-name');
 
 /**
  * [Table description]
@@ -13,7 +14,7 @@ function Table(options) {
     this.players = [];
     this.cards = [];
     this.totalBet = 0;
-    this.name = options.name;
+    this.name = options.name || randomName();
     this.minPlayerNo = options.minPlayerNo || 2;
     this.maxPlayerNo = options.maxPlayerNo || 9;
     this.minBet = options.minBet || 1;
