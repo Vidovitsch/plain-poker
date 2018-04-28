@@ -21,4 +21,23 @@ function Table(options) {
     this.initialAmount = options.initialAmount || 15;
 }
 
+const T = Table.prototype;
+
+T.addPlayer = function(player) {
+    if (this.players.length < this.maxPlayerNo && this.players.indexOf(player) < 0) {
+        this.players.push(player);
+        return true;
+    }
+    return false;
+};
+
+T.removePlayer = function(player) {
+    const index = this.players.indexOf(player);
+    if (index > -1) {
+      this.players.splice(index, 1);
+      return true;
+    }
+    return false;
+};
+
 module.exports = Table;

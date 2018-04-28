@@ -12,7 +12,9 @@ const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 
 const {app, BrowserWindow} = electron;
+
 const sessionId = uuidv4();
+
 const lobbyGateway = gateway.createLobbyGateway({
     websocket: {
         host: process.env.LOBBY_HOST,
@@ -50,22 +52,26 @@ app.on('activate', () => {
         createWindow();
     }
 });
+
 lobbyGateway.onConnected(() => {
     lobbyGateway.requestLobby().then((reply) => {
         console.log(reply);
-
-        tableGateway.requestTableCreation(sessionId, {
-            name: 'SuperTable123',
-            minPlayerNo: 3,
-            maxPlayerNo: 5,
-            minBet: 5,
-            initialAmount: 55,
-        }).then((reply) => {
-            console.log(reply);
-        }).catch((err) => {
-            console.log(err);
-        });
+        createTable({name: 'SuperTable123', minPlayerNo: 3, maxPlayerNo: 5,
+            minBet: 5, initialAmount: 55});
     }).catch((err) => {
         console.log(err);
     });
 });
+
+/**
+ * [createTable description]
+ * @param  {[type]} options [description]
+ */
+function createTable(options) {
+    tableGateway.requestTableCreation(sessionId, options).then((reply) => {
+        console.log('create table reply received');
+        console.log(reply);
+    }).catch((err) => {
+        console.log(err);
+    });
+}
