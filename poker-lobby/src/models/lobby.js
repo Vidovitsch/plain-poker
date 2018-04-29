@@ -4,9 +4,9 @@
  * @constructor
  */
 function Lobby(name) {
-    // for testing
-    this.name = name;
-    this.tables = [];
+  // for testing
+  this.name = name;
+  this.tables = [];
 }
 
 module.exports = Lobby;
