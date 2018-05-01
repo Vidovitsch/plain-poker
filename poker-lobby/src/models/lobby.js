@@ -3,9 +3,7 @@
  * @param       {[type]} name [description]
  * @constructor
  */
-function Lobby(name) {
-  // for testing
-  this.name = name;
+function Lobby() {
   this.tables = [];
 }
 

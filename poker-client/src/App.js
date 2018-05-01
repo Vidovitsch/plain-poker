@@ -42,7 +42,7 @@ class App extends Component {
     const projects = this.state.projects;
     projects.push(project);
     this.setState({ projects });
-    ipcRenderer.send('start-test', 'test');
+    ipcRenderer.send('lobby-request');
   }
 
   handleDeleteProject(id) {
