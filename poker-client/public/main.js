@@ -4,12 +4,10 @@ require('dotenv').config();
 // Dev
 const gateway = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway');
 
-const electron = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
-
-const { app, BrowserWindow } = electron;
 
 const sessionId = uuidv4();
 
@@ -32,9 +30,50 @@ let mainWindow;
  * [createWindow description]
  */
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 900, height: 680 });
+  mainWindow = new BrowserWindow({
+    width: 900,
+    height: 680,
+    frame: false,
+    resizable: false,
+  });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
-  mainWindow.on('closed', () => mainWindow = null);
+  mainWindow.on('closed', () => { mainWindow = null; });
+
+  ipcMain.on('close-main-window', () => {
+    app.quit();
+  });
+
+  lobbyGateway.onConnected(() => {
+    console.log('connected with lobby');
+  });
+
+  /**
+   * [createTable description]
+   * @param  {[type]} options [description]
+   */
+  function createTable(options) {
+    tableGateway.requestTableCreation(sessionId, options).then((reply) => {
+      console.log('create table reply received');
+      console.log(reply);
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  ipcMain.on('start-test', (e, args) => {
+    lobbyGateway.requestLobby().then((reply) => {
+      console.log(reply);
+      createTable({
+        name: 'SuperTable123',
+        minPlayerNo: 3,
+        maxPlayerNo: 5,
+        minBet: 5,
+        initialAmount: 55,
+      });
+    }).catch((err) => {
+      console.log(err);
+    });
+  });
 }
 
 app.on('ready', createWindow);
@@ -50,26 +89,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// lobbyGateway.onConnected(() => {
-//     lobbyGateway.requestLobby().then((reply) => {
-//         console.log(reply);
-//         createTable({name: 'SuperTable123', minPlayerNo: 3, maxPlayerNo: 5,
-//             minBet: 5, initialAmount: 55});
-//     }).catch((err) => {
-//         console.log(err);
-//     });
-// });
-
-/**
- * [createTable description]
- * @param  {[type]} options [description]
- */
-// function createTable(options) {
-//     tableGateway.requestTableCreation(sessionId, options).then((reply) => {
-//         console.log('create table reply received');
-//         console.log(reply);
-//     }).catch((err) => {
-//         console.log(err);
-//     });
-// }

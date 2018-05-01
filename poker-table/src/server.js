@@ -47,7 +47,7 @@ clientGateway.onTableRemovalRequest((request) => {
   console.log(request);
 });
 
-clientGateway.onTableUpdatenRequest((request) => {
+clientGateway.onTableUpdateRequest((request) => {
   console.log(request);
 });
 

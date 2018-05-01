@@ -30,7 +30,7 @@ clientGateway.onClientConnected((client) => {
     console.log(`diconnected: ${client.id}`);
   });
   clientGateway.onLobbyRequest(client, () => {
-    clientGateway.replyLobby(lobby);
+    clientGateway.sendLobbyReply(client, lobby);
   });
 });
 
