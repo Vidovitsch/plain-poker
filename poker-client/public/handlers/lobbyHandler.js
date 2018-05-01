@@ -42,6 +42,15 @@ L.startHandlers = function startHandlers() {
       console.log(err);
     });
   });
+  // Request create table
+  this.ipcMain.on('create-table-request', (e, data) => {
+    this.tableAmqpGateway.sendCreateTableRequest(this.sessionId, data).then((replyMessage) => {
+      console.log(replyMessage);
+      e.sender.send('create-table-reply', replyMessage.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  });
 };
 
 module.exports = LobbyHandler;

@@ -13,6 +13,7 @@ C.startHandlers = function startHandlers() {
   // Handler for each connected client
   this.clientSocketGateway.onClientConnected((client) => {
     console.log(`New client connected: ${client.id}`);
+    // On client disconnected
     this.clientSocketGateway.onClientDisconnected(client, () => {
       console.log(`Client diconnected: ${client.id}`);
     });

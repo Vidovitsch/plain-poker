@@ -49,7 +49,18 @@ class App extends Component {
     const projects = this.state.projects;
     const index = projects.findIndex(x => x.id === id);
     projects.splice(index, 1);
-    this.setState({ projects });
+    ipcRenderer.send('create-table-request', {
+      name: 'SuperTable123',
+      minPlayerNo: 3,
+      maxPlayerNo: 5,
+      minBet: 5,
+      initialAmount: 55,
+    });
+
+    ipcRenderer.on('create-table-reply', (data) => {
+      console.log('Data');
+      console.log(data);
+    });
   }
 
   render() {
