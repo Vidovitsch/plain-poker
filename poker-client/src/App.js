@@ -1,64 +1,38 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import './App.css';
-import Projects from './components/Projects';
-import AddProject from './components/AddProject';
-import uuidv4 from 'uuid/v4';
+import TableItemList from './components/TableItemList/TableItemList';
+import LobbyConsole from './components/LobbyConsole/LobbyConsole';
 
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
 const { ipcRenderer } = electron;
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      projects: [],
+      tableItems: [],
     };
+    this.handleCreateTable = this.handleCreateTable.bind(this);
   }
 
   componentWillMount() {
-    this.setState({
-      projects: [
-        {
-          id: uuidv4(),
-          title: 'Business Website',
-          category: 'Web Design',
-        },
-        {
-          id: uuidv4(),
-          title: 'Social App',
-          category: 'Mobile Development',
-        },
-        {
-          id: uuidv4(),
-          title: 'Ecommerce Shopping Cart',
-          category: 'Web Development',
-        },
-      ],
+    this.getLobby();
+  }
+
+  getLobby() {
+    ipcRenderer.send('lobby-request', 'request');
+    ipcRenderer.on('lobby-reply', (e, data) => {
+      this.setState({
+        tableItems: data.tableItems,
+      });
     });
   }
 
-  handleAddProject(project) {
-    const projects = this.state.projects;
-    projects.push(project);
-    this.setState({ projects });
-    ipcRenderer.send('lobby-request');
-  }
-
-  handleDeleteProject(id) {
-    const projects = this.state.projects;
-    const index = projects.findIndex(x => x.id === id);
-    projects.splice(index, 1);
-    ipcRenderer.send('create-table-request', {
-      name: 'SuperTable123',
-      minPlayerNo: 3,
-      maxPlayerNo: 5,
-      minBet: 5,
-      initialAmount: 55,
-    });
-
-    ipcRenderer.on('create-table-reply', (data) => {
-      console.log('Data');
+  handleCreateTable(options) {
+    ipcRenderer.send('create-table-request', options);
+    ipcRenderer.on('create-table-reply', (e, data) => {
       console.log(data);
     });
   }
@@ -66,8 +40,8 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AddProject addProject={this.handleAddProject.bind(this)} />
-        <Projects projects={this.state.projects} onDelete={this.handleDeleteProject.bind(this)} />
+        <LobbyConsole onCreate={this.handleCreateTable} />
+        <TableItemList tableItems={this.state.tableItems} />
       </div>
     );
   }

@@ -34,10 +34,9 @@ L.disconnectFromLobby = function disconnect() {
 
 L.startHandlers = function startHandlers() {
   // Request lobby
-  this.ipcMain.on('lobby-request', (e) => {
+  this.ipcMain.on('lobby-request', (e, data) => {
     this.lobbySocketGateway.sendLobbyRequest().then((replyMessage) => {
-      console.log(replyMessage);
-      e.sender.send('lobby-reply', replyMessage.data);
+      e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
       console.log(err);
     });
@@ -45,8 +44,7 @@ L.startHandlers = function startHandlers() {
   // Request create table
   this.ipcMain.on('create-table-request', (e, data) => {
     this.tableAmqpGateway.sendCreateTableRequest(this.sessionId, data).then((replyMessage) => {
-      console.log(replyMessage);
-      e.sender.send('create-table-reply', replyMessage.data);
+      e.sender.send('create-table-reply', replyMessage.data.tableItems);
     }).catch((err) => {
       console.log(err);
     });
