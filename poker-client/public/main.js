@@ -23,6 +23,7 @@ function createWindow() {
     width: 1280,
     height: 720,
   });
+  mainWindow.setResizable(false);
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   mainWindow.on('closed', () => { mainWindow = null; });
 

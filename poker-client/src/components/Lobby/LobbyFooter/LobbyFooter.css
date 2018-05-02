@@ -3,5 +3,5 @@
   padding: 1em;
   text-align: center;
   top: 0;
-  z-index: 99;
+  border-top: 1px solid #000000;
 }
