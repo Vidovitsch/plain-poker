@@ -1,0 +1,7 @@
+.LobbyFooter {
+  background: #313641;
+  padding: 1em;
+  text-align: center;
+  top: 0;
+  z-index: 99;
+}

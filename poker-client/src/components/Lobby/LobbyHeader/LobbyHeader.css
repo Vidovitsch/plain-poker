@@ -1,0 +1,10 @@
+.LobbyHeader {
+    background: #313641;
+    color: #FFFFFF;
+    padding: 2em;
+    left: 120px;
+    right: 0;
+    text-align: center;
+    top: 0;
+    z-index: 99;
+}

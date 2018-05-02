@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './TableItemList.css';
 
-import TableItem from './../TableItem/TableItem';
+// import TableItem from './../TableItem/TableItem';
 
 class TableItemList extends Component {
   constructor(props) {
@@ -12,9 +12,9 @@ class TableItemList extends Component {
   renderTableItems() {
     console.log('here');
     console.log(this.props.tableItems);
-    return this.props.tableItems.map(tableItem => (
-      <TableItem key={tableItem.id} tableItem={tableItem} />
-    ));
+    // return this.props.tableItems.map(tableItem => (
+    //   <span>Hoi</span>
+    // ));
   }
 
   render() {
