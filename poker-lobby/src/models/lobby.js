@@ -4,7 +4,7 @@
  * @constructor
  */
 function Lobby() {
-  this.tables = [];
+  this.tableItems = [];
 }
 
 module.exports = Lobby;

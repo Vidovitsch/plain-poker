@@ -1,4 +1,5 @@
 const Table = require('./../models/table');
+const TableItem = require('./../models/tableItem');
 
 function TableManager() {
   this.tables = [];
@@ -11,6 +12,10 @@ T.createTable = function createTable(clientQueue, options) {
   this.tables.push(table);
   table.addPlayer(clientQueue);
   return table;
+};
+
+T.getTableItem = function getTableItem(table) {
+  return new TableItem(table);
 };
 
 module.exports = TableManager;

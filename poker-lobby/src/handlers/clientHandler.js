@@ -5,6 +5,10 @@ function ClientHandler(gatewayProvider, lobbyManager) {
     host: '127.0.0.1',
     port: process.env.PORT,
   });
+  this.tableAmqpGateway = gatewayProvider.getTableGateway('amqp', {
+    host: process.env.RMQ_HOST,
+    port: process.env.RMQ_PORT,
+  });
 }
 
 const C = ClientHandler.prototype;
@@ -21,6 +25,11 @@ C.startHandlers = function startHandlers() {
     this.clientSocketGateway.onLobbyRequest(client, (requestMessage) => {
       console.log(requestMessage);
       this.clientSocketGateway.sendLobbyReply(client, this.lobbyManager.lobby, requestMessage);
+    });
+    // Lobby update handling
+    this.tableAmqpGateway.onLobbyUpdate((message) => {
+      this.lobbyManager.handleUpdate(message.data);
+      this.clientSocketGateway.broadcastLobbyUpdate(this.lobbyManager.lobby);
     });
   });
 };

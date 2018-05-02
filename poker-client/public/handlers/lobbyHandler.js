@@ -51,6 +51,14 @@ L.startHandlers = function startHandlers() {
       console.log(err);
     });
   });
+  // On lobby update
+  this.lobbySocketGateway.onLobbyUpdate((err, message) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(message);
+    }
+  });
 };
 
 module.exports = LobbyHandler;
