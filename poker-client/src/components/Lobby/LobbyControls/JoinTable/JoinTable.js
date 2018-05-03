@@ -9,10 +9,6 @@ class JoinTable extends React.Component {
     this.getDetailValue = this.getDetailValue.bind(this);
   }
 
-  joinTable(data) {
-    this.props.onJoin(data);
-  }
-
   getDetailValue(prop) {
     if (this.props.selectedTableItem) {
       return this.props.selectedTableItem[prop] || '-';
@@ -20,6 +16,12 @@ class JoinTable extends React.Component {
       return 'No table selected';
     }
     return '-';
+  }
+
+  joinTable() {
+    if (this.props.selectedTableItem) {
+      this.props.onJoin(this.props.selectedTableItem.id);
+    }
   }
 
   render() {
@@ -32,16 +34,16 @@ class JoinTable extends React.Component {
             <td>{this.getDetailValue('status')}</td>
           </tr>
           <tr>
-            <td className="JoinTable-label">Created at:</td>
-            <td>{this.getDetailValue('timestamp')}</td>
-          </tr>
-          <tr>
             <td className="JoinTable-label">Startup amount:</td>
             <td>{this.getDetailValue('startupAmount')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Min. bet:</td>
             <td>{this.getDetailValue('minBet')}</td>
+          </tr>
+          <tr>
+            <td className="JoinTable-label">Number of players:</td>
+            <td>{this.getDetailValue('playerNo')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Min. player amount:</td>
@@ -53,7 +55,7 @@ class JoinTable extends React.Component {
           </tr>
         </table>
         <br />
-        <button className="Lobby-button" onClick={this.joinTable}>Join</button>
+        <button id="joinTable-button" className="Lobby-button" onClick={this.joinTable}>Join</button>
       </div>
     );
   }

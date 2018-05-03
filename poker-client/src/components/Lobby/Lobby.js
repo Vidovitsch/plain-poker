@@ -13,10 +13,11 @@ class Lobby extends React.Component {
     super(props);
     this.ipcRenderer = ipcRenderer;
     this.createTable = this.createTable.bind(this);
+    this.joinTable = this.joinTable.bind(this);
     this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
     this.state = {
       tableItems: [],
-      selectedTableItem: {},
+      selectedTableItem: null,
     };
   }
 
@@ -51,12 +52,19 @@ class Lobby extends React.Component {
     });
   }
 
+  joinTable(tableId) {
+    this.ipcRenderer.send('join-table-request', tableId);
+    this.ipcRenderer.on('join-table-reply', (e, data) => {
+      this.props.history.push(`/game/${data.tableId}/${data.sessionId}`); // eslint-disable-line
+    });
+  }
+
   render() {
     return (
       <div className="Lobby">
         <header><LobbyHeader /></header>
         <main>
-          <LobbyControls onCreate={this.createTable} selectedTableItem={this.state.selectedTableItem} />
+          <LobbyControls onCreate={this.createTable} onJoin={this.joinTable} selectedTableItem={this.state.selectedTableItem} />
           <TableItemList onSelect={this.setSelectedTableItem} tableItems={this.state.tableItems} />
         </main>
         <footer><LobbyFooter /></footer>

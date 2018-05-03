@@ -5,14 +5,13 @@
  */
 function TableItem(table) {
   this.id = table.id;
-  this.sendTo = table.sendTo;
   this.name = table.name;
-  this.timestamp = table.timestamp;
+  this.playerNo = table.players.length;
   this.status = table.status;
   this.minPlayerNo = table.minPlayerNo;
   this.maxPlayerNo = table.maxPlayerNo;
   this.minBet = table.minBet;
-  this.initialAmount = table.initialAmount;
+  this.startupAmount = table.startupAmount;
 }
 
 module.exports = TableItem;

@@ -59,6 +59,20 @@ L.startHandlers = function startHandlers() {
       console.log(err);
     });
   });
+
+  // Request join table
+  this.ipcMain.on('join-table-request', (e, data) => {
+    console.log('send');
+    this.tableAmqpGateway.sendJoinTableRequest(this.sessionId, data).then((replyMessage) => {
+      e.sender.send('join-table-reply', {
+        sessionId: this.sessionId,
+        tableId: replyMessage.data.id,
+      });
+      this.disconnectFromLobby();
+    }).catch((err) => {
+      console.log(err);
+    });
+  });
 };
 
 module.exports = LobbyHandler;

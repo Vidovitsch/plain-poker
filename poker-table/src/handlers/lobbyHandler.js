@@ -1,4 +1,4 @@
-function CrudHandler(gatewayProvider, tableManager) {
+function LobbyHandler(gatewayProvider, tableManager) {
   this.gatewayProvider = gatewayProvider;
   this.tableManager = tableManager;
   this.clientAmqpGateway = gatewayProvider.getClientGateway('amqp', {
@@ -11,7 +11,7 @@ function CrudHandler(gatewayProvider, tableManager) {
   });
 }
 
-const C = CrudHandler.prototype;
+const C = LobbyHandler.prototype;
 
 C.startHandlers = function startHandlers() {
   // Create table request/reply
@@ -22,6 +22,15 @@ C.startHandlers = function startHandlers() {
     const tableItem = this.tableManager.getTableItem(table);
     this.lobbyAmqpGateway.sendLobbyUpdate(tableItem);
   });
+
+  // Join table request/reply
+  this.clientAmqpGateway.onJoinTableRequest((requestMessage) => {
+    const table = this.tableManager.joinTable(requestMessage.data.sessionId, requestMessage.data.tableId);
+    this.clientAmqpGateway.sendJoinTableReply(table, requestMessage);
+
+    const tableItem = this.tableManager.getTableItem(table);
+    this.lobbyAmqpGateway.sendLobbyUpdate(tableItem);
+  });
 };
 
-module.exports = CrudHandler;
+module.exports = LobbyHandler;
