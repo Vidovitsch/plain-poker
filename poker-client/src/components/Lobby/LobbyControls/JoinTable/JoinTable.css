@@ -1,0 +1,10 @@
+.JoinTable {
+  color: #BFCCC3;
+  padding: 1em;
+  position: relative;
+  top: 0;
+}
+
+.JoinTable-label {
+  padding-right: 1.1em;
+}

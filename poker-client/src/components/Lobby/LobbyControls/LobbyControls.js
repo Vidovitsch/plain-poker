@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import './LobbyControls.css';
-import TableItemDetails from './TableItemDetails/TableItemDetails';
-import LobbyButtons from './LobbyButtons/LobbyButtons';
+import JoinTable from './JoinTable/JoinTable';
+import CreateTable from './CreateTable/CreateTable';
 
 class LobbyControls extends Component {
   constructor(props) {
@@ -12,8 +12,9 @@ class LobbyControls extends Component {
   render() {
     return (
       <div className="LobbyControls">
-        <TableItemDetails />
-        <LobbyButtons />
+        <JoinTable />
+        <div className="divider" />
+        <CreateTable />
       </div>
     );
   }

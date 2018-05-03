@@ -12,6 +12,51 @@ body, html {
     flex-direction: column;
 }
 
+.Lobby-input-text {
+  background-color: #3E424E;
+  color:#BEC0C4;
+  font-size: 1.25em;
+  width: 80%;
+  margin: 0.25em;
+  padding: 0.25em 0.25em 0.25em 0.25em;
+  border: 1px solid #4D515C;
+}
+
+.Lobby-input-number {
+  background-color: #3E424E;
+  color:#BEC0C4;
+  font-size: 1em;
+  width: 40%;
+  margin: 0.25em;
+  padding: 0.05em 0.05em 0.05em 0.25em;
+  border: 1px solid #4D515C;
+}
+
+.Lobby-button {
+  width: 95%;
+  font-size: 1em;
+  padding: 0.75em;
+  background-color: #383D48;
+  color: #8D95A3;
+  border: none;
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.Lobby-button:hover {
+  cursor: pointer;
+  background-color: #343842;
+  -webkit-box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #000000;
+}
 
 main {
     flex: 1;
