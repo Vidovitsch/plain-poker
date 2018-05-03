@@ -16,8 +16,7 @@ const C = CrudHandler.prototype;
 C.startHandlers = function startHandlers() {
   // Create table request/reply
   this.clientAmqpGateway.onCreateTableRequest((requestMessage) => {
-    console.log(requestMessage);
-    const table = this.tableManager.createTable(requestMessage.replyTo, requestMessage.data);
+    const table = this.tableManager.createTable(requestMessage.data.sessionId, requestMessage.data.options);
     this.clientAmqpGateway.sendCreateTableReply(table, requestMessage);
 
     const tableItem = this.tableManager.getTableItem(table);

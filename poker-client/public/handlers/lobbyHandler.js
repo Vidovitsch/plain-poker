@@ -34,7 +34,7 @@ L.disconnectFromLobby = function disconnect() {
 
 L.startHandlers = function startHandlers() {
   // Request lobby
-  this.ipcMain.on('lobby-request', (e, data) => {
+  this.ipcMain.on('lobby-request', (e) => {
     this.lobbySocketGateway.sendLobbyRequest().then((replyMessage) => {
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
@@ -43,8 +43,12 @@ L.startHandlers = function startHandlers() {
   });
   // Request create table
   this.ipcMain.on('create-table-request', (e, data) => {
+    console.log('send');
     this.tableAmqpGateway.sendCreateTableRequest(this.sessionId, data).then((replyMessage) => {
-      e.sender.send('create-table-reply', replyMessage.data.tableItems);
+      e.sender.send('create-table-reply', {
+        sessionId: this.sessionId,
+        tableId: replyMessage.data.id,
+      });
     }).catch((err) => {
       console.log(err);
     });
@@ -54,7 +58,7 @@ L.startHandlers = function startHandlers() {
     if (err) {
       console.log(err);
     } else {
-      console.log(message);
+      // console.log(message);
     }
   });
 };
