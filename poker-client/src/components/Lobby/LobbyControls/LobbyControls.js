@@ -17,7 +17,7 @@ class LobbyControls extends React.Component {
   render() {
     return (
       <div className="LobbyControls">
-        <JoinTable />
+        <JoinTable selectedTableItem={this.props.selectedTableItem} />
         <div className="divider" />
         <CreateTable onCreate={this.createTable} />
       </div>

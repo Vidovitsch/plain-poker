@@ -13,6 +13,26 @@ class Lobby extends React.Component {
     super(props);
     this.ipcRenderer = ipcRenderer;
     this.createTable = this.createTable.bind(this);
+    this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
+  }
+
+  componentWillMount() {
+    this.state = {
+      tableItems: [
+        {
+          name: 'Test',
+        },
+        {
+          name: 'Test',
+        },
+      ],
+    };
+  }
+
+  setSelectedTableItem(tableItem) {
+    this.setState({
+      selectedTableItem: tableItem,
+    });
   }
 
   createTable(options) {
@@ -27,8 +47,8 @@ class Lobby extends React.Component {
       <div className="Lobby">
         <header><LobbyHeader /></header>
         <main>
-          <LobbyControls onCreate={this.createTable} />
-          <TableItemList />
+          <LobbyControls onCreate={this.createTable} selectedTableItem={this.state.selectedTableItem} />
+          <TableItemList onSelect={this.setSelectedTableItem} tableItems={this.state.tableItems} />
         </main>
         <footer><LobbyFooter /></footer>
       </div>

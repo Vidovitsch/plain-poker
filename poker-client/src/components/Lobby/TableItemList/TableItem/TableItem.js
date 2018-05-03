@@ -5,29 +5,32 @@ import './TableItem.css';
 class TableItem extends Component {
   constructor(props) {
     super(props);
+    this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
+  }
+
+  setSelectedTableItem() {
+    this.props.onSelect(this.props.tableItem);
   }
 
   render() {
     return (
-      <li className="TableItem">
-        <span>{this.props.tableItem.name}</span>
-      </li>
+      <div className="TableItem" onClick={this.setSelectedTableItem} onKeyUp={this.setSelectedTableItem} role="button" tabIndex={0}>
+        <div className="TableItem-item">
+          {this.props.tableItem.name}
+        </div>
+      </div>
     );
   }
 }
 
-TableItem.propTypes = {
-  tableItem: PropTypes.shape({
-    id: PropTypes.string,
-    sendTo: PropTypes.string,
-    name: PropTypes.string,
-    timestamp: PropTypes.string,
-    status: PropTypes.string,
-    minPlayerNo: PropTypes.number,
-    maxPlayerNo: PropTypes.number,
-    minBet: PropTypes.number,
-    initialAmount: PropTypes.number,
-  }).isRequired,
-};
+// id: PropTypes.string,
+// sendTo: PropTypes.string,
+// name: PropTypes.string,
+// timestamp: PropTypes.string,
+// status: PropTypes.string,
+// minPlayerNo: PropTypes.number,
+// maxPlayerNo: PropTypes.number,
+// minBet: PropTypes.number,
+// initialAmount: PropTypes.number,
 
 export default TableItem;

@@ -1,18 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './TableItemList.css';
+import TableItem from './TableItem/TableItem';
 
 class TableItemList extends React.Component {
   constructor(props) {
     super(props);
+    this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
+  }
+
+  setSelectedTableItem(tableItem) {
+    this.props.onSelect(tableItem);
   }
 
   renderTableItems() {
-    console.log('here');
-    console.log(this.props.tableItems);
-    // return this.props.tableItems.map(tableItem => (
-    //   <span>Hoi</span>
-    // ));
+    return this.props.tableItems.map(tableItem => (
+      <TableItem onSelect={this.setSelectedTableItem} tableItem={tableItem} />
+    ));
   }
 
   render() {

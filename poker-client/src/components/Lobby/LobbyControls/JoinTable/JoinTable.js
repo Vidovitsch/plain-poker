@@ -6,40 +6,50 @@ class JoinTable extends React.Component {
   constructor(props) {
     super(props);
     this.joinTable = this.joinTable.bind(this);
+    this.getDetailValue = this.getDetailValue.bind(this);
   }
 
   joinTable(data) {
     this.props.onJoin(data);
   }
 
+  getDetailValue(prop) {
+    if (this.props.selectedTableItem) {
+      return this.props.selectedTableItem[prop] || '-';
+    } else if (prop === 'name') {
+      return 'No table selected';
+    }
+    return '-';
+  }
+
   render() {
     return (
       <div className="JoinTable">
-        <h3>No table selected</h3>
+        <h3>{this.getDetailValue('name')}</h3>
         <table>
           <tr>
             <td className="JoinTable-label">Status:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('status')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Created at:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('timestamp')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Startup amount:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('startupAmount')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Min. bet:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('minBet')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Min. player amount:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('minPlayerNo')}</td>
           </tr>
           <tr>
             <td className="JoinTable-label">Max. player amount:</td>
-            <td>-</td>
+            <td>{this.getDetailValue('maxPlayerNo')}</td>
           </tr>
         </table>
         <br />
