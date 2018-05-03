@@ -1,10 +1,15 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './JoinTable.css';
 
-class JoinTable extends Component {
+class JoinTable extends React.Component {
   constructor(props) {
     super(props);
+    this.joinTable = this.joinTable.bind(this);
+  }
+
+  joinTable(data) {
+    this.props.onJoin(data);
   }
 
   render() {
@@ -38,10 +43,14 @@ class JoinTable extends Component {
           </tr>
         </table>
         <br />
-        <button className="Lobby-button">Join</button>
+        <button className="Lobby-button" onClick={this.joinTable}>Join</button>
       </div>
     );
   }
 }
+
+JoinTable.propTypes = {
+  onJoin: PropTypes.func.isRequired,
+};
 
 export default JoinTable;

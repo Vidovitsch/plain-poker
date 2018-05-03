@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './LobbyControls.css';
 import JoinTable from './JoinTable/JoinTable';
 import CreateTable from './CreateTable/CreateTable';
 
-class LobbyControls extends Component {
+class LobbyControls extends React.Component {
   constructor(props) {
     super(props);
     this.createTable = this.createTable.bind(this);
@@ -24,5 +24,9 @@ class LobbyControls extends Component {
     );
   }
 }
+
+LobbyControls.propTypes = {
+  onCreate: PropTypes.func.isRequired,
+};
 
 export default LobbyControls;

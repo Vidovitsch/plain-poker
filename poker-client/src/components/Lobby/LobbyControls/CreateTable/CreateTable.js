@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './CreateTable.css';
 
-class CreateTable extends Component {
+class CreateTable extends React.Component {
   constructor(props) {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -41,5 +41,9 @@ class CreateTable extends Component {
     );
   }
 }
+
+CreateTable.propTypes = {
+  onCreate: PropTypes.func.isRequired,
+};
 
 export default CreateTable;

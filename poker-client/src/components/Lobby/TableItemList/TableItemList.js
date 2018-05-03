@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import './TableItemList.css';
 
-// import TableItem from './../TableItem/TableItem';
-
-class TableItemList extends Component {
+class TableItemList extends React.Component {
   constructor(props) {
     super(props);
   }

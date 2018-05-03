@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import './Lobby.css';
 import LobbyHeader from './LobbyHeader/LobbyHeader';
 import LobbyFooter from './LobbyFooter/LobbyFooter';
@@ -9,7 +8,7 @@ import TableItemList from './TableItemList/TableItemList';
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
 
-class Lobby extends Component {
+class Lobby extends React.Component {
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
@@ -19,7 +18,7 @@ class Lobby extends Component {
   createTable(options) {
     this.ipcRenderer.send('create-table-request', options);
     this.ipcRenderer.on('create-table-reply', (e, data) => {
-      this.props.history.push(`/game/${data.tableId}/${data.sessionId}`);
+      this.props.history.push(`/game/${data.tableId}/${data.sessionId}`); // eslint-disable-line
     });
   }
 
