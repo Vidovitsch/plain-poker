@@ -49,6 +49,7 @@ L.startHandlers = function startHandlers() {
         sessionId: this.sessionId,
         tableId: replyMessage.data.id,
       });
+      this.disconnectFromLobby();
     }).catch((err) => {
       console.log(err);
     });
@@ -58,7 +59,7 @@ L.startHandlers = function startHandlers() {
     if (err) {
       console.log(err);
     } else {
-      // console.log(message);
+      console.log(message);
     }
   });
 };
