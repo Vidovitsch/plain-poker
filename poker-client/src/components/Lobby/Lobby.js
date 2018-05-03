@@ -14,19 +14,28 @@ class Lobby extends React.Component {
     this.ipcRenderer = ipcRenderer;
     this.createTable = this.createTable.bind(this);
     this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
+    this.state = {
+      tableItems: [],
+      selectedTableItem: {},
+    };
   }
 
   componentWillMount() {
-    this.state = {
-      tableItems: [
-        {
-          name: 'Test',
-        },
-        {
-          name: 'Test',
-        },
-      ],
-    };
+    this.getLobby();
+  }
+
+  getLobby() {
+    this.ipcRenderer.send('lobby-request');
+    this.ipcRenderer.on('lobby-reply', (e, data) => {
+      this.setState({
+        tableItems: data,
+      });
+    });
+    this.ipcRenderer.on('lobby-update', (e, data) => {
+      this.setState({
+        tableItems: data,
+      });
+    });
   }
 
   setSelectedTableItem(tableItem) {

@@ -36,11 +36,16 @@ L.startHandlers = function startHandlers() {
   // Request lobby
   this.ipcMain.on('lobby-request', (e) => {
     this.lobbySocketGateway.sendLobbyRequest().then((replyMessage) => {
+      // Keep lobby up to date
+      this.lobbySocketGateway.onLobbyUpdate((err, message) => {
+        e.sender.send('lobby-update', message.data.tableItems);
+      });
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
       console.log(err);
     });
   });
+
   // Request create table
   this.ipcMain.on('create-table-request', (e, data) => {
     console.log('send');
@@ -53,14 +58,6 @@ L.startHandlers = function startHandlers() {
     }).catch((err) => {
       console.log(err);
     });
-  });
-  // On lobby update
-  this.lobbySocketGateway.onLobbyUpdate((err, message) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(message);
-    }
   });
 };
 
