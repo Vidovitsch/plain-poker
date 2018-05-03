@@ -7,6 +7,11 @@ import CreateTable from './CreateTable/CreateTable';
 class LobbyControls extends Component {
   constructor(props) {
     super(props);
+    this.createTable = this.createTable.bind(this);
+  }
+
+  createTable(options) {
+    this.props.onCreate(options);
   }
 
   render() {
@@ -14,7 +19,7 @@ class LobbyControls extends Component {
       <div className="LobbyControls">
         <JoinTable />
         <div className="divider" />
-        <CreateTable />
+        <CreateTable onCreate={this.createTable} />
       </div>
     );
   }

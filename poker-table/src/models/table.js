@@ -15,10 +15,10 @@ function Table(options) {
   this.players = [];
   this.cards = [];
   this.totalBet = 0;
-  this.minPlayerNo = 2;
-  this.maxPlayerNo = 5;
+  this.minPlayerNo = options.minPlayerNo || 2;
+  this.maxPlayerNo = options.maxPlayerNo || 5;
   this.minBet = options.minBet || 1;
-  this.initialAmount = options.initialAmount || 15;
+  this.startupAmount = options.startupAmount || 15;
 }
 
 const T = Table.prototype;

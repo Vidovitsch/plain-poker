@@ -9,6 +9,11 @@ import TableItemList from './TableItemList/TableItemList';
 class Lobby extends Component {
   constructor(props) {
     super(props);
+    this.createTable = this.createTable.bind(this);
+  }
+
+  createTable(options) {
+    console.log(options);
   }
 
   render() {
@@ -16,7 +21,7 @@ class Lobby extends Component {
       <div className="Lobby">
         <header><LobbyHeader /></header>
         <main>
-          <LobbyControls />
+          <LobbyControls onCreate={this.createTable} />
           <TableItemList />
         </main>
         <footer><LobbyFooter /></footer>
