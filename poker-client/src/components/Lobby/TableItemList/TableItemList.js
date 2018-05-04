@@ -31,15 +31,16 @@ class TableItemList extends React.Component {
 TableItemList.propTypes = {
   tableItems: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
-    sendTo: PropTypes.string,
     name: PropTypes.string,
     timestamp: PropTypes.string,
     status: PropTypes.string,
+    playerNo: PropTypes.number,
     minPlayerNo: PropTypes.number,
     maxPlayerNo: PropTypes.number,
     minBet: PropTypes.number,
-    initialAmount: PropTypes.number,
+    startupAmount: PropTypes.number,
   })).isRequired,
+  onSelect: PropTypes.func.isRequired,
 };
 
 export default TableItemList;

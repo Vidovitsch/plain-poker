@@ -23,14 +23,19 @@ class TableItem extends Component {
   }
 }
 
-// id: PropTypes.string,
-// sendTo: PropTypes.string,
-// name: PropTypes.string,
-// timestamp: PropTypes.string,
-// status: PropTypes.string,
-// minPlayerNo: PropTypes.number,
-// maxPlayerNo: PropTypes.number,
-// minBet: PropTypes.number,
-// initialAmount: PropTypes.number,
+TableItem.propTypes = {
+  tableItem: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    timestamp: PropTypes.string,
+    status: PropTypes.string,
+    playerNo: PropTypes.number,
+    minPlayerNo: PropTypes.number,
+    maxPlayerNo: PropTypes.number,
+    minBet: PropTypes.number,
+    startupAmount: PropTypes.number,
+  }).isRequired,
+  onSelect: PropTypes.func.isRequired,
+};
 
 export default TableItem;

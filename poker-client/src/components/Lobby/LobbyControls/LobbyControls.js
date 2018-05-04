@@ -32,6 +32,22 @@ class LobbyControls extends React.Component {
 
 LobbyControls.propTypes = {
   onCreate: PropTypes.func.isRequired,
+  onJoin: PropTypes.func.isRequired,
+  selectedTableItem: PropTypes.shape({
+    id: PropTypes.string,
+    name: PropTypes.string,
+    timestamp: PropTypes.string,
+    status: PropTypes.string,
+    playerNo: PropTypes.number,
+    minPlayerNo: PropTypes.number,
+    maxPlayerNo: PropTypes.number,
+    minBet: PropTypes.number,
+    startupAmount: PropTypes.number,
+  }),
+};
+
+LobbyControls.defaultProps = {
+  selectedTableItem: {},
 };
 
 export default LobbyControls;

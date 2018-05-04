@@ -11,8 +11,11 @@ const sessionId = uuidv4();
 let mainWindow;
 
 const lobbyHandler = new LobbyHandler(sessionId, gatewayProvider, ipcMain);
-lobbyHandler.connectToLobby().then(() => {
-  lobbyHandler.startHandlers();
+lobbyHandler.connectToLobbyAsync().then(() => {
+  console.log('Connected with lobby');
+  lobbyHandler.setHandlers();
+}).catch((err) => {
+  console.log(err);
 });
 
 /**
