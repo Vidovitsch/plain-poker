@@ -12,6 +12,8 @@ function Table(options) {
   this.name = options.name || randomName();
   this.timestamp = new Date();
   this.status = 'waiting';
+  this.owner = '';
+  this.dealer = '';
   this.players = [];
   this.cards = [];
   this.totalBet = 0;
@@ -20,24 +22,5 @@ function Table(options) {
   this.minBet = options.minBet || 1;
   this.startupAmount = options.startupAmount || 15;
 }
-
-const T = Table.prototype;
-
-T.addPlayer = function addPlayer(player) {
-  if (this.players.length < this.maxPlayerNo && this.players.indexOf(player) < 0) {
-    this.players.push(player);
-    return true;
-  }
-  return false;
-};
-
-T.removePlayer = function removePlayer(player) {
-  const index = this.players.indexOf(player);
-  if (index > -1) {
-    this.players.splice(index, 1);
-    return true;
-  }
-  return false;
-};
 
 module.exports = Table;

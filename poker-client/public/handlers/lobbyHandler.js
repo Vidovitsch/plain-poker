@@ -42,7 +42,7 @@ const setLobbyRequestHandler = (ipcMain, lobbySocketGateway) => {
  * @param {Object} tableAmqpGateway [description]
  * @param {function} disconnect       [description]
  */
-const setRequestTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
+const setCreateTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
   ipcMain.on('create-table-request', (e, data) => {
     tableAmqpGateway.sendCreateTableRequest(sessionId, data).then((replyMessage) => {
       e.sender.send('create-table-reply', {
@@ -119,7 +119,7 @@ L.disconnectFromLobby = function disconnectFromLobby() {
  */
 L.setHandlers = function setHandlers() {
   setLobbyRequestHandler(this.ipcMain, this.lobbySocketGateway);
-  setRequestTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
+  setCreateTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
   setJoinTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
 };
 

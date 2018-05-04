@@ -7,7 +7,7 @@ const TableManager = require('./services/tableManager');
 const tableManger = new TableManager();
 
 const lobbyHandler = new LobbyHandler(gatewayProvider, tableManger);
-lobbyHandler.startHandlers();
+lobbyHandler.setHandlers();
 
 const server = http.createServer();
 server.listen(process.env.PORT);
