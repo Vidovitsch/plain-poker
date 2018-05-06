@@ -5,15 +5,26 @@ function TableManager() {
   this.tables = [];
 }
 
-const addPlayer = (table, sessionId, isOwner) => {
-  if (!this.table.players.includes(sessionId)) {
-    this.table.players.push(sessionId);
-    if (isOwner) {
-      this.table.owner = sessionId;
-    }
+const addPlayer = (table, sessionId) => {
+  if (!table.players.includes(sessionId)) {
+    table.players.push(sessionId);
     return true;
   }
   return new Error('Player is already added to the table');
+};
+
+const removePlayer = (table, sessionId) => {
+  const index = table.players.indexOf(sessionId);
+  if (index >= -1) {
+    // Remove player
+    table.players.splice(index, 1);
+    // Remove if table is empty
+    if (table.players.length === 0) {
+      this.tables.splice(this.tables.indexOf(table), 1);
+    }
+    return true;
+  }
+  return new Error('Player doesn\'t exist');
 };
 
 const T = TableManager.prototype;
@@ -34,6 +45,18 @@ T.joinTable = function joinTable(tableId, sessionId) {
     const addPlayerRes = addPlayer(table, sessionId);
     if (addPlayerRes instanceof Error) {
       return addPlayerRes;
+    }
+    return true;
+  }
+  return new Error('Table doesn\'t exist');
+};
+
+T.leaveTable = function leaveTable(tableId, sessionId) {
+  const table = this.tables.find(t => t.id === tableId);
+  if (table) {
+    const removePlayerRes = removePlayer(table, sessionId);
+    if (removePlayerRes instanceof Error) {
+      return removePlayerRes;
     }
     return true;
   }

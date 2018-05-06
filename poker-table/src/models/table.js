@@ -12,7 +12,6 @@ function Table(options) {
   this.name = options.name || randomName();
   this.timestamp = new Date();
   this.status = 'waiting';
-  this.owner = '';
   this.dealer = '';
   this.players = [];
   this.cards = [];
