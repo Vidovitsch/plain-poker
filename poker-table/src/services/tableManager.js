@@ -5,7 +5,53 @@ function TableManager() {
   this.tables = [];
 }
 
-const addPlayer = (table, sessionId) => {
+const T = TableManager.prototype;
+
+T.createTable = function createTable(options, sessionId) {
+  // Duplicate table names are not valid
+  if (options.name) {
+    const existingTable = this.tables.find(t => t.name === options.name);
+    if (existingTable) {
+      return new Error(`Table name '${existingTable.name}' already exists`);
+    }
+  }
+  // Create new instance of table and add first player
+  const table = new Table(options);
+  const result = this.addPlayer(table, sessionId);
+  if (result instanceof Error) {
+    return result;
+  }
+  this.tables.push(table);
+
+  return table;
+};
+
+T.joinTable = function joinTable(tableId, sessionId) {
+  const existingTable = this.tables.find(t => t.id === tableId);
+  // Table has to exist
+  if (!existingTable) {
+    return new Error('Table doesn\'t exist');
+  }
+  const result = this.addPlayer(existingTable, sessionId);
+  if (result instanceof Error) {
+    return result;
+  }
+  return existingTable;
+};
+
+T.leaveTable = function leaveTable(tableId, sessionId) {
+  const table = this.tables.find(t => t.id === tableId);
+  if (table) {
+    const removePlayerRes = this.removePlayer(table, sessionId);
+    if (removePlayerRes instanceof Error) {
+      return removePlayerRes;
+    }
+    return true;
+  }
+  return new Error('Table doesn\'t exist');
+};
+
+T.addPlayer = function addPlayer(table, sessionId) {
   if (!table.players.includes(sessionId)) {
     table.players.push(sessionId);
     return true;
@@ -13,7 +59,7 @@ const addPlayer = (table, sessionId) => {
   return new Error('Player is already added to the table');
 };
 
-const removePlayer = (table, sessionId) => {
+T.removePlayer = function removePlayer(table, sessionId) {
   const index = table.players.indexOf(sessionId);
   if (index >= -1) {
     // Remove player
@@ -25,42 +71,6 @@ const removePlayer = (table, sessionId) => {
     return true;
   }
   return new Error('Player doesn\'t exist');
-};
-
-const T = TableManager.prototype;
-
-T.createTable = function createTable(options, sessionId) {
-  const table = new Table(options);
-  const addPlayerRes = addPlayer(table, sessionId);
-  if (addPlayerRes instanceof Error) {
-    return addPlayerRes;
-  }
-  this.tables.push(table);
-  return table;
-};
-
-T.joinTable = function joinTable(tableId, sessionId) {
-  const table = this.tables.find(t => t.id === tableId);
-  if (table) {
-    const addPlayerRes = addPlayer(table, sessionId);
-    if (addPlayerRes instanceof Error) {
-      return addPlayerRes;
-    }
-    return true;
-  }
-  return new Error('Table doesn\'t exist');
-};
-
-T.leaveTable = function leaveTable(tableId, sessionId) {
-  const table = this.tables.find(t => t.id === tableId);
-  if (table) {
-    const removePlayerRes = removePlayer(table, sessionId);
-    if (removePlayerRes instanceof Error) {
-      return removePlayerRes;
-    }
-    return true;
-  }
-  return new Error('Table doesn\'t exist');
 };
 
 T.convertToTableItem = function convertToTableItem(table) {

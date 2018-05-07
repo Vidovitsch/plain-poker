@@ -11,7 +11,7 @@ const sessionId = uuidv4();
 let mainWindow;
 
 const lobbyHandler = new LobbyHandler(sessionId, gatewayProvider, ipcMain);
-lobbyHandler.connectToLobbyAsync().then(() => {
+lobbyHandler.createGatewaysAsync().then(() => lobbyHandler.connectToLobbyAsync()).then(() => {
   console.log('Connected with lobby');
   lobbyHandler.setHandlers();
 }).catch((err) => {
@@ -39,6 +39,10 @@ app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    const result = gatewayProvider.closeSharedConnection();
+    if (result instanceof Error) {
+      console.log(result);
+    }
     app.quit();
   }
 });

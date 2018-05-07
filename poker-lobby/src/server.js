@@ -6,4 +6,8 @@ const LobbyManager = require('./services/lobbyManager');
 const lobbyManager = new LobbyManager();
 
 const clientHandler = new ClientHandler(gatewayProvider, lobbyManager);
-clientHandler.startHandlers();
+clientHandler.createGatewaysAsync().then(() => {
+  clientHandler.startHandlers();
+}).catch((err) => {
+  console.log(err);
+});

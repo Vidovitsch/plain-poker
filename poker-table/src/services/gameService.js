@@ -1,4 +1,4 @@
-function GameService(table) {
+function GameService(table, tableManager) {
 
 }
 

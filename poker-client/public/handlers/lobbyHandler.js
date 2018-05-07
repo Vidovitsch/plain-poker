@@ -11,10 +11,6 @@ function LobbyHandler(sessionId, gatewayProvider, ipcMain) {
   this.ipcMain = ipcMain;
   this.lobbySocketGateway = {};
   this.isConnected = false;
-  this.tableAmqpGateway = gatewayProvider.getTableGateway('amqp', {
-    host: process.env.RMQ_HOST,
-    exchange: process.env.RMQ_EXCHANGE,
-  });
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
 }
 
@@ -25,9 +21,16 @@ function LobbyHandler(sessionId, gatewayProvider, ipcMain) {
  */
 const setLobbyRequestHandler = (ipcMain, lobbySocketGateway) => {
   ipcMain.on('lobby-request', (e) => {
-    lobbySocketGateway.sendLobbyRequest().then((replyMessage) => {
+    console.log('Send lobby request');
+    lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
+      console.log('Lobby reply received');
       lobbySocketGateway.onLobbyUpdate((err, message) => {
-        e.sender.send('lobby-update', message.data.tableItems);
+        if (err) {
+          console.log(err);
+        } else {
+          console.log('Lobby reply received');
+          e.sender.send('lobby-update', message.data.tableItems);
+        }
       });
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
@@ -44,12 +47,23 @@ const setLobbyRequestHandler = (ipcMain, lobbySocketGateway) => {
  */
 const setCreateTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
   ipcMain.on('create-table-request', (e, data) => {
-    tableAmqpGateway.sendCreateTableRequest(sessionId, data).then((replyMessage) => {
-      e.sender.send('create-table-reply', {
-        sessionId,
-        tableId: replyMessage.data.id,
-      });
-      disconnectFromLobby();
+    console.log('Send create table request');
+    tableAmqpGateway.sendCreateTableRequestAsync(sessionId, data).then((replyMessage) => {
+      console.log('Create table reply received');
+      if (replyMessage.type === 'error') {
+        console.log(replyMessage.error);
+      } else {
+        e.sender.send('create-table-reply', {
+          sessionId,
+          tableId: replyMessage.data.id,
+        });
+        const result = disconnectFromLobby();
+        if (result instanceof Error) {
+          console.log(result);
+        } else {
+          console.log('Disconnected from lobby');
+        }
+      }
     }).catch((err) => {
       console.log(err);
     });
@@ -64,12 +78,23 @@ const setCreateTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectF
  */
 const setJoinTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
   ipcMain.on('join-table-request', (e, data) => {
-    tableAmqpGateway.sendJoinTableRequest(sessionId, data).then((replyMessage) => {
-      e.sender.send('join-table-reply', {
-        sessionId,
-        tableId: replyMessage.data.id,
-      });
-      disconnectFromLobby();
+    console.log('Send join table request');
+    tableAmqpGateway.sendJoinTableRequestAsync(sessionId, data).then((replyMessage) => {
+      console.log('Join table reply received');
+      if (replyMessage.type === 'error') {
+        console.log(replyMessage.error);
+      } else {
+        e.sender.send('join-table-reply', {
+          sessionId,
+          tableId: replyMessage.data.id,
+        });
+        const result = disconnectFromLobby();
+        if (result instanceof Error) {
+          console.log(result);
+        } else {
+          console.log('Disconnected from lobby');
+        }
+      }
     }).catch((err) => {
       console.log(err);
     });
@@ -85,13 +110,17 @@ const L = LobbyHandler.prototype;
 L.connectToLobbyAsync = function connectToLobbyAsync() {
   return new Promise((resolve, reject) => {
     if (!this.isConnected) {
-      this.lobbySocketGateway = this.gatewayProvider.getLobbyGateway('socket', {
+      this.gatewayProvider.getLobbyGatewayAsync('socket', {
         host: process.env.LOBBY_HOST,
         port: process.env.LOBBY_PORT,
-      });
-      this.lobbySocketGateway.onConnected(() => {
-        this.isConnected = true;
-        resolve();
+      }).then((lobbySocketGateway) => {
+        this.lobbySocketGateway = lobbySocketGateway;
+        this.lobbySocketGateway.onConnected(() => {
+          this.isConnected = true;
+          resolve();
+        });
+      }).catch((err) => {
+        reject(err);
       });
     } else {
       reject(new Error('Already connected to lobby'));
@@ -107,10 +136,9 @@ L.disconnectFromLobby = function disconnectFromLobby() {
   if (this.isConnected) {
     this.lobbySocketGateway.disconnect();
     this.isConnected = false;
-    console.log('Disconnected from lobby');
-  } else {
-    throw new Error('Already disconnected from lobby');
+    return true;
   }
+  return new Error('Already disconnected from lobby');
 };
 
 /**
@@ -121,6 +149,20 @@ L.setHandlers = function setHandlers() {
   setLobbyRequestHandler(this.ipcMain, this.lobbySocketGateway);
   setCreateTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
   setJoinTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
+};
+
+L.createGatewaysAsync = function createGatewaysAsync() {
+  return new Promise((resolve, reject) => {
+    this.gatewayProvider.getTableGatewayAsync('amqp', {
+      host: process.env.RMQ_HOST,
+      exchange: process.env.RMQ_EXCHANGE,
+    }).then((tableAmqpGateway) => {
+      this.tableAmqpGateway = tableAmqpGateway;
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
+  });
 };
 
 module.exports = LobbyHandler;
