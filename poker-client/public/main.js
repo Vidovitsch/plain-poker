@@ -1,22 +1,35 @@
 require('dotenv').config();
 
 const { app, BrowserWindow, ipcMain } = require('electron');
-const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 const LobbyHandler = require('./handlers/lobbyHandler');
+const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')({
+  amqp: {
+    host: process.env.RMQ_HOST,
+    exchange: process.env.RMQ_EXCHANGE,
+  },
+  ws: {
+    host: process.env.LOBBY_HOST,
+    port: process.env.LOBBY_PORT,
+  },
+});
 
 const sessionId = uuidv4();
 let mainWindow;
 
-const lobbyHandler = new LobbyHandler(sessionId, gatewayProvider, ipcMain);
-lobbyHandler.createGatewaysAsync().then(() => lobbyHandler.connectToLobbyAsync()).then(() => {
-  console.log('Connected with lobby');
-  lobbyHandler.setHandlers();
-}).catch((err) => {
-  console.log(err);
+// One connection with one channel for every action in lobby
+gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
+  const lobbyHandler = new LobbyHandler(gatewayProvider, ipcMain, sessionId);
+  lobbyHandler.connectToLobbyAsync().then(() => {
+    console.log('Connected with lobby');
+    lobbyHandler.setHandlers();
+  }).catch((err) => {
+    console.log(err);
+  });
 });
+
 
 /**
  * [createWindow description]

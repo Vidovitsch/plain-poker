@@ -5,12 +5,13 @@
  * @param       {[type]} ipcMain         [description]
  * @constructor
  */
-function LobbyHandler(sessionId, gatewayProvider, ipcMain) {
-  this.sessionId = sessionId;
+function LobbyHandler(gatewayProvider, ipcMain, sessionId) {
   this.gatewayProvider = gatewayProvider;
   this.ipcMain = ipcMain;
-  this.lobbySocketGateway = {};
+  this.sessionId = sessionId;
   this.isConnected = false;
+  this.lobbySocketGateway = gatewayProvider.getLobbyGateway('ws');
+  this.tableAmqpGateway = gatewayProvider.getTableGateway('amqp');
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
 }
 
@@ -110,17 +111,10 @@ const L = LobbyHandler.prototype;
 L.connectToLobbyAsync = function connectToLobbyAsync() {
   return new Promise((resolve, reject) => {
     if (!this.isConnected) {
-      this.gatewayProvider.getLobbyGatewayAsync('socket', {
-        host: process.env.LOBBY_HOST,
-        port: process.env.LOBBY_PORT,
-      }).then((lobbySocketGateway) => {
-        this.lobbySocketGateway = lobbySocketGateway;
-        this.lobbySocketGateway.onConnected(() => {
-          this.isConnected = true;
-          resolve();
-        });
-      }).catch((err) => {
-        reject(err);
+      this.lobbySocketGateway.connect();
+      this.lobbySocketGateway.onConnected(() => {
+        this.isConnected = true;
+        resolve();
       });
     } else {
       reject(new Error('Already connected to lobby'));
@@ -149,20 +143,6 @@ L.setHandlers = function setHandlers() {
   setLobbyRequestHandler(this.ipcMain, this.lobbySocketGateway);
   setCreateTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
   setJoinTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
-};
-
-L.createGatewaysAsync = function createGatewaysAsync() {
-  return new Promise((resolve, reject) => {
-    this.gatewayProvider.getTableGatewayAsync('amqp', {
-      host: process.env.RMQ_HOST,
-      exchange: process.env.RMQ_EXCHANGE,
-    }).then((tableAmqpGateway) => {
-      this.tableAmqpGateway = tableAmqpGateway;
-      resolve();
-    }).catch((err) => {
-      reject(err);
-    });
-  });
 };
 
 module.exports = LobbyHandler;

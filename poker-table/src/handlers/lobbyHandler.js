@@ -7,6 +7,8 @@
 function LobbyHandler(gatewayProvider, tableManager) {
   this.gatewayProvider = gatewayProvider;
   this.tableManager = tableManager;
+  this.clientAmqpGateway = gatewayProvider.getClientGateway('amqp');
+  this.lobbyAmqpGateway = gatewayProvider.getLobbyGateway('amqp');
 }
 
 /**
@@ -15,13 +17,14 @@ function LobbyHandler(gatewayProvider, tableManager) {
  * @param {[type]} lobbyAmqpGateway  [description]
  * @param {[type]} tableManager      [description]
  */
-const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager) => {
-  clientAmqpGateway.onCreateTableRequest((err, requestMessage) => {
+const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, channelKey) => {
+  clientAmqpGateway.onCreateTableRequest(channelKey, (err, requestMessage) => {
     if (err) {
       console.log(err);
     } else {
       console.log(`Create table request received from ${requestMessage.data.sessionId}`);
-      const result = tableManager.createTable(requestMessage.data.sessionId, requestMessage.data.options);
+      const result = tableManager.createTable(requestMessage.data.options, requestMessage.data.sessionId);
+
       if (result instanceof Error) {
         console.log(result);
       } else {
@@ -47,8 +50,8 @@ const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager
  * @param {[type]} lobbyAmqpGateway  [description]
  * @param {[type]} tableManager      [description]
  */
-const setJoinTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager) => {
-  clientAmqpGateway.onJoinTableRequest((err, requestMessage) => {
+const setJoinTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, channelKey) => {
+  clientAmqpGateway.onJoinTableRequest(channelKey, (err, requestMessage) => {
     if (err) {
       console.log(err);
     } else {
@@ -78,29 +81,9 @@ const L = LobbyHandler.prototype;
 /**
  * [setHandlers description]
  */
-L.setHandlers = function setHandlers() {
-  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager);
-  setJoinTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager);
-};
-
-L.createGatewaysAsync = function createGatewaysAsync() {
-  return new Promise((resolve, reject) => {
-    this.gatewayProvider.getClientGatewayAsync('amqp', {
-      host: process.env.RMQ_HOST,
-      port: process.env.RMQ_PORT,
-    }).then((clientAmqpGateway) => {
-      this.clientAmqpGateway = clientAmqpGateway;
-      return this.gatewayProvider.getLobbyGatewayAsync('amqp', {
-        host: process.env.RMQ_HOST,
-        port: process.env.RMQ_PORT,
-      });
-    }).then((lobbyAmqpGateway) => {
-      this.lobbyAmqpGateway = lobbyAmqpGateway;
-      resolve();
-    }).catch((err) => {
-      reject(err);
-    });
-  });
+L.startHandlers = function startHandlers(channelKey) {
+  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
+  setJoinTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
 };
 
 module.exports = LobbyHandler;
