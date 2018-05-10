@@ -7,6 +7,12 @@ function TableManager() {
 
 const T = TableManager.prototype;
 
+/**
+ * [createTable description]
+ * @param  {[type]} options   [description]
+ * @param  {[type]} sessionId [description]
+ * @return {[type]}           [description]
+ */
 T.createTable = function createTable(options, sessionId) {
   // Duplicate table names are not valid
   if (options.name) {
