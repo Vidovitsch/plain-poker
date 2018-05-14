@@ -14,6 +14,8 @@ function Table(options) {
   this.status = 'waiting';
   this.dealer = '';
   this.players = [];
+  this.smallBlind = '';
+  this.bigBlind = '';
   this.cards = [];
   this.totalBet = 0;
   this.minPlayerNo = options.minPlayerNo || 2;

@@ -42,6 +42,9 @@ G.createTableAsync = function createTableAsync(options, sessionId) {
 
 G.joinTable = function joinTable(tableId, sessionId) {
   const existingTable = this.games[tableId];
+  console.log(tableId);
+  console.log(this.games);
+  console.log(existingTable);
   // Table has to exist
   if (!existingTable) {
     return new Error('Table doesn\'t exist');
@@ -50,7 +53,7 @@ G.joinTable = function joinTable(tableId, sessionId) {
   if (result instanceof Error) {
     return result;
   }
-  return existingTable;
+  return existingTable.table;
 };
 
 G.removeTable = function removeTable(tableId) {
