@@ -11,7 +11,7 @@ const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\
 
 // One connection with one channel for to listen to table updates
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  const gamesManager = new GamesManager();
+  const gamesManager = new GamesManager(gatewayProvider);
   const lobbyHandler = new LobbyHandler(gatewayProvider, gamesManager);
   // Start handlers that listen on the 'default' channel
   lobbyHandler.startHandlers('default');

@@ -59,7 +59,7 @@ G.removeTable = function removeTable(tableId) {
 
 G.findTableByName = function findTableByName(name) {
   let existingTable = null;
-  this.games.forEach((key) => {
+  Object.keys(this.games).forEach((key) => {
     const { table } = this.games[key];
     if (table.name === name) {
       existingTable = table;

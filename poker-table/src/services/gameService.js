@@ -11,9 +11,10 @@ function GameService(table, gamesManager, gatewayProvider) {
 const G = GameService.prototype;
 
 G.startAsync = function startAsync() {
-  return new Promise((resovle, reject) => {
+  return new Promise((resolve, reject) => {
     this.gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
       this.gameHandler.startHandlers(this.table.id);
+      resolve();
     }).catch((err) => {
       reject(err);
     });
@@ -22,20 +23,21 @@ G.startAsync = function startAsync() {
 
 G.addPlayer = function addPlayer(sessionId) {
   if (!this.table.players.includes(sessionId)) {
-    this.players.push(sessionId);
+    this.table.players.push(sessionId);
     return true;
   }
   return new Error('Player is already added to the table');
 };
 
-G.removePlayer = function removePlayer(table, sessionId) {
-  const index = table.players.indexOf(sessionId);
+// TODO:
+G.removePlayer = function removePlayer(sessionId) {
+  const index = this.table.players.indexOf(sessionId);
   if (index >= -1) {
     // Remove player
-    table.players.splice(index, 1);
+    this.table.players.splice(index, 1);
     // Remove if table is empty
-    if (table.players.length === 0) {
-      this.tables.splice(this.tables.indexOf(table), 1);
+    if (this.table.players.length === 0) {
+      this.tableManager.removeTable(this.table.id);
     }
     return true;
   }
