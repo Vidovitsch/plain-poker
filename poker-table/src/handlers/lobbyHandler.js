@@ -1,12 +1,12 @@
 /**
  * [LobbyHandler description]
  * @param       {[type]} gatewayProvider [description]
- * @param       {[type]} tableManager    [description]
+ * @param       {[type]} gamesManager    [description]
  * @constructor
  */
-function LobbyHandler(gatewayProvider, tableManager) {
+function LobbyHandler(gatewayProvider, gamesManager) {
   this.gatewayProvider = gatewayProvider;
-  this.tableManager = tableManager;
+  this.gamesManager = gamesManager;
   this.clientAmqpGateway = gatewayProvider.getClientGateway('amqp');
   this.lobbyAmqpGateway = gatewayProvider.getLobbyGateway('amqp');
 }
@@ -17,29 +17,30 @@ function LobbyHandler(gatewayProvider, tableManager) {
  * @param {[type]} lobbyAmqpGateway  [description]
  * @param {[type]} tableManager      [description]
  */
-const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, channelKey) => {
+const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, gamesManager, channelKey) => {
   clientAmqpGateway.onCreateTableRequest(channelKey, (err, requestMessage) => {
     if (err) {
       console.log(err);
     } else {
       console.log(`Create table request received from ${requestMessage.data.sessionId}`);
-      const result = tableManager.createTable(requestMessage.data.options, requestMessage.data.sessionId);
-
-      if (result instanceof Error) {
-        console.log(result);
-      } else {
-        clientAmqpGateway.sendCreateTableReplyAsync(result, requestMessage).then(() => {
+      gamesManager.createTableAsync(requestMessage.data.options, requestMessage.data.sessionId).then((table) => {
+        // Send reply to the client that requested a table creation
+        clientAmqpGateway.sendCreateTableReplyAsync(table, requestMessage).then(() => {
           console.log(`Create table reply sent to ${requestMessage.data.sessionId}`);
         }).catch((ex) => {
           console.log(ex);
         });
-        const tableItem = tableManager.convertToTableItem(result);
+
+        // Send a update to the lobby in the shape of a table item
+        const tableItem = gamesManager.convertToTableItem(table);
         lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then(() => {
           console.log(`Lobby update sent for created table '${tableItem.name}'`);
         }).catch((ex) => {
           console.log(ex);
         });
-      }
+      }).catch((ex) => {
+        console.log(ex);
+      });
     }
   });
 };
@@ -50,13 +51,13 @@ const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager
  * @param {[type]} lobbyAmqpGateway  [description]
  * @param {[type]} tableManager      [description]
  */
-const setJoinTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, channelKey) => {
+const setJoinTableHandler = (clientAmqpGateway, lobbyAmqpGateway, gamesManager, channelKey) => {
   clientAmqpGateway.onJoinTableRequest(channelKey, (err, requestMessage) => {
     if (err) {
       console.log(err);
     } else {
       console.log(`Join table request received from ${requestMessage.data.sessionId}`);
-      const result = tableManager.joinTable(requestMessage.data.tableId, requestMessage.data.sessionId);
+      const result = gamesManager.joinTable(requestMessage.data.tableId, requestMessage.data.sessionId);
       if (result instanceof Error) {
         console.log(result);
       } else {
@@ -65,7 +66,7 @@ const setJoinTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, 
         }).catch((ex) => {
           console.log(ex);
         });
-        const tableItem = tableManager.convertToTableItem(result);
+        const tableItem = gamesManager.convertToTableItem(result);
         lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then(() => {
           console.log(`Lobby update sent for created table ${tableItem.name}`);
         }).catch((ex) => {
@@ -82,8 +83,8 @@ const L = LobbyHandler.prototype;
  * [setHandlers description]
  */
 L.startHandlers = function startHandlers(channelKey) {
-  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
-  setJoinTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
+  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.gamesManager, channelKey);
+  setJoinTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.gamesManager, channelKey);
 };
 
 module.exports = LobbyHandler;
