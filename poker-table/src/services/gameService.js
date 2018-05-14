@@ -1,11 +1,12 @@
 const GameHandler = require('./../handlers/gameHandler');
 
-function GameService(table, gamesManager, gatewayProvider) {
+function GameService(table, gamesManager) {
   this.table = table;
   this.gamesManager = gamesManager;
-  this.gatewayProvider = gatewayProvider;
+  this.scoreCalculator = gamesManager.scoreCalculator;
+  this.rules = gamesManager.rules;
+  this.gatewayProvider = gamesManager.gatewayProvider;
 }
-
 
 const G = GameService.prototype;
 
@@ -13,7 +14,7 @@ const G = GameService.prototype;
  * [startAsync description]
  * @return {[type]} [description]
  */
-G.startAsync = function startAsync() {
+G.startServiceAsync = function startServiceAsync() {
   return new Promise((resolve, reject) => {
     this.gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
       const gameHandler = new GameHandler(this.gatewayProvider, this);
@@ -54,6 +55,22 @@ G.removePlayer = function removePlayer(sessionId) {
     return true;
   }
   return new Error('Player doesn\'t exist');
+};
+
+G.nextGame = function nextGame() {
+
+};
+
+G.nextRound = function nextRound() {
+
+};
+
+G.nextTurn = function nextTurn() {
+
+};
+
+G.findWinner = function findWinner() {
+
 };
 
 module.exports = GameService;

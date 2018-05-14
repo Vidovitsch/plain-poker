@@ -1,10 +1,14 @@
 const Table = require('./../models/table');
 const TableItem = require('./../models/tableItem');
 const GameService = require('./gameService');
+const Rules = require('./../util/rules');
+const ScoreCalculator = require('./../util/scoreCalculator');
 
 function GamesManager(gatewayProvider) {
   this.games = {};
   this.gatewayProvider = gatewayProvider;
+  this.rules = new Rules();
+  this.scoreCalculator = new ScoreCalculator(this.rules);
 }
 
 const G = GamesManager.prototype;
@@ -27,7 +31,7 @@ G.createTableAsync = function createTableAsync(options, sessionId) {
     const gameService = new GameService(table, this, this.gatewayProvider);
 
     // Start the gameservice for the specified table and add first player
-    gameService.startAsync().then(() => {
+    gameService.startServiceAsync().then(() => {
       const result = gameService.addPlayer(sessionId);
       if (result instanceof Error) {
         reject(result);

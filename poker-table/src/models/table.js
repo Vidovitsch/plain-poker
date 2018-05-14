@@ -16,7 +16,10 @@ function Table(options) {
   this.players = [];
   this.smallBlind = '';
   this.bigBlind = '';
-  this.cards = [];
+  this.gameNo = 0;
+  this.roundNo = 0;
+  this.currentTurn = '';
+  this.communityCards = [];
   this.totalBet = 0;
   this.minPlayerNo = options.minPlayerNo || 2;
   this.maxPlayerNo = options.maxPlayerNo || 5;
