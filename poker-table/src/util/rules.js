@@ -20,15 +20,15 @@ function Rules() {
     ace: 12,
   };
   this.handRanks = {
-    onePair: 1,
-    twoPairs: 2,
-    threeOfAKind: 3,
-    straight: 4,
-    flush: 5,
-    fullHouse: 6,
-    fourOfAKind: 7,
-    straightFlush: 8,
-    royalFlush: 9,
+    onePair: 100,
+    twoPairs: 200,
+    threeOfAKind: 300,
+    straight: 400,
+    flush: 500,
+    fullHouse: 600,
+    fourOfAKind: 700,
+    straightFlush: 800,
+    royalFlush: 900,
   };
 }
 

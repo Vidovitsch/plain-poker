@@ -7,24 +7,31 @@ const randomName = require('node-random-name');
  * @constructor
  */
 function Table(options) {
+  // Meta data (static)
   this.id = uuidv4();
   this.sendTo = `table_${this.id}`;
-  this.name = options.name || randomName();
   this.timestamp = new Date();
-  this.status = 'waiting';
-  this.dealer = '';
-  this.players = [];
-  this.smallBlind = '';
-  this.bigBlind = '';
-  this.gameNo = 0;
-  this.roundNo = 0;
-  this.currentTurn = '';
-  this.communityCards = [];
-  this.totalBet = 0;
+
+  // Table data (static)
+  this.name = options.name || randomName();
   this.minPlayerNo = options.minPlayerNo || 2;
   this.maxPlayerNo = options.maxPlayerNo || 5;
   this.minBet = options.minBet || 1;
   this.startupAmount = options.startupAmount || 15;
+
+  // Table data (variable)
+  this.status = 'waiting';
+
+  // Game data (variable)
+  this.gameNo = 0;
+  this.roundNo = 0;
+  this.turnNo = 0;
+  this.dealer = '';
+  this.players = [];
+  this.smallBlind = '';
+  this.bigBlind = '';
+  this.communityCards = [];
+  this.totalBet = 0;
 }
 
 module.exports = Table;
