@@ -1,6 +1,3 @@
-// suit
-// color
-// value
 function Rules() {
   this.playerCardsNo = 2;
   this.communityCardsNo = 5;

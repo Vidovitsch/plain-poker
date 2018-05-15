@@ -29,7 +29,7 @@ T.createTableAsync = function createTableAsync(options, sessionId) {
     }
     // Create new instance of table
     const table = new Table(options);
-    const gameService = new GameService(table, this, this.gatewayProvider);
+    const gameService = new GameService(table, this);
 
     // Start the gameservice for the specified table and add first player
     gameService.startServiceAsync().then(() => {

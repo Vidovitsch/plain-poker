@@ -1,11 +1,11 @@
 const GameHandler = require('./../handlers/gameHandler');
 
-function GameService(table, gamesManager) {
+function GameService(table, tableManager) {
   this.table = table;
-  this.gamesManager = gamesManager;
-  this.scoreCalculator = gamesManager.scoreCalculator;
-  this.rules = gamesManager.rules;
-  this.gatewayProvider = gamesManager.gatewayProvider;
+  this.tableManager = tableManager;
+  this.scoreCalculator = tableManager.scoreCalculator;
+  this.rules = tableManager.rules;
+  this.gatewayProvider = tableManager.gatewayProvider;
 }
 
 const G = GameService.prototype;

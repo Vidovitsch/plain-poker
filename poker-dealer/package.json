@@ -10,7 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "dotenv": "^5.0.1",
-    "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git"
+    "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
