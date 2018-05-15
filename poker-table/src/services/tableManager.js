@@ -4,14 +4,15 @@ const GameService = require('./gameService');
 const Rules = require('./../util/rules');
 const ScoreCalculator = require('./../util/scoreCalculator');
 
-function GamesManager(gatewayProvider) {
-  this.games = {};
+function TableManager(gatewayProvider) {
+  // Key value pairs of table id and gameServices
+  this.tables = {};
   this.gatewayProvider = gatewayProvider;
   this.rules = new Rules();
   this.scoreCalculator = new ScoreCalculator(this.rules);
 }
 
-const G = GamesManager.prototype;
+const T = TableManager.prototype;
 
 /**
  * [createTable description]
@@ -19,7 +20,7 @@ const G = GamesManager.prototype;
  * @param  {[type]} sessionId [description]
  * @return {[type]}           [description]
  */
-G.createTableAsync = function createTableAsync(options, sessionId) {
+T.createTableAsync = function createTableAsync(options, sessionId) {
   return new Promise((resolve, reject) => {
     // Duplicate table names are not valid
     const existingTable = this.findTableByName(options.name);
@@ -44,7 +45,7 @@ G.createTableAsync = function createTableAsync(options, sessionId) {
   });
 };
 
-G.joinTable = function joinTable(tableId, sessionId) {
+T.joinTable = function joinTable(tableId, sessionId) {
   const existingTable = this.games[tableId];
   console.log(tableId);
   console.log(this.games);
@@ -60,11 +61,11 @@ G.joinTable = function joinTable(tableId, sessionId) {
   return existingTable.table;
 };
 
-G.removeTable = function removeTable(tableId) {
+T.removeTable = function removeTable(tableId) {
   delete this.tables[tableId];
 };
 
-G.findTableByName = function findTableByName(name) {
+T.findTableByName = function findTableByName(name) {
   let existingTable = null;
   Object.keys(this.games).forEach((key) => {
     const { table } = this.games[key];
@@ -75,11 +76,11 @@ G.findTableByName = function findTableByName(name) {
   return existingTable;
 };
 
-G.convertToTableItem = function convertToTableItem(table) {
+T.convertToTableItem = function convertToTableItem(table) {
   if (table instanceof Table) {
     return new TableItem(table);
   }
   return new Error('Argument is not an instance of Table');
 };
 
-module.exports = GamesManager;
+module.exports = TableManager;
