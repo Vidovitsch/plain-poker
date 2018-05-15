@@ -1,5 +1,7 @@
 function CardWrapper(args) {
+  // Card wrapper data (static)
   this.card = args.card;
+  this.dealer = args.dealer;
   this.owner = args.owner;
 }
 

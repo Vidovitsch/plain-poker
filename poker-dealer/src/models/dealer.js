@@ -1,15 +1,18 @@
 const uuidv4 = require('uuid/v4');
 
-function Dealer() {
+function Dealer(args) {
   // Meta data (static)
   this.id = uuidv4();
   this.sendTo = `dealer_${this.id}`;
   this.timestamp = new Date();
-  this.deck = [];
+
+  // Dealer data (static)
+  this.tableId = args.tableId;
+  this.deck = args.deck;
 }
 
 module.exports = {
-  createInstance() {
-    return new Dealer();
+  createInstance(args) {
+    return new Dealer(args);
   },
 };

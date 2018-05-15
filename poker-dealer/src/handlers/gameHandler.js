@@ -1,18 +1,12 @@
-let instance = null;
-
-function GameHandler(gatewayProvider, dealerManager) {
-  this.gatewayProvider = gatewayProvider;
-  this.dealerManager = dealerManager;
-  this.clientGameAmqpGateway = gatewayProvider.getClientGameGateway('amqp');
+function GameHandler(gameService) {
+  this.gatewayProvider = gameService.dealerManager.gatewayProvider;
+  this.gameService = gameService;
 }
 
 const G = GameHandler.prototype;
 
 module.exports = {
-  getInstance(gatewayProvider, dealerManager) {
-    if (!instance) {
-      instance = new GameHandler(gatewayProvider, dealerManager);
-    }
-    return instance;
+  createInstance(gatewayProvider, gameService) {
+    return new GameHandler(gatewayProvider, gameService);
   },
 };
