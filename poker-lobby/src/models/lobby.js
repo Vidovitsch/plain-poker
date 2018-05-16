@@ -1,10 +1,23 @@
+// singleton support
+let instance = null;
+
 /**
  * [Lobby description]
- * @param       {[type]} name [description]
  * @constructor
  */
 function Lobby() {
   this.tableItems = [];
 }
 
-module.exports = Lobby;
+module.exports = {
+  /**
+   * [getInstance description]
+   * @return {Lobby} [description]
+   */
+  getInstance() {
+    if (!instance) {
+      instance = new Lobby();
+    }
+    return instance;
+  },
+};

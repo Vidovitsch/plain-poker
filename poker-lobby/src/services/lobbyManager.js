@@ -1,21 +1,42 @@
 const Lobby = require('./../models/lobby');
 
+// singleton support
+let instance = null;
+
+/**
+ * [LobbyManager description]
+ * @constructor
+ */
 function LobbyManager() {
-  this.lobby = new Lobby();
+  this.lobby = Lobby.getInstance();
 }
 
 const L = LobbyManager.prototype;
 
-L.handleUpdate = function handleUpdate(newTableItem) {
-  const tableItem = this.lobby.tableItems.find(t => t.id === newTableItem.id);
-  if (tableItem) {
-    const index = this.lobby.tableItems.indexOf(tableItem);
-    this.lobby.tableItems[index] = newTableItem;
+/**
+ * [handleUpdate description]
+ * @param  {TableItem} tableItem [description]
+ */
+L.handleUpdate = function handleUpdate(tableItem) {
+  const { tableItems } = this.lobby;
+  const existingTableItem = tableItems.find(t => t.id === tableItem.id);
+  if (existingTableItem) {
+    const index = tableItems.indexOf(tableItem);
+    tableItems[index] = tableItem;
   } else {
-    this.lobby.tableItems.push(newTableItem);
+    tableItems.push(tableItem);
   }
-
-  return true;
 };
 
-module.exports = LobbyManager;
+module.exports = {
+  /**
+   * [getInstance description]
+   * @return {LobbyManager} [description]
+   */
+  getInstance() {
+    if (!instance) {
+      instance = new LobbyManager();
+    }
+    return instance;
+  },
+};

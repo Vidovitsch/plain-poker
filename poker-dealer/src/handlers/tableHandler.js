@@ -55,7 +55,7 @@ G.startCreateDealerHandler = function startCreateDealerHanlder(channelKey) {
 
 /**
  * [checkTableAmqpGateway description]
- * @param  {GatewayProvider} gatewayProvider [description]
+ * @param  {Object} gatewayProvider [description]
  * @return {Boolean}                 [description]
  */
 G.checkTableAmqpGateway = function checkTableAmqpGateway(gatewayProvider) {
