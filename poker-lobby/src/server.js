@@ -6,6 +6,9 @@ const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\
     host: process.env.RMQ_HOST,
     exchange: process.env.RMQ_EXCHANGE,
   },
+  ws: {
+    port: process.env.PORT,
+  },
 });
 
 // One connection with one channel for to listen to lobby update

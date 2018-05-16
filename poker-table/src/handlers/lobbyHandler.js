@@ -9,6 +9,7 @@ function LobbyHandler(gatewayProvider, tableManager) {
   this.tableManager = tableManager;
   this.clientAmqpGateway = gatewayProvider.getClientGateway('amqp');
   this.lobbyAmqpGateway = gatewayProvider.getLobbyGateway('amqp');
+  this.dealerAmqpGateway = gatewayProvider.getDealerGateway('amqp');
 }
 
 /**
@@ -17,24 +18,31 @@ function LobbyHandler(gatewayProvider, tableManager) {
  * @param {[type]} lobbyAmqpGateway  [description]
  * @param {[type]} tableManager      [description]
  */
-const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, tableManager, channelKey) => {
+const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, dealerAmqpGateway, tableManager, channelKey) => {
   clientAmqpGateway.onCreateTableRequest(channelKey, (err, requestMessage) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(`Create table request received from ${requestMessage.data.sessionId}`);
+      console.log('Create table request received');
       tableManager.createTableAsync(requestMessage.data.options, requestMessage.data.sessionId).then((table) => {
-        // Send reply to the client that requested a table creation
-        clientAmqpGateway.sendCreateTableReplyAsync(table, requestMessage).then(() => {
-          console.log(`Create table reply sent to ${requestMessage.data.sessionId}`);
-        }).catch((ex) => {
-          console.log(ex);
-        });
+        dealerAmqpGateway.sendCreateDealerRequestAsync(table.id).then((replyMessage) => {
+          console.log('Create dealer reply received');
+          tableManager.setDealer(table.id, replyMessage.dealerId);
 
-        // Send a update to the lobby in the shape of a table item
-        const tableItem = tableManager.convertToTableItem(table);
-        lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then(() => {
-          console.log(`Lobby update sent for created table '${tableItem.name}'`);
+          // Send reply to the client that requested a table creation
+          clientAmqpGateway.sendCreateTableReplyAsync(table, requestMessage).then(() => {
+            console.log(`Create table reply sent to ${requestMessage.data.sessionId}`);
+          }).catch((ex) => {
+            console.log(ex);
+          });
+
+          // Send a update to the lobby in the shape of a table item
+          const tableItem = tableManager.convertToTableItem(table);
+          lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then(() => {
+            console.log(`Lobby update sent for created table '${tableItem.name}'`);
+          }).catch((ex) => {
+            console.log(ex);
+          });
         }).catch((ex) => {
           console.log(ex);
         });
@@ -83,7 +91,7 @@ const L = LobbyHandler.prototype;
  * [setHandlers description]
  */
 L.startHandlers = function startHandlers(channelKey) {
-  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
+  setCreateTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.dealerAmqpGateway, this.tableManager, channelKey);
   setJoinTableHandler(this.clientAmqpGateway, this.lobbyAmqpGateway, this.tableManager, channelKey);
 };
 

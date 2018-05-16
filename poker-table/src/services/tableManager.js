@@ -37,7 +37,7 @@ T.createTableAsync = function createTableAsync(options, sessionId) {
       if (result instanceof Error) {
         reject(result);
       }
-      this.games[table.id] = gameService;
+      this.tables[table.id] = gameService;
       resolve(table);
     }).catch((err) => {
       reject(err);
@@ -46,10 +46,7 @@ T.createTableAsync = function createTableAsync(options, sessionId) {
 };
 
 T.joinTable = function joinTable(tableId, sessionId) {
-  const existingTable = this.games[tableId];
-  console.log(tableId);
-  console.log(this.games);
-  console.log(existingTable);
+  const existingTable = this.tables[tableId];
   // Table has to exist
   if (!existingTable) {
     return new Error('Table doesn\'t exist');
@@ -67,13 +64,19 @@ T.removeTable = function removeTable(tableId) {
 
 T.findTableByName = function findTableByName(name) {
   let existingTable = null;
-  Object.keys(this.games).forEach((key) => {
-    const { table } = this.games[key];
+  Object.keys(this.tables).forEach((key) => {
+    const { table } = this.tables[key];
     if (table.name === name) {
       existingTable = table;
     }
   });
   return existingTable;
+};
+
+T.setDealer = function setDealer(tableId, dealerId) {
+  const existingTable = this.tables[tableId];
+  existingTable.table.dealer = dealerId;
+  console.log(`DEALER ADDED ${existingTable.table.dealer}`);
 };
 
 T.convertToTableItem = function convertToTableItem(table) {

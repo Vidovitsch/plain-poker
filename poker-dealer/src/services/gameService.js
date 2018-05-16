@@ -9,13 +9,14 @@ const G = GameService.prototype;
 
 G.startServiceAsync = function startServiceAsync() {
   return new Promise((resolve, reject) => {
-    this.gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
-      const newGameHandler = gameHandler.createInstance(this);
-      newGameHandler.startHandlers(this.dealer.id);
-      resolve();
-    }).catch((err) => {
-      reject(err);
-    });
+    resolve();
+    // this.gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
+    //   const newGameHandler = gameHandler.createInstance(this);
+    //   newGameHandler.startHandlers(this.dealer.id);
+    //   resolve();
+    // }).catch((err) => {
+    //   reject(err);
+    // });
   });
 };
 
