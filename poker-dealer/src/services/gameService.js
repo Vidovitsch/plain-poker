@@ -1,5 +1,5 @@
+const deckHelper = require('./../util/deckHelper').getInstance();
 const gameHandler = require('./../handlers/gameHandler');
-const cardWrapper = require('./../models/cardWrapper');
 
 function GameService(dealer, dealerManager) {
   this.dealer = dealer;
@@ -8,7 +8,6 @@ function GameService(dealer, dealerManager) {
 }
 
 const G = GameService.prototype;
-
 
 G.startServiceAsync = function startServiceAsync() {
   return new Promise((resolve, reject) => {
@@ -23,24 +22,18 @@ G.startServiceAsync = function startServiceAsync() {
 };
 
 G.getCommunityCards = function getCommunityCards(numberOfCards) {
-  const communityCards = [];
-  const { deck } = this.dealer;
-  let counter = 0;
-  while (numberOfCards > counter) {
-    const randomIndex = Math.floor(Math.random() * deck);
-    communityCards.push(cardWrapper.createInstance({
-      card: deck[randomIndex],
-      dealerId: this.dealer.id,
-      ownerId: this.dealer.tableId,
-    }));
-    deck.splice(randomIndex, 1);
-    counter += 1;
-  }
-  return communityCards;
+  const cards = deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
+  return deckHelper.wrapCards(cards, this.dealer.id, this.dealer.tableId);
 };
 
-G.getPlayerCards = function getPlayerCards() {
-
+G.getPlayerCards = function getPlayerCards(numberOfCards, sessions) {
+  let wrappedCards = [];
+  sessions.forEach((sessionId) => {
+    const cards = deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
+    const wrapped = deckHelper.wrapCards(cards, this.dealer.id, sessionId);
+    wrappedCards = wrappedCards.concat(wrapped);
+  });
+  return wrappedCards;
 };
 
 module.exports = {
