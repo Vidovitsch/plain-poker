@@ -13,7 +13,7 @@ const tableHandler = require('./src/handlers/tableHandler').getInstance(gatewayP
 
 // One connection with one channel for to listen to lobby update
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  tableHandler.startHandlers('default');
+  tableHandler.startAllHandlers('default');
 }).catch((err) => {
   console.log(err);
 });
