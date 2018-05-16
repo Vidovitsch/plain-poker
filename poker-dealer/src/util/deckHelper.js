@@ -1,14 +1,22 @@
-const cardEnumerations = require('./../util/cardEnumerations');
+const cardEnumerations = require('./../util/cardEnums');
 const card = require('./../models/card');
 const cardWrapper = require('./../models/cardWrapper');
 const uuidv4 = require('uuid/v4');
 
+// singleton support
 let instance = null;
 
 function DeckHelper() { }
 
 const D = DeckHelper.prototype;
 
+/**
+ * [wrapCards description]
+ * @param  {Array} cards    [description]
+ * @param  {String} dealerId [description]
+ * @param  {String} ownerId  [description]
+ * @return {Array}          [description]
+ */
 D.wrapCards = function wrapCards(cards, dealerId, ownerId) {
   const cardWrappers = [];
   cards.forEach((c) => {
@@ -21,6 +29,12 @@ D.wrapCards = function wrapCards(cards, dealerId, ownerId) {
   return cardWrappers;
 };
 
+/**
+ * [getRandomCards description]
+ * @param  {Array} deck          [description]
+ * @param  {Number} numberOfCards [description]
+ * @return {Array}               [description]
+ */
 D.getRandomCards = function getRandomCards(deck, numberOfCards) {
   const cards = [];
   let counter = 0;
@@ -33,6 +47,10 @@ D.getRandomCards = function getRandomCards(deck, numberOfCards) {
   return cards;
 };
 
+/**
+ * [createSortedDeck description]
+ * @return {Array} [description]
+ */
 D.createSortedDeck = function createSortedDeck() {
   const deckId = uuidv4();
   const deck = [];
@@ -48,6 +66,11 @@ D.createSortedDeck = function createSortedDeck() {
   return deck;
 };
 
+/**
+ * [shuffleDeck description]
+ * @param  {Array} deck [description]
+ * @return {Array}      [description]
+ */
 D.shuffleDeck = function shuffleDeck(deck) {
   let counter = deck.length;
   while (counter > 0) {
@@ -58,6 +81,12 @@ D.shuffleDeck = function shuffleDeck(deck) {
   return deck;
 };
 
+/**
+ * [swapEnties description]
+ * @param  {Array} array       [description]
+ * @param  {Number} firstIndex  [description]
+ * @param  {Number} secondIndex [description]
+ */
 D.swapEntries = function swapEnties(array, firstIndex, secondIndex) {
   const temp = array[firstIndex];
   /* eslint-disable no-param-reassign */
@@ -67,8 +96,12 @@ D.swapEntries = function swapEnties(array, firstIndex, secondIndex) {
 };
 
 module.exports = {
+  /**
+   * [getInstance description]
+   * @return {DeckHelper} [description]
+   */
   getInstance() {
-    if (instance === null) {
+    if (!instance) {
       instance = new DeckHelper();
     }
     return instance;

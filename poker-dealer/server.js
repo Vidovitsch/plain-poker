@@ -1,26 +1,25 @@
 require('dotenv').config();
 const logger = require('./src/util/logger');
-
-const gatewayConfig = {
-  amqp: {
-    host: process.env.RMQ_HOST,
-    exchange: process.env.RMQ_EXCHANGE,
-  },
-};
-
+const gatewayConfig = require('./src/util/gatewayConfig');
 const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
-const dealerManager = require('./src/services/dealerManager').getInstance(gatewayProvider);
-const tableHandler = require('./src/handlers/tableHandler').getInstance(gatewayProvider, dealerManager);
+const DealerManager = require('./src/services/dealerManager');
+const TableHandler = require('./src/handlers/tableHandler');
 
-// One connection with one channel for to listen to lobby update
+// One connection with one channel for default listening to events
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  tableHandler.startAllHandlers('default');
+  const dealerManager = DealerManager.getInstance(gatewayProvider);
+  const tableHandler = TableHandler.getInstance(dealerManager);
+  if (tableHandler instanceof Error) {
+    logger.error(tableHandler);
+  } else if (tableHandler.start(gatewayProvider, 'default')) {
+    logger.info(`Dealer services started successfully => 127.0.0.1:${process.env.PORT}`);
+  } else {
+    logger.warn('Not all dealer services have been started correctly');
+  }
 }).catch((err) => {
-  console.log(err);
+  logger.error(err);
 });
 
 process.on('uncaughtException', (err) => {
-  console.log(`Caught exception: ${err}`);
+  logger.error(`Uncaught exception: ${err}`);
 });
-
-logger.error('test');

@@ -1,19 +1,30 @@
-const deckHelper = require('./../util/deckHelper').getInstance();
-const gameHandler = require('./../handlers/gameHandler');
+const DeckHelper = require('./../util/deckHelper');
+const GameHandler = require('./../handlers/gameHandler');
 
-function GameService(dealer, dealerManager) {
+/**
+ * [GameService description]
+ * @param       {Dealer} dealer           [description]
+ * @param       {Function} removeDealerFunc [description]
+ * @constructor
+ */
+function GameService(dealer, removeDealerFunc) {
   this.dealer = dealer;
-  this.dealerManager = dealerManager;
-  this.gatewayProvider = dealerManager.gatewayProvider;
+  this.removeDealer = removeDealerFunc;
+  this.deckHelper = DeckHelper.getInstance();
 }
 
 const G = GameService.prototype;
 
-G.startServiceAsync = function startServiceAsync() {
+/**
+ * [startAsync description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Promise}                 [description]
+ */
+G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
-    this.gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
-      const newGameHandler = gameHandler.createInstance(this);
-      newGameHandler.startAllHandlers(this.dealer.id);
+    gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
+      const gameHandler = GameHandler.createInstance(this);
+      gameHandler.start(gatewayProvider, this.dealer.id);
       resolve();
     }).catch((err) => {
       reject(err);
@@ -21,23 +32,43 @@ G.startServiceAsync = function startServiceAsync() {
   });
 };
 
+/**
+ * [getCommunityCards description]
+ * @param  {Number} numberOfCards [description]
+ * @return {Array}               [description]
+ */
 G.getCommunityCards = function getCommunityCards(numberOfCards) {
-  const cards = deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
-  return deckHelper.wrapCards(cards, this.dealer.id, this.dealer.tableId);
+  const cards = this.deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
+  return this.deckHelper.wrapCards(cards, this.dealer.id, this.dealer.tableId);
 };
 
+/**
+ * [getPlayerCards description]
+ * @param  {Number} numberOfCards [description]
+ * @param  {Array} sessions      [description]
+ * @return {Array}               [description]
+ */
 G.getPlayerCards = function getPlayerCards(numberOfCards, sessions) {
   let wrappedCards = [];
   sessions.forEach((sessionId) => {
-    const cards = deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
-    const wrapped = deckHelper.wrapCards(cards, this.dealer.id, sessionId);
+    const cards = this.deckHelper.getRandomCards(this.dealer.deck, numberOfCards);
+    const wrapped = this.deckHelper.wrapCards(cards, this.dealer.id, sessionId);
     wrappedCards = wrappedCards.concat(wrapped);
   });
   return wrappedCards;
 };
 
 module.exports = {
-  createInstance(dealer, dealerManager) {
-    return new GameService(dealer, dealerManager);
+  /**
+   * [createInstance description]
+   * @param  {Dealer} dealer           [description]
+   * @param  {Function} removeDealerFunc [description]
+   * @return {GameService}                  [description]
+   */
+  createInstance(dealer, removeDealerFunc) {
+    if (!dealer || !removeDealerFunc) {
+      throw new Error('Invalid argument(s)');
+    }
+    return new GameService(dealer, removeDealerFunc);
   },
 };
