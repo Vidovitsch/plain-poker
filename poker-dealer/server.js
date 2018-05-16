@@ -1,4 +1,5 @@
 require('dotenv').config();
+const logger = require('./src/util/logger');
 
 const gatewayConfig = {
   amqp: {
@@ -21,3 +22,5 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
 process.on('uncaughtException', (err) => {
   console.log(`Caught exception: ${err}`);
 });
+
+logger.error('test');
