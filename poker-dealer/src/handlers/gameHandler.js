@@ -1,12 +1,16 @@
 function GameHandler(gameService) {
-  this.gatewayProvider = gameService.dealerManager.gatewayProvider;
+  this.gatewayProvider = gameService.gatewayProvider;
   this.gameService = gameService;
 }
 
 const G = GameHandler.prototype;
 
+G.startAllHandlers = function startAllHandlers(channelKey) {
+
+};
+
 module.exports = {
-  createInstance(gatewayProvider, gameService) {
-    return new GameHandler(gatewayProvider, gameService);
+  createInstance(gameService) {
+    return new GameHandler(gameService);
   },
 };

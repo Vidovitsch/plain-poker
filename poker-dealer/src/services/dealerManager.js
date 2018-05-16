@@ -3,6 +3,7 @@ const gameService = require('./gameService');
 const card = require('./../models/card');
 const cardWrapper = require('./../models/cardWrapper');
 const dealer = require('./../models/dealer');
+const uuidv4 = require('uuid/v4');
 
 let instance = null;
 
@@ -32,10 +33,12 @@ D.createDealerAsync = function createDealerAsync(tableId) {
 };
 
 D.createSortedDeck = function createSortedDeck() {
+  const deckId = uuidv4();
   const deck = [];
   cardEnumerations.suits.forEach((suit) => {
     cardEnumerations.values.forEach((value) => {
       deck.push(card.createInstance({
+        deckId,
         value,
         suit,
       }));
