@@ -42,6 +42,7 @@ G.startCreateDealerHandler = function startCreateDealerHanlder(channelKey) {
       // eslint-disable-next-line arrow-body-style
       this.dealerManager.createDealerAsync(requestMessage.data.tableId).then((dealerId) => {
         // Send the id of the dealer as a reply to the requester
+        logger.info(`Dealer created [id:${dealerId}]`);
         return this.tableAmqpGateway.sendCreateDealerReplyAsync({ dealerId }, requestMessage);
       }).then((replyMessage) => {
         logger.info(`Reply sent: ${replyMessage.context} [correlationId:${replyMessage.correlationId}]`);
