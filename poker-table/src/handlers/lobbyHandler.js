@@ -27,7 +27,7 @@ const setCreateTableHandler = (clientAmqpGateway, lobbyAmqpGateway, dealerAmqpGa
       tableManager.createTableAsync(requestMessage.data.options, requestMessage.data.sessionId).then((table) => {
         dealerAmqpGateway.sendCreateDealerRequestAsync(table.id).then((replyMessage) => {
           console.log('Create dealer reply received');
-          tableManager.setDealer(table.id, replyMessage.dealerId);
+          tableManager.setDealer(table.id, replyMessage.data.dealerId);
 
           // Send reply to the client that requested a table creation
           clientAmqpGateway.sendCreateTableReplyAsync(table, requestMessage).then(() => {
