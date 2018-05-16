@@ -66,9 +66,9 @@ D.swapEntries = function swapEnties(array, firstIndex, secondIndex) {
 };
 
 module.exports = {
-  getInstance(gatewayProvider, dealerManager) {
+  getInstance(gatewayProvider) {
     if (!instance) {
-      instance = new DealerManager(gatewayProvider, dealerManager);
+      instance = new DealerManager(gatewayProvider);
     }
     return instance;
   },

@@ -7,8 +7,8 @@ const gatewayConfig = {
   },
 };
 
-const dealerManager = require('./src/services/dealerManager').getInstance();
 const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
+const dealerManager = require('./src/services/dealerManager').getInstance(gatewayProvider);
 const tableHandler = require('./src/handlers/tableHandler').getInstance(gatewayProvider, dealerManager);
 
 // One connection with one channel for to listen to lobby update

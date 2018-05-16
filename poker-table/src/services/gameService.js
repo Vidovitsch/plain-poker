@@ -1,4 +1,5 @@
 const GameHandler = require('./../handlers/gameHandler');
+const player = require('./../models/player');
 
 function GameService(table, tableManager) {
   this.table = table;
@@ -31,8 +32,13 @@ G.startServiceAsync = function startServiceAsync() {
  * @param {[type]} sessionId [description]
  */
 G.addPlayer = function addPlayer(sessionId) {
-  if (!this.table.players.includes(sessionId)) {
-    this.table.players.push(sessionId);
+  const { players } = this.table;
+  const existingPlayer = players.find(p => p.sessionId === sessionId);
+  if (!existingPlayer) {
+    players.push(player.createInstance({
+      sessionId,
+      amount: this.table.startupAmount,
+    }));
     return true;
   }
   return new Error('Player is already added to the table');
@@ -44,12 +50,14 @@ G.addPlayer = function addPlayer(sessionId) {
  * @return {[type]}           [description]
  */
 G.removePlayer = function removePlayer(sessionId) {
-  const index = this.table.players.indexOf(sessionId);
-  if (index >= -1) {
+  const { players } = this.table;
+  const existingPlayer = players.find(p => p.sessionId === sessionId);
+  if (existingPlayer) {
     // Remove player
-    this.table.players.splice(index, 1);
+    const index = players.indexOf(existingPlayer);
+    players.splice(index, 1);
     // Remove if table is empty
-    if (this.table.players.length === 0) {
+    if (players.length === 0) {
       this.tableManager.removeTable(this.table.id);
     }
     return true;
