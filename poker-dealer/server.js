@@ -17,3 +17,7 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
 }).catch((err) => {
   console.log(err);
 });
+
+process.on('uncaughtException', (err) => {
+  console.log(`Caught exception: ${err}`);
+});

@@ -18,3 +18,7 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   // Start handlers that listen on the 'default' channel
   clientHandler.startHandlers('default');
 });
+
+process.on('uncaughtException', (err) => {
+  console.log(`Caught exception: ${err}`);
+});
