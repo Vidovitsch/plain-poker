@@ -28,7 +28,6 @@ class Lobby extends React.Component {
   getLobby() {
     this.ipcRenderer.send('lobby-request');
     this.ipcRenderer.on('lobby-reply', (e, data) => {
-      console.log('hey');
       this.setState({
         tableItems: data,
       });
@@ -37,6 +36,8 @@ class Lobby extends React.Component {
       this.setState({
         tableItems: data,
       });
+      const updatedTableItem = data.find(t => t.id === this.state.selectedTableItem.id);
+      this.setSelectedTableItem(updatedTableItem);
     });
   }
 

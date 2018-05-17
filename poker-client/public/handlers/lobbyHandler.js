@@ -44,6 +44,8 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
     logger.info('Request sent: lobby-request');
     this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
       logger.info(`Reply received: ${replyMessage.context}`);
+
+      // Initialize listener for future lobby updates
       this.lobbySocketGateway.onLobbyUpdate((err, message) => {
         if (err) {
           logger.error(err);
@@ -52,6 +54,7 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
           e.sender.send('lobby-update', message.data.tableItems);
         }
       });
+
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
       logger.log(err);
