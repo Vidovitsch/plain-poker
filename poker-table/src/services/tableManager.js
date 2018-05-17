@@ -38,6 +38,7 @@ T.createTableAsync = function createTableAsync(options, sessionId) {
         reject(result);
       }
       this.tables[table.id] = gameService;
+      console.log(this.tables);
       resolve(table);
     }).catch((err) => {
       reject(err);
@@ -52,6 +53,7 @@ T.joinTable = function joinTable(tableId, sessionId) {
     return new Error('Table doesn\'t exist');
   }
   const result = existingTable.addPlayer(sessionId);
+  console.log(existingTable);
   if (result instanceof Error) {
     return result;
   }
@@ -76,7 +78,6 @@ T.findTableByName = function findTableByName(name) {
 T.setDealer = function setDealer(tableId, dealerId) {
   const existingTable = this.tables[tableId];
   existingTable.table.dealer = dealerId;
-  console.log(`DEALER ADDED ${existingTable.table.dealer}`);
 };
 
 T.convertToTableItem = function convertToTableItem(table) {

@@ -20,9 +20,15 @@ const L = LobbyManager.prototype;
 L.handleUpdate = function handleUpdate(tableItem) {
   const { tableItems } = this.lobby;
   const existingTableItem = tableItems.find(t => t.id === tableItem.id);
+  console.log('existing');
+  console.log(tableItem);
   if (existingTableItem) {
-    const index = tableItems.indexOf(tableItem);
+    console.log('before');
+    console.log(tableItems);
+    const index = tableItems.indexOf(existingTableItem);
     tableItems[index] = tableItem;
+    console.log('after');
+    console.log(tableItems);
   } else {
     tableItems.push(tableItem);
   }
