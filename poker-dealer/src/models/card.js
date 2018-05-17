@@ -1,5 +1,5 @@
 const uuidv4 = require('uuid/v4');
-
+const cardEnums = require('./../util/cardEnums');
 /**
  * [Card description]
  * @param       {Object} args [description]
@@ -14,6 +14,8 @@ function Card(args) {
   // Card data (static)
   this.value = args.value;
   this.suit = args.suit;
+  this.numericValue = cardEnums[args.value].numericValue;
+  this.points = cardEnums[args.value].points;
 }
 
 module.exports = {

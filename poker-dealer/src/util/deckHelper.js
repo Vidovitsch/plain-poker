@@ -1,4 +1,4 @@
-const cardEnumerations = require('./../util/cardEnums');
+const cardEnums = require('./../util/cardEnums');
 const card = require('./../models/card');
 const cardWrapper = require('./../models/cardWrapper');
 const uuidv4 = require('uuid/v4');
@@ -54,8 +54,8 @@ D.getRandomCards = function getRandomCards(deck, numberOfCards) {
 D.createSortedDeck = function createSortedDeck() {
   const deckId = uuidv4();
   const deck = [];
-  cardEnumerations.suits.forEach((suit) => {
-    cardEnumerations.values.forEach((value) => {
+  Object.keys(cardEnums.suits).forEach((suit) => {
+    Object.keys(cardEnums.values).forEach((value) => {
       deck.push(card.createInstance({
         deckId,
         value,
