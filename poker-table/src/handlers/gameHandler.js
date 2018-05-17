@@ -16,7 +16,7 @@ const G = GameHandler.prototype;
  * @return {Boolean}                 [description]
  */
 G.start = function start(gatewayProvider, channelKey) {
-  // TODO:
+  return true;
 };
 
 module.exports = {

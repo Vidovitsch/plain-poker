@@ -1,6 +1,6 @@
 /**
  * [TableItem description]
- * @param       {[type]} table [description]
+ * @param       {Table} table [description]
  * @constructor
  */
 function TableItem(table) {
@@ -14,4 +14,17 @@ function TableItem(table) {
   this.startupAmount = table.startupAmount;
 }
 
-module.exports = TableItem;
+module.exports = {
+  /**
+   * [createInstance description]
+   * @param  {Table} table [description]
+   * @return {TableItem}       [description]
+   * @return {Error}       [description]
+   */
+  createInstance(table) {
+    if (!table) {
+      throw new Error('Invalid argument(s)');
+    }
+    return new TableItem(table);
+  },
+};

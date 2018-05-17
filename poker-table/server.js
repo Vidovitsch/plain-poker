@@ -9,7 +9,7 @@ const TableManager = require('./src/services/tableManager');
 
 // One connection with one channel for to listen to table updates
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  const tableManager = new TableManager(gatewayProvider);
+  const tableManager = TableManager.getInstance(gatewayProvider);
   const lobbyHandler = LobbyHandler.getInstance(tableManager);
   if (lobbyHandler.start(gatewayProvider, 'default')) {
     logger.info(`Table services started successfully => 127.0.0.1:${process.env.PORT}`);

@@ -1,3 +1,7 @@
+/**
+ * [Rules description]
+ * @constructor
+ */
 function Rules() {
   this.playerCardsNo = 2;
   this.communityCardsNo = 5;

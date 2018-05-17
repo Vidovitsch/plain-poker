@@ -3,7 +3,7 @@ const randomName = require('node-random-name');
 
 /**
  * [Table description]
- * @param       {[type]} options [description]
+ * @param       {Object} options [description]
  * @constructor
  */
 function Table(options) {
@@ -34,4 +34,13 @@ function Table(options) {
   this.totalBet = 0;
 }
 
-module.exports = Table;
+module.exports = {
+  /**
+   * [createInstance description]
+   * @param  {Object} options [description]
+   * @return {Table}         [description]
+   */
+  createInstance(options) {
+    return new Table(options);
+  },
+};

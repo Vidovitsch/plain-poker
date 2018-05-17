@@ -1,4 +1,5 @@
 const logger = require('./../util/logger');
+const TableItem = require('./../models/tableItem');
 
 // singleton support
 let instance = null;
@@ -97,7 +98,7 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
  * @param  {Table} table [description]
  */
 L.sendUpdateToLobby = function sendUpdateToLobby(table) {
-  const tableItem = this.tableManager.convertToTableItem(table);
+  const tableItem = TableItem.createInstance(table);
   this.lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then((postedMessage) => {
     logger.info(`Lobby update sent: ${postedMessage.context}`);
   }).catch((ex) => {

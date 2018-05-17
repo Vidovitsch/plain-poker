@@ -16,6 +16,9 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   }
 });
 
+const server = http.createServer();
+server.listen(process.env.PORT);
+
 process.on('uncaughtException', (err) => {
   logger.error(`Uncaught exception: ${err}`);
 });

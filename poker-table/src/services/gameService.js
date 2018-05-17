@@ -1,25 +1,33 @@
+const logger = require('./../util/logger');
 const GameHandler = require('./../handlers/gameHandler');
 const player = require('./../models/player');
 
-function GameService(table, tableManager) {
+/**
+ * [GameService description]
+ * @param       {Table} table           [description]
+ * @param       {Function} removeTableFunc [description]
+ * @constructor
+ */
+function GameService(table, removeTableFunc) {
   this.table = table;
-  this.tableManager = tableManager;
-  this.scoreCalculator = tableManager.scoreCalculator;
-  this.rules = tableManager.rules;
-  this.gatewayProvider = tableManager.gatewayProvider;
+  this.removeTable = removeTableFunc;
 }
 
 const G = GameService.prototype;
 
 /**
  * [startAsync description]
- * @return {[type]} [description]
+ * @param  {Object} gatewayProvider [description]
  */
-G.startServiceAsync = function startServiceAsync() {
+G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
-    this.gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
+    gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
       const gameHandler = GameHandler.createInstance(this);
-      gameHandler.start(this.gatewayProvider, this.table.id);
+      if (gameHandler.start(gatewayProvider, this.table.id)) {
+        logger.info(`Game table services started successfully => ${this.table.id}`);
+      } else {
+        logger.warn('Not all game table services have been started correctly');
+      }
       resolve();
     }).catch((err) => {
       reject(err);
@@ -29,7 +37,9 @@ G.startServiceAsync = function startServiceAsync() {
 
 /**
  * [addPlayer description]
- * @param {[type]} sessionId [description]
+ * @param {String} sessionId [description]
+ * @return {Boolean}           [description]
+ * @return {Error}           [description]
  */
 G.addPlayer = function addPlayer(sessionId) {
   const { players } = this.table;
@@ -46,8 +56,9 @@ G.addPlayer = function addPlayer(sessionId) {
 
 /**
  * [removePlayer description]
- * @param  {[type]} sessionId [description]
- * @return {[type]}           [description]
+ * @param  {String} sessionId [description]
+ * @return {Boolean}           [description]
+ * @return {Error}           [description]
  */
 G.removePlayer = function removePlayer(sessionId) {
   const { players } = this.table;
@@ -65,20 +76,17 @@ G.removePlayer = function removePlayer(sessionId) {
   return new Error('Player doesn\'t exist');
 };
 
-G.nextGame = function nextGame() {
-
+module.exports = {
+  /**
+   * [createInstance description]
+   * @param  {Table} table           [description]
+   * @param  {Function} removeTableFunc [description]
+   * @return {GameService}                 [description]
+   */
+  createInstance(table, removeTableFunc) {
+    if (!table || !removeTableFunc) {
+      throw new Error('Invalid argument(s)');
+    }
+    return new GameService(table, removeTableFunc);
+  },
 };
-
-G.nextRound = function nextRound() {
-
-};
-
-G.nextTurn = function nextTurn() {
-
-};
-
-G.findWinner = function findWinner() {
-
-};
-
-module.exports = GameService;
