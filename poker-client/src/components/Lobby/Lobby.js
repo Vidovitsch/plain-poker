@@ -28,6 +28,7 @@ class Lobby extends React.Component {
   getLobby() {
     this.ipcRenderer.send('lobby-request');
     this.ipcRenderer.on('lobby-reply', (e, data) => {
+      console.log('hey');
       this.setState({
         tableItems: data,
       });
@@ -64,7 +65,11 @@ class Lobby extends React.Component {
       <div className="Lobby">
         <header><LobbyHeader /></header>
         <main>
-          <LobbyControls onCreate={this.createTable} onJoin={this.joinTable} selectedTableItem={this.state.selectedTableItem} />
+          <LobbyControls
+            onCreate={this.createTable}
+            onJoin={this.joinTable}
+            selectedTableItem={this.state.selectedTableItem}
+          />
           <TableItemList onSelect={this.setSelectedTableItem} tableItems={this.state.tableItems} />
         </main>
         <footer><LobbyFooter /></footer>

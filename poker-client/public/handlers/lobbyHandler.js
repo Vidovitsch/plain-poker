@@ -1,108 +1,123 @@
+const logger = require('./../util/logger');
+
+// singleton support
+let instance = null;
+
 /**
  * [LobbyHandler description]
- * @param       {[type]} sessionId       [description]
- * @param       {[type]} gatewayProvider [description]
- * @param       {[type]} ipcMain         [description]
+ * @param       {String} sessionId [description]
  * @constructor
  */
-function LobbyHandler(gatewayProvider, ipcMain, sessionId) {
-  this.gatewayProvider = gatewayProvider;
-  this.ipcMain = ipcMain;
+function LobbyHandler(sessionId) {
   this.sessionId = sessionId;
   this.isConnected = false;
-  this.lobbySocketGateway = gatewayProvider.getLobbyGateway('ws');
-  this.tableAmqpGateway = gatewayProvider.getTableGateway('amqp');
+  this.lobbySocketGateway = null;
+  this.tableAmqpGateway = null;
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
 }
 
+const L = LobbyHandler.prototype;
+
 /**
- * [setLobbyRequestHandler description]
- * @param {Object} ipcMain            [description]
- * @param {Object} lobbySocketGateway [description]
+ * [start description]
+ * @param  {Object} gatewayProvider [description]
+ * @param  {IpcMain} ipcMain         [description]
+ * @return {Boolean}                 [description]
  */
-const setLobbyRequestHandler = (ipcMain, lobbySocketGateway) => {
+L.start = function start(gatewayProvider, ipcMain) {
+  if (this.checkTableAmqpGateway(gatewayProvider) &&
+      this.checkLobbySocketGateway(gatewayProvider)) {
+    this.startLobbyRequestHandler(ipcMain);
+    this.startCreateTableHandler(ipcMain);
+    this.startJoinTableHandler(ipcMain);
+    return true;
+  }
+  return false;
+};
+
+/**
+ * [startLobbyRequestHandler description]
+ * @param  {IpcMain} ipcMain [description]
+ */
+L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
   ipcMain.on('lobby-request', (e) => {
-    console.log('Send lobby request');
-    lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
-      console.log('Lobby reply received');
-      lobbySocketGateway.onLobbyUpdate((err, message) => {
+    logger.info('Request sent: lobby-request');
+    this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
+      logger.info(`Reply received: ${replyMessage.context}`);
+      this.lobbySocketGateway.onLobbyUpdate((err, message) => {
         if (err) {
-          console.log(err);
+          logger.error(err);
         } else {
-          console.log('Lobby reply received');
+          logger.info(`Lobby update received: ${message.context}`);
           e.sender.send('lobby-update', message.data.tableItems);
         }
       });
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
-      console.log(err);
+      logger.log(err);
     });
   });
 };
 
 /**
- * [setRequestTableHandler description]
- * @param {Object} ipcMain          [description]
- * @param {Object} tableAmqpGateway [description]
- * @param {function} disconnect       [description]
+ * [startCreateTableHandler description]
+ * @param  {IpcMain} ipcMain [description]
+ * @return {Boolean}         [description]
  */
-const setCreateTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
+L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
   ipcMain.on('create-table-request', (e, data) => {
-    console.log('Send create table request');
-    tableAmqpGateway.sendCreateTableRequestAsync(sessionId, data).then((replyMessage) => {
-      console.log('Create table reply received');
+    logger.info('Request sent: create-table-request');
+    this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, data).then((replyMessage) => {
+      logger.info(`Reply received: ${replyMessage.context}`);
       if (replyMessage.type === 'error') {
-        console.log(replyMessage.error);
+        logger.error(replyMessage.error);
       } else {
         e.sender.send('create-table-reply', {
-          sessionId,
+          sessionId: this.sessionId,
           tableId: replyMessage.data.id,
         });
-        const result = disconnectFromLobby();
+        const result = this.disconnectFromLobby();
         if (result instanceof Error) {
-          console.log(result);
+          logger.error(result);
         } else {
-          console.log('Disconnected from lobby');
+          logger.info('Disconnected from lobby');
         }
       }
     }).catch((err) => {
-      console.log(err);
+      logger.error(err);
     });
   });
 };
 
 /**
- * [setJoinTableHandler description]
- * @param {Object} ipcMain          [description]
- * @param {Object} tableAmqpGateway [description]
- * @param {function} disconnect       [description]
+ * [startJoinTableHandler description]
+ * @param  {IpcMain} ipcMain [description]
+ * @return {Boolean}         [description]
  */
-const setJoinTableHandler = (ipcMain, tableAmqpGateway, sessionId, disconnectFromLobby) => {
+L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
   ipcMain.on('join-table-request', (e, data) => {
-    console.log('Send join table request');
-    tableAmqpGateway.sendJoinTableRequestAsync(sessionId, data).then((replyMessage) => {
-      console.log('Join table reply received');
+    logger.info('Request sent: join-table-request');
+    this.tableAmqpGateway.sendJoinTableRequestAsync(this.sessionId, data).then((replyMessage) => {
+      logger.info(`Reply received: ${replyMessage.context}`);
       if (replyMessage.type === 'error') {
-        console.log(replyMessage.error);
+        logger.error(replyMessage.error);
       } else {
         e.sender.send('join-table-reply', {
-          sessionId,
+          sessionId: this.sessionId,
           tableId: replyMessage.data.id,
         });
-        const result = disconnectFromLobby();
+        const result = this.disconnectFromLobby();
         if (result instanceof Error) {
-          console.log(result);
+          logger.error(result);
         } else {
-          console.log('Disconnected from lobby');
+          logger.log('Disconnected from lobby');
         }
       }
     }).catch((err) => {
-      console.log(err);
+      logger.log(err);
     });
   });
 };
-
-const L = LobbyHandler.prototype;
 
 /**
  * [connect description]
@@ -124,7 +139,8 @@ L.connectToLobbyAsync = function connectToLobbyAsync() {
 
 /**
  * [disconnectFromLobby description]
- * @return {boolean} [description]
+ * @return {Boolean} [description]
+ * @return {Error} [description]
  */
 L.disconnectFromLobby = function disconnectFromLobby() {
   if (this.isConnected) {
@@ -136,13 +152,52 @@ L.disconnectFromLobby = function disconnectFromLobby() {
 };
 
 /**
- * [initHandlers description]
- * @return {[type]} [description]
+ * [checkTableAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
  */
-L.setHandlers = function setHandlers() {
-  setLobbyRequestHandler(this.ipcMain, this.lobbySocketGateway);
-  setCreateTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
-  setJoinTableHandler(this.ipcMain, this.tableAmqpGateway, this.sessionId, this.disconnectFromLobby);
+L.checkTableAmqpGateway = function checkTableAmqpGateway(gatewayProvider) {
+  if (!this.tableAmqpGateway) {
+    const result = gatewayProvider.getTableGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.tableAmqpGateway = result;
+  }
+  return true;
 };
 
-module.exports = LobbyHandler;
+/**
+ * [checkTableAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+L.checkLobbySocketGateway = function checkLobbySocketGateway(gatewayProvider) {
+  if (!this.lobbySocketGateway) {
+    const result = gatewayProvider.getLobbyGateway('ws');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.lobbySocketGateway = result;
+  }
+  return true;
+};
+
+module.exports = {
+  /**
+   * [getInstance description]
+   * @param  {String} sessionId [description]
+   * @return {LobbyHandler}           [description]
+   */
+  getInstance(sessionId) {
+    if (!instance) {
+      if (!sessionId) {
+        throw new Error('Invalid argument(s)');
+      }
+      instance = new LobbyHandler(sessionId);
+    }
+    return instance;
+  },
+};

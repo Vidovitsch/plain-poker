@@ -1,35 +1,30 @@
 require('dotenv').config();
-
+const logger = require('./util/logger');
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 const LobbyHandler = require('./handlers/lobbyHandler');
-const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')({
-  amqp: {
-    host: process.env.RMQ_HOST,
-    exchange: process.env.RMQ_EXCHANGE,
-  },
-  ws: {
-    host: process.env.LOBBY_HOST,
-    port: process.env.LOBBY_PORT,
-  },
-});
+const gatewayConfig = require('./util/gatewayConfig');
+const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
 
+// in-memory session
 const sessionId = uuidv4();
+
 let mainWindow;
 
 // One connection with one channel for every action in lobby
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  const lobbyHandler = new LobbyHandler(gatewayProvider, ipcMain, sessionId);
-  lobbyHandler.connectToLobbyAsync().then(() => {
-    console.log('Connected with lobby');
-    lobbyHandler.setHandlers();
-  }).catch((err) => {
-    console.log(err);
-  });
+  const lobbyHandler = LobbyHandler.getInstance(sessionId);
+  if (lobbyHandler.start(gatewayProvider, ipcMain)) {
+    logger.info(`Client services started successfully => 127.0.0.1:${process.env.PORT}`);
+    lobbyHandler.connectToLobbyAsync().then(() => {
+      logger.info('Client has successfully connected with the lobby');
+    }).catch((err) => {
+      logger.error(err);
+    });
+  }
 });
-
 
 /**
  * [createWindow description]
@@ -54,7 +49,7 @@ app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     const result = gatewayProvider.closeSharedConnection();
     if (result instanceof Error) {
-      console.log(result);
+      logger.error(result);
     }
     app.quit();
   }
@@ -67,5 +62,5 @@ app.on('activate', () => {
 });
 
 process.on('uncaughtException', (err) => {
-  console.log(`Caught exception: ${err}`);
+  logger.infor(`Uncaught exception: ${err}`);
 });
