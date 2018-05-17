@@ -1,11 +1,20 @@
-function ScoreCalculator(rules) {
-  this.rules = rules;
-}
+const rules = require('./../util/rules');
+
+/**
+ * [ScoreCalculator description]
+ * @constructor
+ */
+function ScoreCalculator() { }
 
 const S = ScoreCalculator.prototype;
 
-S.calculateScore = function calculateScore(cards) {
-  if (cards.length === this.rules.playerCardsNo + this.rules.communityCardsNo) {
+/**
+ * [calculate description]
+ * @param  {Array} cards [description]
+ * @return {Number}       [description]
+ */
+S.calculate = function calculate(cards) {
+  if (cards.length === rules.playerCardsNo + rules.communityCardsNo) {
     let maxScore = 0;
     const checks = this.getChecks(cards);
     Object.values(checks).forEach((check) => {
@@ -16,20 +25,6 @@ S.calculateScore = function calculateScore(cards) {
     });
   }
   return new Error('Number of given cards doesn\'t satisfy the rules');
-};
-
-S.getChecks = function getChecks() {
-  return {
-    royalFlush: this.checkRoyalFlush,
-    straightFlush: this.checkStraightFlush,
-    fourOfAKind: this.checkFourOfAKind,
-    fullHouse: this.checkFullHouse,
-    flush: this.checkFlush,
-    straight: this.checkStraight,
-    threeOfAKind: this.checkThreePairs,
-    twoPairs: this.checkTwoPairs,
-    onePair: this.checkOnePair,
-  };
 };
 
 S.checkOnePair = function checkOnePair(cards) {

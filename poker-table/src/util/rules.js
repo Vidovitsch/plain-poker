@@ -1,11 +1,7 @@
-/**
- * [Rules description]
- * @constructor
- */
-function Rules() {
-  this.playerCardsNo = 2;
-  this.communityCardsNo = 5;
-  this.cardValues = {
+module.exports = {
+  playerCardsNo: 2,
+  communityCardsNo: 5,
+  cardValues: {
     two: 0,
     three: 1,
     four: 2,
@@ -19,8 +15,8 @@ function Rules() {
     queen: 10,
     king: 11,
     ace: 12,
-  };
-  this.handRanks = {
+  },
+  handRanks: {
     onePair: 100,
     twoPairs: 200,
     threeOfAKind: 300,
@@ -30,7 +26,5 @@ function Rules() {
     fourOfAKind: 700,
     straightFlush: 800,
     royalFlush: 900,
-  };
-}
-
-module.exports = Rules;
+  },
+};
