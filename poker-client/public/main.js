@@ -1,12 +1,12 @@
 require('dotenv').config();
 const logger = require('./util/logger');
+const gatewayConfig = require('./util/gatewayConfig');
+const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 const LobbyHandler = require('./handlers/lobbyHandler');
-const gatewayConfig = require('./util/gatewayConfig');
-const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
 
 // in-memory session
 const sessionId = uuidv4();

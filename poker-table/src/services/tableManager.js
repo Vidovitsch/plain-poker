@@ -53,7 +53,6 @@ T.joinTable = function joinTable(tableId, sessionId) {
     return new Error('Table doesn\'t exist');
   }
   const result = existingTable.addPlayer(sessionId);
-  console.log(existingTable);
   if (result instanceof Error) {
     return result;
   }

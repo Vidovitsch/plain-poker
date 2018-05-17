@@ -18,8 +18,8 @@ const G = GameService.prototype;
 G.startServiceAsync = function startServiceAsync() {
   return new Promise((resolve, reject) => {
     this.gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
-      const gameHandler = new GameHandler(this.gatewayProvider, this);
-      gameHandler.startHandlers(this.table.id);
+      const gameHandler = GameHandler.createInstance(this);
+      gameHandler.start(this.gatewayProvider, this.table.id);
       resolve();
     }).catch((err) => {
       reject(err);

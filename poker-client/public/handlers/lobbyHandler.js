@@ -41,7 +41,7 @@ L.start = function start(gatewayProvider, ipcMain) {
  */
 L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
   ipcMain.on('lobby-request', (e) => {
-    logger.info('Request sent: lobby-request');
+    logger.info('Send request: lobby-request');
     this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
       logger.info(`Reply received: ${replyMessage.context}`);
 
@@ -69,7 +69,7 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
  */
 L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
   ipcMain.on('create-table-request', (e, data) => {
-    logger.info('Request sent: create-table-request');
+    logger.info('Send request: create-table-request');
     this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, data).then((replyMessage) => {
       logger.info(`Reply received: ${replyMessage.context}`);
       if (replyMessage.type === 'error') {
