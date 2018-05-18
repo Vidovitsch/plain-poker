@@ -2,70 +2,73 @@ module.exports = {
   suits: {
     hearts: {
       color: 'red',
+      wild: 'h',
     },
     diamonds: {
       color: 'red',
+      wild: 'd',
     },
     clubs: {
       color: 'black',
+      wild: 'c',
     },
     spades: {
       color: 'black',
+      wild: 's',
     },
   },
   values: {
     two: {
       points: 0,
-      numericValue: 2,
+      wild: '2',
     },
     three: {
       points: 1,
-      numericValue: 3,
+      wild: '3',
     },
     four: {
       points: 2,
-      numericValue: 4,
+      wild: '4',
     },
     five: {
       points: 3,
-      numericValue: 5,
+      wild: '5',
     },
     six: {
       points: 4,
-      numericValue: 6,
+      wild: '6',
     },
     seven: {
       points: 5,
-      numericValue: 7,
+      wild: '7',
     },
     eight: {
       points: 6,
-      numericValue: 8,
+      wild: '8',
     },
     nine: {
       points: 7,
-      numericValue: 9,
+      wild: '9',
     },
     ten: {
       points: 8,
-      numericValue: 10,
+      wild: 'T',
     },
     jack: {
       points: 9,
-      numericValue: 11,
+      wild: 'J',
     },
     queen: {
       points: 10,
-      numericValue: 12,
+      wild: 'Q',
     },
     king: {
       points: 11,
-      numericValue: 13,
+      wild: 'K',
     },
     ace: {
       points: 12,
-      numericValue: 14,
+      wild: 'A',
     },
   },
-
 };

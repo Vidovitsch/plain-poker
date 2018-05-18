@@ -8,7 +8,7 @@ const randomName = require('node-random-name');
 function Player(args) {
   this.sessionId = args.sessionId;
   this.name = randomName();
-  this.status = 'active';
+  this.status = 'waiting';
   this.amount = args.amount;
 }
 

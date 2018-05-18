@@ -1,4 +1,5 @@
 const logger = require('./../util/logger');
+const HandSolver = require('./../util/handSolver');
 const GameHandler = require('./../handlers/gameHandler');
 const player = require('./../models/player');
 
@@ -11,6 +12,7 @@ const player = require('./../models/player');
 function GameService(table, removeTableFunc) {
   this.table = table;
   this.removeTable = removeTableFunc;
+  this.handSolver = HandSolver.getInstance();
 }
 
 const G = GameService.prototype;
@@ -69,11 +71,30 @@ G.removePlayer = function removePlayer(sessionId) {
     players.splice(index, 1);
     // Remove if table is empty
     if (players.length === 0) {
-      this.tableManager.removeTable(this.table.id);
+      this.removeTableFunc(this.table.id);
     }
     return true;
   }
   return new Error('Player doesn\'t exist');
+};
+
+/**
+ * [findWinner description]
+ * @param  {Array} hands [description]
+ * @return {Object}       [description]
+ */
+G.findWinner = function findWinner(hands) {
+  let winner = [];
+  hands.forEach((hand) => {
+    const solved = this.handSolver.solve(hand.concat(this.table.communityCards));
+    if (!winner || solved.points > winner.score.points) {
+      winner = {
+        ownerId: hand.ownerId,
+        score: solved,
+      };
+    }
+  });
+  return winner;
 };
 
 module.exports = {

@@ -13,6 +13,7 @@
     "dotenv": "^5.0.1",
     "node-random-name": "^1.0.1",
     "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git",
+    "pokersolver": "^2.1.2",
     "uuid": "^3.2.1",
     "winston": "^2.4.2"
   },

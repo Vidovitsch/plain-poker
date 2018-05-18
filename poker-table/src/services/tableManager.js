@@ -1,6 +1,5 @@
 const Table = require('./../models/table');
 const GameService = require('./gameService');
-const ScoreCalculator = require('./../util/scoreCalculator');
 
 // singleton support
 let instance = null;
@@ -14,7 +13,6 @@ function TableManager(gatewayProvider) {
   // Key value pairs of table id and gameServices
   this.tables = {};
   this.gatewayProvider = gatewayProvider;
-  this.scoreCalculator = new ScoreCalculator();
 }
 
 const T = TableManager.prototype;
