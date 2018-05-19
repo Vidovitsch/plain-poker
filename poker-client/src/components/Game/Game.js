@@ -21,8 +21,7 @@ class Game extends React.Component {
 
   render() {
     return (
-      <div className="Game">
-        <h3>Game</h3>
+      <div className="Game" />
       </div>
     );
   }
