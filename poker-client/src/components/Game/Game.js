@@ -1,11 +1,22 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import './Game.css';
 
-class Game extends Component {
+const electron = window.require('electron');
+const { ipcRenderer } = electron;
+
+class Game extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props.location);
+    this.ipcRenderer = ipcRenderer;
+    this.state = {
+      table: props.location.state.table,
+    };
+  }
+
+  setTable(table) {
+    this.setState({
+      table,
+    });
   }
 
   render() {

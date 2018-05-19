@@ -48,6 +48,7 @@ module.exports = {
    * [createInstance description]
    * @param  {GameService} gameService [description]
    * @return {GameHandler}             [description]
+   * @return {Error}             [description]
    */
   createInstance(gameService) {
     if (!gameService) {

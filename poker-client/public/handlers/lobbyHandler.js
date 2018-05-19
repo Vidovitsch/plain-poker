@@ -75,10 +75,7 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       } else {
-        e.sender.send('create-table-reply', {
-          sessionId: this.sessionId,
-          tableId: replyMessage.data.tableId,
-        });
+        e.sender.send('create-table-reply', replyMessage.data);
         const result = this.disconnectFromLobby();
         if (result instanceof Error) {
           logger.error(result);
@@ -105,10 +102,7 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
       if (replyMessage.type === 'error') {
         logger.error(replyMessage.error);
       } else {
-        e.sender.send('join-table-reply', {
-          sessionId: this.sessionId,
-          tableId: replyMessage.data.id,
-        });
+        e.sender.send('join-table-reply', replyMessage.data);
         const result = this.disconnectFromLobby();
         if (result instanceof Error) {
           logger.error(result);

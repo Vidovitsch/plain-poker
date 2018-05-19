@@ -23,7 +23,7 @@ const G = GameHandler.prototype;
  * @param  {String} channelKey      [description]
  * @return {Boolean}                 [description]
  */
-G.start = function start(gatewayProvider, channelKey) {
+G.start = function start(gatewayProvider, ipcMain, channelKey) {
   if (this.checkTableGameAmqpGateway(gatewayProvider)) {
     // TODO:
     return true;

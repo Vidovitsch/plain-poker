@@ -10,6 +10,7 @@ function Player(args) {
   this.name = randomName();
   this.status = 'waiting';
   this.amount = args.amount;
+  this.bet = 0;
 }
 
 module.exports = {

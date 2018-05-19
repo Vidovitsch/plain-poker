@@ -7,7 +7,7 @@ import Lobby from './components/Lobby/Lobby';
 const PlainPoker = () => (
   <Switch className="PlainPoker">
     <Route exact path="/" component={Lobby} />
-    <Route path="/game/:id/:sessionId" component={Game} />
+    <Route path="/game" component={Game} />
   </Switch>
 );
 

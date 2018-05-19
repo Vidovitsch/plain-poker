@@ -50,14 +50,21 @@ class Lobby extends React.Component {
   createTable(options) {
     this.ipcRenderer.send('create-table-request', options);
     this.ipcRenderer.on('create-table-reply', (e, data) => {
-      this.props.history.push(`/game/${data.tableId}/${data.sessionId}`); // eslint-disable-line
+      this.goToGameView(data);
     });
   }
 
   joinTable(tableId) {
     this.ipcRenderer.send('join-table-request', tableId);
     this.ipcRenderer.on('join-table-reply', (e, data) => {
-      this.props.history.push(`/game/${data.tableId}/${data.sessionId}`); // eslint-disable-line
+      this.goToGameView(data);
+    });
+  }
+
+  goToGameView(table) {
+    this.props.history.push({ // eslint-disable-line
+      pathname: '/game',
+      state: { table },
     });
   }
 
