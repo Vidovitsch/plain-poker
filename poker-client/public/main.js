@@ -14,8 +14,8 @@ const sessionId = uuidv4();
 
 let mainWindow;
 
-const enterGame = function enterGame(tableId) {
-  const gameHandler = GameHandler.getInstance(sessionId, tableId);
+const enterGame = function enterGame(tableId, tableLocation) {
+  const gameHandler = GameHandler.getInstance(sessionId, tableId, tableLocation);
   if (gameHandler.start(gatewayProvider, ipcMain, 'default')) {
     logger.info(`Game client services started successfully => ${tableId}`);
   } else {

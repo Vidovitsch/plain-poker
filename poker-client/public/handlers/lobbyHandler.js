@@ -83,7 +83,7 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
           logger.error(result);
         } else {
           logger.info('Disconnected from lobby');
-          this.enterGame(data.id);
+          this.enterGame({ tableId: data.id, tableLocation: data.location });
         }
       }
     }).catch((err) => {

@@ -9,9 +9,10 @@ let instance = null;
  * @param       {String} tableId   [description]
  * @constructor
  */
-function GameHandler(sessionId, tableId) {
+function GameHandler(sessionId, tableId, tableLocation) {
   this.sessionId = sessionId;
   this.tableId = tableId;
+  this.tableLocation = tableLocation;
   this.tableGameAmqpGateway = null;
 }
 
@@ -56,12 +57,12 @@ module.exports = {
    * @return {GameHandler}           [description]
    * @return {Error}           [description]
    */
-  getInstance(sessionId, tableId) {
+  getInstance(sessionId, tableId, tableLocation) {
     if (!instance) {
-      if (!sessionId || !tableId) {
+      if (!sessionId || !tableId || !tableLocation) {
         return new Error('Invalid argument(s)');
       }
-      instance = new GameHandler(sessionId, tableId);
+      instance = new GameHandler(sessionId, tableId, tableLocation);
     }
     return instance;
   },

@@ -9,7 +9,7 @@ const randomName = require('node-random-name');
 function Table(options) {
   // Meta data (static)
   this.id = uuidv4();
-  this.sendTo = `table_${this.id}`;
+  this.location = `table_${this.id}`;
   this.timestamp = new Date();
 
   // Table data (static)

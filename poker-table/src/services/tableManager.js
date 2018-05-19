@@ -97,9 +97,9 @@ T.findTableByName = function findTableByName(name) {
  * @param {String} tableId  [description]
  * @param {String} dealerId [description]
  */
-T.setDealer = function setDealer(tableId, dealerId) {
+T.setDealer = function setDealer(tableId, dealer) {
   const existingTable = this.tables[tableId];
-  existingTable.table.dealer = dealerId;
+  existingTable.table.dealer = dealer;
 };
 
 module.exports = {

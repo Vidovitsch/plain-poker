@@ -52,9 +52,9 @@ L.startCreateTableHandler = function startCreateTableHandler(channelKey) {
         newTable = table;
         logger.info('Send request: create-dealer-request');
         return this.dealerAmqpGateway.sendCreateDealerRequestAsync(table.id);
-      }).then((replyMessage) => {
-        logger.info(`Received reply: ${replyMessage.context}`);
-        this.tableManager.setDealer(newTable.id, replyMessage.data.dealerId);
+      }).then(({ context, data }) => {
+        logger.info(`Received reply: ${context}`);
+        this.tableManager.setDealer(newTable.id, data);
         this.clientAmqpGateway.sendCreateTableReplyAsync(newTable, requestMessage).then((postedMessage) => {
           logger.info(`Reply sent: ${postedMessage.context} [correlationId:${postedMessage.correlationId}]`);
         }).catch((ex) => {

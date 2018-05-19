@@ -30,7 +30,7 @@ D.createDealerAsync = function createDealerAsync(tableId) {
     const gameService = GameService.createInstance(dealer, this.removeDealer);
     gameService.startAsync(this.gatewayProvider).then(() => {
       this.dealers[dealer.id] = gameService;
-      resolve(dealer.id);
+      resolve(dealer);
     }).catch((err) => {
       reject(err);
     });
