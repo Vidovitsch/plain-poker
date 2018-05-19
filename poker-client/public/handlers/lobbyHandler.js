@@ -8,11 +8,12 @@ let instance = null;
  * @param       {String} sessionId [description]
  * @constructor
  */
-function LobbyHandler(sessionId) {
+function LobbyHandler(sessionId, enterGameFunc) {
   this.sessionId = sessionId;
   this.isConnected = false;
   this.lobbySocketGateway = null;
   this.tableAmqpGateway = null;
+  this.enterGame = enterGameFunc;
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
 }
 
@@ -68,19 +69,21 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
  * @return {Boolean}         [description]
  */
 L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
-  ipcMain.on('create-table-request', (e, data) => {
+  ipcMain.on('create-table-request', (e, tableOptions) => {
     logger.info('Send request: create-table-request');
-    this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, data).then((replyMessage) => {
-      logger.info(`Reply received: ${replyMessage.context}`);
-      if (replyMessage.hasErrors) {
-        logger.error(replyMessage.data);
+    this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, tableOptions).then((replyMessage) => {
+      const { data, context, hasErrors } = replyMessage;
+      logger.info(`Reply received: ${context}`);
+      if (hasErrors) {
+        logger.error(data);
       } else {
-        e.sender.send('create-table-reply', replyMessage.data);
+        e.sender.send('create-table-reply', data);
         const result = this.disconnectFromLobby();
         if (result instanceof Error) {
           logger.error(result);
         } else {
           logger.info('Disconnected from lobby');
+          this.enterGame(data.id);
         }
       }
     }).catch((err) => {
@@ -108,6 +111,7 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
           logger.error(result);
         } else {
           logger.log('Disconnected from lobby');
+          this.enterGame(data.id);
         }
       }
     }).catch((err) => {
@@ -188,12 +192,12 @@ module.exports = {
    * @param  {String} sessionId [description]
    * @return {LobbyHandler}           [description]
    */
-  getInstance(sessionId) {
+  getInstance(sessionId, enterGameFunc) {
     if (!instance) {
-      if (!sessionId) {
+      if (!sessionId || !enterGameFunc) {
         throw new Error('Invalid argument(s)');
       }
-      instance = new LobbyHandler(sessionId);
+      instance = new LobbyHandler(sessionId, enterGameFunc);
     }
     return instance;
   },

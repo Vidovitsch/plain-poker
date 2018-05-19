@@ -7,15 +7,25 @@ const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 const LobbyHandler = require('./handlers/lobbyHandler');
+const GameHandler = require('./handlers/gameHandler');
 
 // in-memory session
 const sessionId = uuidv4();
 
 let mainWindow;
 
+const enterGame = function enterGame(tableId) {
+  const gameHandler = GameHandler.getInstance(sessionId, tableId);
+  if (gameHandler.start(gatewayProvider, ipcMain, 'default')) {
+    logger.info(`Game client services started successfully => ${tableId}`);
+  } else {
+    logger.warn('Not all game client services have been started correctly');
+  }
+};
+
 // One connection with one channel for every action in lobby
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  const lobbyHandler = LobbyHandler.getInstance(sessionId);
+  const lobbyHandler = LobbyHandler.getInstance(sessionId, enterGame);
   if (lobbyHandler.start(gatewayProvider, ipcMain)) {
     logger.info(`Client services started successfully => 127.0.0.1:${process.env.PORT}`);
     lobbyHandler.connectToLobbyAsync().then(() => {
