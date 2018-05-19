@@ -72,12 +72,12 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
     logger.info('Send request: create-table-request');
     this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, data).then((replyMessage) => {
       logger.info(`Reply received: ${replyMessage.context}`);
-      if (replyMessage.type === 'error') {
-        logger.error(replyMessage.error);
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
       } else {
         e.sender.send('create-table-reply', {
           sessionId: this.sessionId,
-          tableId: replyMessage.data.id,
+          tableId: replyMessage.data.tableId,
         });
         const result = this.disconnectFromLobby();
         if (result instanceof Error) {
