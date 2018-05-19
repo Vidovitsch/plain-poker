@@ -1,3 +1,5 @@
+const logger = require('./../util/logger');
+
 /**
  * [GameHandler description]
  * @param       {GameService} gameService [description]
@@ -5,6 +7,7 @@
  */
 function GameHandler(gameService) {
   this.gameService = gameService;
+  this.tableGameAmqpGateway = null;
 }
 
 const G = GameHandler.prototype;
@@ -16,7 +19,28 @@ const G = GameHandler.prototype;
  * @return {Boolean}                 [description]
  */
 G.start = function start(gatewayProvider, channelKey) {
-  // TODO:
+  if (this.checkTableGameAmqpGateway(gatewayProvider)) {
+    // TODO:
+    return true;
+  }
+  return false;
+};
+
+/**
+ * [checkTableGameAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider) {
+  if (!this.clientGameAmqpGateway) {
+    const result = gatewayProvider.getTableGameGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.clientGameAmqpGateway = result;
+  }
+  return true;
 };
 
 module.exports = {

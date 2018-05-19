@@ -1,23 +1,67 @@
+const logger = require('./../util/logger');
+
 // singleton support
 let instance = null;
 
 /**
- * [gameHandler description]
- * @return {[type]} [description]
+ * [GameHandler description]
+ * @param       {String} sessionId [description]
+ * @param       {String} tableId   [description]
+ * @constructor
  */
-function GameHandler() {
-  // // TODO:
+function GameHandler(sessionId, tableId) {
+  this.sessionId = sessionId;
+  this.tableId = tableId;
+  this.tableGameAmqpGateway = null;
 }
+
+const G = GameHandler.prototype;
+
+/**
+ * [start description]
+ * @param  {Object} gatewayProvider [description]
+ * @param  {String} channelKey      [description]
+ * @return {Boolean}                 [description]
+ */
+G.start = function start(gatewayProvider, channelKey) {
+  if (this.checkTableGameAmqpGateway(gatewayProvider)) {
+    // TODO:
+    return true;
+  }
+  return false;
+};
+
+/**
+ * [checkTableGameAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider) {
+  if (!this.tableGameAmqpGateway) {
+    const result = gatewayProvider.getTableGameGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.tableGameAmqpGateway = result;
+  }
+  return true;
+};
 
 module.exports = {
   /**
    * [getInstance description]
-   * @param  {[type]} lobbyManager [description]
-   * @return {[type]}              [description]
+   * @param  {String} sessionId [description]
+   * @param  {String} tableId   [description]
+   * @return {GameHandler}           [description]
+   * @return {Error}           [description]
    */
-  getInstance(lobbyManager) {
+  getInstance(sessionId, tableId) {
     if (!instance) {
-      instance = new GameHandler(lobbyManager);
+      if (!sessionId || !tableId) {
+        return new Error('Invalid argument(s)');
+      }
+      instance = new GameHandler(sessionId, tableId);
     }
     return instance;
   },
