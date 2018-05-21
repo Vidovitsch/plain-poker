@@ -35,10 +35,19 @@ class Game extends React.Component {
   }
 
   leaveGame() {
-    Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet', (isConfirmed) => {
+    Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet!', (isConfirmed) => {
       if (isConfirmed) {
-        this.ipcRenderer.send('leave-game');
+        this.ipcRenderer.send('leave-game-request', 'dummy');
+        this.ipcRenderer.on('leave-game-reply', (e, replyData) => {
+          this.goToLobbyView();
+        });
       }
+    });
+  }
+
+  goToLobbyView() {
+    this.props.history.push({ // eslint-disable-line
+      pathname: '/',
     });
   }
 

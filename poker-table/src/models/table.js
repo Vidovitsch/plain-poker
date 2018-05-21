@@ -6,7 +6,7 @@ const randomName = require('node-random-name');
  * @param       {Object} options [description]
  * @constructor
  */
-function Table(options) {
+function Table(ownerId, options) {
   // Meta data (static)
   this.id = uuidv4();
   this.location = `table_${this.id}`;
@@ -22,12 +22,14 @@ function Table(options) {
   // Table data (variable)
   this.status = 'waiting';
 
-  // Game data (variable)
+  // Game data (variable)]
+  this.ownerId = ownerId;
   this.gameNo = 0;
   this.roundNo = 0;
   this.turnNo = 0;
   this.dealer = '';
   this.players = [];
+  this.bets = {};
   this.smallBlind = '';
   this.bigBlind = '';
   this.communityCards = [];
@@ -39,8 +41,12 @@ module.exports = {
    * [createInstance description]
    * @param  {Object} options [description]
    * @return {Table}         [description]
+   * @return {Error}         [description]
    */
-  createInstance(options) {
-    return new Table(options);
+  createInstance(ownerId, options) {
+    if (!ownerId) {
+      throw new Error('Invalid argument(s)');
+    }
+    return new Table(ownerId, options);
   },
 };

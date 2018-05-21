@@ -1,7 +1,7 @@
 const logger = require('./../util/logger');
 const HandSolver = require('./../util/handSolver');
 const GameHandler = require('./../handlers/gameHandler');
-const player = require('./../models/player');
+const Player = require('./../models/player');
 
 /**
  * [GameService description]
@@ -25,7 +25,7 @@ G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
     gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
       const gameHandler = GameHandler.createInstance(this);
-      if (gameHandler.start(gatewayProvider, this.table.id)) {
+      if (gameHandler.start(gatewayProvider, this.table.id, this.table.location)) {
         logger.info(`Game table services started successfully => ${this.table.id}`);
       } else {
         logger.warn('Not all game table services have been started correctly');
@@ -47,7 +47,7 @@ G.addPlayer = function addPlayer(sessionId) {
   const { players } = this.table;
   const existingPlayer = players.find(p => p.sessionId === sessionId);
   if (!existingPlayer) {
-    players.push(player.createInstance({
+    players.push(Player.createInstance({
       sessionId,
       amount: this.table.startupAmount,
     }));
@@ -63,15 +63,15 @@ G.addPlayer = function addPlayer(sessionId) {
  * @return {Error}           [description]
  */
 G.removePlayer = function removePlayer(sessionId) {
-  const { players } = this.table;
-  const existingPlayer = players.find(p => p.sessionId === sessionId);
-  if (existingPlayer) {
-    // Remove player
-    const index = players.indexOf(existingPlayer);
-    players.splice(index, 1);
-    // Remove if table is empty
+  const { players, id } = this.table;
+  let { ownerId } = this.table;
+  const player = players.find(p => p.id === sessionId);
+  if (player) {
+    players.splice(players.indexOf(player), 1);
     if (players.length === 0) {
-      this.removeTableFunc(this.table.id);
+      this.removeTable(id);
+    } else if (ownerId === sessionId) {
+      ownerId = players[0].id;
     }
     return true;
   }

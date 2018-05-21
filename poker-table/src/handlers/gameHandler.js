@@ -18,12 +18,29 @@ const G = GameHandler.prototype;
  * @param  {String} channelKey      [description]
  * @return {Boolean}                 [description]
  */
-G.start = function start(gatewayProvider, channelKey) {
+G.start = function start(gatewayProvider, channelKey, receiveFrom) {
   if (this.checkClientGameAmqpGateway(gatewayProvider)) {
-    // TODO:
+    this.startLeaveGameHandler(channelKey, receiveFrom);
     return true;
   }
   return false;
+};
+
+/**
+ * [startLeaveGameHandler description]
+ * @param  {String} channelKey [description]
+ */
+G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom) {
+  this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, receiveFrom, (err, requestMessage) => {
+    const { sessionId } = requestMessage.data;
+    const result = this.gameService.removePlayer(sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    }
+    this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage).catch((ex) => {
+      logger.error(ex);
+    });
+  });
 };
 
 /**

@@ -38,10 +38,8 @@ C.start = function start(gatewayProvider, channelKey) {
  */
 C.startLobbyUpdateHandler = function startLobbyUpdateHandler(channelKey) {
   this.tableAmqpGateway.onLobbyUpdate(channelKey, (err, message) => {
-    logger.info(`Lobby update received: ${message.context} [tableId:${message.data.id}]`);
     this.lobbyManager.handleUpdate(message.data);
     this.clientSocketGateway.broadcastLobbyUpdate(this.lobbyManager.lobby);
-    logger.info(`Lobby update broadcasted: ${message.context}`);
   });
 };
 
@@ -50,15 +48,11 @@ C.startLobbyUpdateHandler = function startLobbyUpdateHandler(channelKey) {
  */
 C.startLobbyRequestHandler = function startLobbyRequestHandler() {
   this.clientSocketGateway.onClientConnected((client) => {
-    logger.info(`Client connected: ${client.id}`);
     this.clientSocketGateway.onClientDisconnected(client, () => {
-      logger.info(`Client diconnected: ${client.id}`);
     });
     this.clientSocketGateway.onLobbyRequest(client, (requestMessage) => {
-      logger.info(`Request received: ${requestMessage.context} [correlationId:${requestMessage.correlationId}]`);
       const { lobby } = this.lobbyManager;
-      const replyMessage = this.clientSocketGateway.sendLobbyReply(client, lobby, requestMessage);
-      logger.info(`Reply sent: ${replyMessage.context} [correlationId:${replyMessage.correlationId}]`);
+      this.clientSocketGateway.sendLobbyReply(client, lobby, requestMessage);
     });
   });
 };

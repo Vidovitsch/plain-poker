@@ -38,14 +38,10 @@ G.startCreateDealerHandler = function startCreateDealerHanlder(channelKey) {
     if (err) {
       logger.error(err);
     } else {
-      logger.info(`Request received: ${requestMessage.context} [correlationId:${requestMessage.correlationId}]`);
       // eslint-disable-next-line arrow-body-style
       this.dealerManager.createDealerAsync(requestMessage.data.tableId).then(({ id, location }) => {
         // Send the id of the dealer as a reply to the requester
-        logger.info(`Dealer created [id:${id}]`);
         return this.tableAmqpGateway.sendCreateDealerReplyAsync({ id, location }, requestMessage);
-      }).then((replyMessage) => {
-        logger.info(`Reply sent: ${replyMessage.context} [correlationId:${replyMessage.correlationId}]`);
       }).catch((e) => {
         logger.error(e);
       });

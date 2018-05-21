@@ -70,10 +70,8 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
  */
 L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
   ipcMain.on('create-table-request', (e, tableOptions) => {
-    logger.info('Send request: create-table-request');
     this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, tableOptions).then((replyMessage) => {
       const { data, context, hasErrors } = replyMessage;
-      logger.info(`Reply received: ${context}`);
       if (hasErrors) {
         logger.error(data);
       } else {
@@ -82,7 +80,6 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
         if (result instanceof Error) {
           logger.error(result);
         } else {
-          logger.info('Disconnected from lobby');
           this.enterGame(data.id, data.location);
         }
       }
@@ -98,8 +95,8 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
  * @return {Boolean}         [description]
  */
 L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
+  logger.info('Request send: join-table-request');
   ipcMain.on('join-table-request', (e, data) => {
-    logger.info('Request sent: join-table-request');
     this.tableAmqpGateway.sendJoinTableRequestAsync(this.sessionId, data).then((replyMessage) => {
       logger.info(`Reply received: ${replyMessage.context}`);
       if (replyMessage.type === 'error') {
@@ -110,7 +107,6 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
         if (result instanceof Error) {
           logger.error(result);
         } else {
-          logger.log('Disconnected from lobby');
           this.enterGame(data.id, data.location);
         }
       }

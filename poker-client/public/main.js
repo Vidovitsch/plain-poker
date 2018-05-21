@@ -15,7 +15,6 @@ const sessionId = uuidv4();
 let mainWindow;
 
 const enterGame = function enterGame(tableId, tableLocation) {
-  console.log(tableId);
   const gameHandler = GameHandler.getInstance(sessionId, tableId, tableLocation);
   if (gameHandler.start(gatewayProvider, ipcMain, 'default')) {
     logger.info(`Game client services started successfully => ${tableId}`);
@@ -28,9 +27,7 @@ const enterGame = function enterGame(tableId, tableLocation) {
 gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   const lobbyHandler = LobbyHandler.getInstance(sessionId, enterGame);
   if (lobbyHandler.start(gatewayProvider, ipcMain)) {
-    logger.info(`Client services started successfully => 127.0.0.1:${process.env.PORT}`);
     lobbyHandler.connectToLobbyAsync().then(() => {
-      logger.info('Client has successfully connected with the lobby');
     }).catch((err) => {
       logger.error(err);
     });
@@ -73,5 +70,5 @@ app.on('activate', () => {
 });
 
 process.on('uncaughtException', (err) => {
-  logger.infor(`Uncaught exception: ${err}`);
+  logger.info(`Uncaught exception: ${err}`);
 });

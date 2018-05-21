@@ -13,6 +13,7 @@ function TableManager(gatewayProvider) {
   // Key value pairs of table id and gameServices
   this.tables = {};
   this.gatewayProvider = gatewayProvider;
+  this.removeTable = this.removeTable.bind(this);
 }
 
 const T = TableManager.prototype;
@@ -31,7 +32,7 @@ T.createTableAsync = function createTableAsync(options, sessionId) {
       reject(new Error(`Table name '${existingTable.name}' already exists`));
     }
     // Create new instance of table
-    const table = Table.createInstance(options);
+    const table = Table.createInstance(sessionId, options);
     const gameService = GameService.createInstance(table, this.removeTable);
 
     // Start the gameservice for the specified table and add first player
@@ -73,6 +74,8 @@ T.joinTable = function joinTable(tableId, sessionId) {
  * @param  {String} tableId [description]
  */
 T.removeTable = function removeTable(tableId) {
+  console.log(`tableId: ${tableId}`);
+  console.log(`table: ${this.tables[tableId]}`);
   delete this.tables[tableId];
 };
 

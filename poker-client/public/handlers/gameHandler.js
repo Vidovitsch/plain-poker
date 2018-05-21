@@ -27,9 +27,28 @@ const G = GameHandler.prototype;
  */
 G.start = function start(gatewayProvider, ipcMain, channelKey) {
   if (this.checkTableGameAmqpGateway(gatewayProvider)) {
+    this.startLeaveGameHandler(ipcMain);
     return true;
   }
   return false;
+};
+
+/**
+ * [startLeaveGameHandler description]
+ * @param  {IpcMain} ipcMain [description]
+ */
+G.startLeaveGameHandler = function startLeaveGameHandler(ipcMain) {
+  const context = 'leave-game-request';
+  ipcMain.on(context, (e, data) => {
+    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, this.tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+      e.sender.send('leave-game-reply', replyMessage.data);
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
 };
 
 /**

@@ -45,20 +45,12 @@ L.startCreateTableHandler = function startCreateTableHandler(channelKey) {
     if (err) {
       logger.error(err);
     } else {
-      logger.info(`Request received: ${requestMessage.context} [correlationId:${requestMessage.correlationId}]`);
       this.tableManager.createTableAsync(requestMessage.data.options, requestMessage.data.sessionId).then((table) => {
-        logger.info(`Table created [id:${table.id}]`);
-        // To make is accessable in other 'then' blocks
         newTable = table;
-        logger.info('Send request: create-dealer-request');
         return this.dealerAmqpGateway.sendCreateDealerRequestAsync(table.id);
-      }).then(({ context, data }) => {
-        logger.info(`Received reply: ${context}`);
-        this.tableManager.setDealer(newTable.id, data);
-        this.clientAmqpGateway.sendCreateTableReplyAsync(newTable, requestMessage).then((postedMessage) => {
-          console.log(newTable);
-          logger.info(`Reply sent: ${postedMessage.context} [correlationId:${postedMessage.correlationId}]`);
-        }).catch((ex) => {
+      }).then((replyMessage) => {
+        this.tableManager.setDealer(newTable.id, replyMessage.data);
+        this.clientAmqpGateway.sendCreateTableReplyAsync(newTable, requestMessage).catch((ex) => {
           logger.error(ex);
         });
         this.sendUpdateToLobby(newTable);
@@ -78,14 +70,11 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
     if (err) {
       logger.error(err);
     } else {
-      logger.info(`Request received: ${requestMessage.context} [correlationId:${requestMessage.correlationId}]`);
       const table = this.tableManager.joinTable(requestMessage.data.tableId, requestMessage.data.sessionId);
       if (table instanceof Error) {
         logger.error(table);
       } else {
-        this.clientAmqpGateway.sendJoinTableReplyAsync(table, requestMessage).then((postedMessage) => {
-          logger.info(`Reply sent: ${postedMessage.context} [correlationId:${postedMessage.correlationId}]`);
-        }).catch((ex) => {
+        this.clientAmqpGateway.sendJoinTableReplyAsync(table, requestMessage).catch((ex) => {
           logger.error(ex);
         });
         this.sendUpdateToLobby(table);
@@ -100,9 +89,7 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
  */
 L.sendUpdateToLobby = function sendUpdateToLobby(table) {
   const tableItem = TableItem.createInstance(table);
-  this.lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).then((postedMessage) => {
-    logger.info(`Lobby update sent: ${postedMessage.context}`);
-  }).catch((ex) => {
+  this.lobbyAmqpGateway.sendLobbyUpdateAsync(tableItem).catch((ex) => {
     logger.error(ex);
   });
 };
