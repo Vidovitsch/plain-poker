@@ -9,42 +9,47 @@ let instance = null;
  * @param       {String} tableId   [description]
  * @constructor
  */
-function GameHandler(sessionId, tableId, tableLocation) {
-  this.sessionId = sessionId;
-  this.tableId = tableId;
-  this.tableLocation = tableLocation;
+function GameHandler(args) {
+  this.sessionId = args.sessionId;
+  this.gatewayProvider = args.gatewayProvider;
+  this.ipcMain = args.ipcMain;
+  this.connectionKey = args.connectionKey;
+  this.channelKey = args.channelKey;
+  this.switchHandlers = args.switchHanldersFunc;
   this.tableGameAmqpGateway = null;
 }
 
 const G = GameHandler.prototype;
 
-/**
- * [start description]
- * @param  {Object} gatewayProvider [description]
- * @param  {IpcMain} ipcMain         [description]
- * @param  {String} channelKey      [description]
- * @return {Boolean}                 [description]
- */
-G.start = function start(gatewayProvider, ipcMain, channelKey) {
-  if (this.checkTableGameAmqpGateway(gatewayProvider)) {
-    this.startLeaveGameHandler(ipcMain);
-    return true;
-  }
-  return false;
+G.startAsync = function startAsync(tableId, tableLocation) {
+  return new Promise((resolve, reject) => {
+    if (this.checkTableGameAmqpGateway()) {
+      this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => {
+        this.startLeaveGameHandler(tableLocation);
+        resolve();
+      }).catch((err) => {
+        reject(err);
+      });
+    } else {
+      reject();
+    }
+  });
 };
 
 /**
  * [startLeaveGameHandler description]
  * @param  {IpcMain} ipcMain [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(ipcMain) {
+G.startLeaveGameHandler = function startLeaveGameHandler(tableLocation) {
   const context = 'leave-game-request';
-  ipcMain.on(context, (e, data) => {
-    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, this.tableLocation).then((replyMessage) => {
+  this.ipcMain.on(context, (e) => {
+    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }
       e.sender.send('leave-game-reply', replyMessage.data);
+      this.stop();
+      this.switchHandlers();
     }).catch((err) => {
       logger.error(err);
     });
@@ -56,9 +61,9 @@ G.startLeaveGameHandler = function startLeaveGameHandler(ipcMain) {
  * @param  {Object} gatewayProvider [description]
  * @return {Boolean}                 [description]
  */
-G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider) {
+G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway() {
   if (!this.tableGameAmqpGateway) {
-    const result = gatewayProvider.getTableGameGateway('amqp');
+    const result = this.gatewayProvider.getTableGameGateway('amqp');
     if (result instanceof Error) {
       logger.error(result);
       return false;
@@ -68,8 +73,8 @@ G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider
   return true;
 };
 
-G.close = function close() {
-
+G.stop = function stop() {
+  this.gatewayProvider.closeSharedChannel(this.channelKey);
 };
 
 module.exports = {
@@ -80,12 +85,12 @@ module.exports = {
    * @return {GameHandler}           [description]
    * @return {Error}           [description]
    */
-  getInstance(sessionId, tableId, tableLocation) {
+  getInstance(args) {
     if (!instance) {
-      if (!sessionId || !tableId || !tableLocation) {
+      if (!args) {
         return new Error('Invalid argument(s)');
       }
-      instance = new GameHandler(sessionId, tableId, tableLocation);
+      instance = new GameHandler(args);
     }
     return instance;
   },

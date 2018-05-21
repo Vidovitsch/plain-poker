@@ -23,7 +23,7 @@ const G = GameHandler.prototype;
 G.start = function start(gatewayProvider, channelKey, receiveFrom) {
   if (this.checkClientGameAmqpGateway(gatewayProvider) &&
       this.checkLobbyAmqpGateway(gatewayProvider)) {
-    this.startLeaveGameHandler(channelKey, receiveFrom);
+    this.startLeaveGameHandler(channelKey, receiveFrom, gatewayProvider);
     return true;
   }
   return false;
@@ -33,7 +33,7 @@ G.start = function start(gatewayProvider, channelKey, receiveFrom) {
  * [startLeaveGameHandler description]
  * @param  {String} channelKey [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom) {
+G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom, gatewayProvider) {
   this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, receiveFrom, (err, requestMessage) => {
     const { sessionId } = requestMessage.data;
     const result = this.gameService.removePlayer(sessionId);
@@ -41,7 +41,7 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom
       logger.error(result);
     }
     this.sendLobbyUpdateAsync('delete', this.gameService.table).then(() => this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage)).then(() => {
-      // TODO:
+      gatewayProvider.closeSharedChannel(this.gameService.table.id);
     }).catch((ex) => {
       logger.error(ex);
     });

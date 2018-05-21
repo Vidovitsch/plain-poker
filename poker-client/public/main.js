@@ -6,36 +6,21 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
-const LobbyHandler = require('./handlers/lobbyHandler');
-const GameHandler = require('./handlers/gameHandler');
+const HandlerSwitch = require('./util/handlerSwitch');
 
 // in-memory session
 const sessionId = uuidv4();
 
 let mainWindow;
 
-const enterGame = function enterGame(tableId, tableLocation) {
-  const gameHandler = GameHandler.getInstance(sessionId, tableId, tableLocation);
-  if (gameHandler.start(gatewayProvider, ipcMain, 'default')) {
-    logger.info(`(client) Game services started successfully => [table:${tableId}]`);
-  } else {
-    logger.warn('(client) Not all game services have been started correctly');
-  }
-};
-
-// One connection with one channel for every action in lobby
-gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
-  const lobbyHandler = LobbyHandler.getInstance(sessionId, enterGame);
-  if (lobbyHandler.start(gatewayProvider, ipcMain)) {
-    lobbyHandler.connectToLobbyAsync().then(() => {
-      logger.info('(client) Services started successfully');
-    }).catch((err) => {
-      logger.error(err);
-    });
-  } else {
-    logger.warn('(client) Not all services have been started correctly');
-  }
-});
+HandlerSwitch.getInstance({
+  sessionId,
+  gatewayProvider,
+  ipcMain,
+  connectionKey: 'default',
+  channelKeyLobby: 'lobby',
+  channelKeyGame: 'game',
+}).initLobby();
 
 /**
  * [createWindow description]

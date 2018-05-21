@@ -8,13 +8,20 @@ let instance = null;
  * @param       {String} sessionId [description]
  * @constructor
  */
-function LobbyHandler(sessionId, enterGameFunc) {
-  this.sessionId = sessionId;
-  this.isConnected = false;
+function LobbyHandler(args) {
+  this.sessionId = args.sessionId;
+  this.gatewayProvider = args.gatewayProvider;
+  this.ipcMain = args.ipcMain;
+  this.connectionKey = args.connectionKey;
+  this.channelKey = args.channelKey;
+  this.switchHandlers = args.switchHanldersFunc;
+  this.inGame = false;
+
   this.lobbySocketGateway = null;
   this.tableAmqpGateway = null;
-  this.enterGame = enterGameFunc;
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
+  this.startLobbyRequestHandler = this.startLobbyRequestHandler.bind(this);
+  this.startCreateTableHandler = this.startCreateTableHandler.bind(this);
 }
 
 const L = LobbyHandler.prototype;
@@ -25,29 +32,37 @@ const L = LobbyHandler.prototype;
  * @param  {IpcMain} ipcMain         [description]
  * @return {Boolean}                 [description]
  */
-L.start = function start(gatewayProvider, ipcMain) {
-  if (this.checkTableAmqpGateway(gatewayProvider) &&
-      this.checkLobbySocketGateway(gatewayProvider)) {
-    this.startLobbyRequestHandler(ipcMain);
-    this.startCreateTableHandler(ipcMain);
-    this.startJoinTableHandler(ipcMain);
-    return true;
-  }
-  return false;
+L.startAsync = function startAsync() {
+  return new Promise((resolve, reject) => {
+    if (this.checkTableAmqpGateway() && this.checkLobbySocketGateway()) {
+      this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => this.connectToLobbyAsync()).then(() => {
+        this.startLobbyRequestHandler();
+        this.startCreateTableHandler();
+        this.startJoinTableHandler();
+        resolve();
+      }).catch((err) => {
+        reject(err);
+      });
+    } else {
+      reject();
+    }
+  });
 };
 
 /**
  * [startLobbyRequestHandler description]
  * @param  {IpcMain} ipcMain [description]
  */
-L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
-  ipcMain.on('lobby-request', (e) => {
+L.startLobbyRequestHandler = function startLobbyRequestHandler() {
+  this.ipcMain.on('lobby-request', (e) => {
     this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
       this.lobbySocketGateway.onLobbyUpdate((err, message) => {
-        if (err) {
-          logger.error(err);
-        } else {
-          e.sender.send('lobby-update', message.data.tableItems);
+        if (!this.inGame) {
+          if (err) {
+            logger.error(err);
+          } else {
+            e.sender.send('lobby-update', message.data.tableItems);
+          }
         }
       });
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
@@ -62,10 +77,10 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
  * @param  {IpcMain} ipcMain [description]
  * @return {Boolean}         [description]
  */
-L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
-  ipcMain.on('create-table-request', (e, tableOptions) => {
+L.startCreateTableHandler = function startCreateTableHandler() {
+  this.ipcMain.on('create-table-request', (e, tableOptions) => {
     this.tableAmqpGateway.sendCreateTableRequestAsync(this.sessionId, tableOptions).then((replyMessage) => {
-      const { data, context, hasErrors } = replyMessage;
+      const { data, hasErrors } = replyMessage;
       if (hasErrors) {
         logger.error(data);
       } else {
@@ -74,7 +89,8 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
         if (result instanceof Error) {
           logger.error(result);
         } else {
-          this.enterGame(data.id, data.location);
+          this.inGame = true;
+          this.switchHandlers(data);
         }
       }
     }).catch((err) => {
@@ -88,8 +104,8 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
  * @param  {IpcMain} ipcMain [description]
  * @return {Boolean}         [description]
  */
-L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
-  ipcMain.on('join-table-request', (e, data) => {
+L.startJoinTableHandler = function startJoinTableHandler() {
+  this.ipcMain.on('join-table-request', (e, data) => {
     this.tableAmqpGateway.sendJoinTableRequestAsync(this.sessionId, data).then((replyMessage) => {
       if (replyMessage.type === 'error') {
         logger.error(replyMessage.error);
@@ -99,7 +115,8 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
         if (result instanceof Error) {
           logger.error(result);
         } else {
-          this.enterGame(data.id, data.location);
+          this.inGame = true;
+          this.switchHandlers(replyMessage.data);
         }
       }
     }).catch((err) => {
@@ -113,16 +130,12 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
  * @return {Promise} [description]
  */
 L.connectToLobbyAsync = function connectToLobbyAsync() {
-  return new Promise((resolve, reject) => {
-    if (!this.isConnected) {
-      this.lobbySocketGateway.connect();
-      this.lobbySocketGateway.onConnected(() => {
-        this.isConnected = true;
-        resolve();
-      });
-    } else {
-      reject(new Error('Already connected to lobby'));
-    }
+  return new Promise((resolve) => {
+    this.lobbySocketGateway.connect();
+    this.lobbySocketGateway.onConnected(() => {
+      this.isConnected = true;
+      resolve();
+    });
   });
 };
 
@@ -132,12 +145,9 @@ L.connectToLobbyAsync = function connectToLobbyAsync() {
  * @return {Error} [description]
  */
 L.disconnectFromLobby = function disconnectFromLobby() {
-  if (this.isConnected) {
-    this.lobbySocketGateway.disconnect();
-    this.isConnected = false;
-    return true;
-  }
-  return new Error('Already disconnected from lobby');
+  this.lobbySocketGateway.disconnect();
+  this.isConnected = false;
+  return true;
 };
 
 /**
@@ -145,9 +155,9 @@ L.disconnectFromLobby = function disconnectFromLobby() {
  * @param  {Object} gatewayProvider [description]
  * @return {Boolean}                 [description]
  */
-L.checkTableAmqpGateway = function checkTableAmqpGateway(gatewayProvider) {
+L.checkTableAmqpGateway = function checkTableAmqpGateway() {
   if (!this.tableAmqpGateway) {
-    const result = gatewayProvider.getTableGateway('amqp');
+    const result = this.gatewayProvider.getTableGateway('amqp');
     if (result instanceof Error) {
       logger.error(result);
       return false;
@@ -162,9 +172,9 @@ L.checkTableAmqpGateway = function checkTableAmqpGateway(gatewayProvider) {
  * @param  {Object} gatewayProvider [description]
  * @return {Boolean}                 [description]
  */
-L.checkLobbySocketGateway = function checkLobbySocketGateway(gatewayProvider) {
+L.checkLobbySocketGateway = function checkLobbySocketGateway() {
   if (!this.lobbySocketGateway) {
-    const result = gatewayProvider.getLobbyGateway('ws');
+    const result = this.gatewayProvider.getLobbyGateway('ws');
     if (result instanceof Error) {
       logger.error(result);
       return false;
@@ -180,12 +190,12 @@ module.exports = {
    * @param  {String} sessionId [description]
    * @return {LobbyHandler}           [description]
    */
-  getInstance(sessionId, enterGameFunc) {
+  getInstance(args) {
     if (!instance) {
-      if (!sessionId || !enterGameFunc) {
+      if (!args) {
         throw new Error('Invalid argument(s)');
       }
-      instance = new LobbyHandler(sessionId, enterGameFunc);
+      instance = new LobbyHandler(args);
     }
     return instance;
   },
