@@ -36,8 +36,10 @@ class Lobby extends React.Component {
       this.setState({
         tableItems: data,
       });
-      const updatedTableItem = data.find(t => t.id === this.state.selectedTableItem.id);
-      this.setSelectedTableItem(updatedTableItem);
+      if (this.selectedTableItem) {
+        const updatedTableItem = data.find(t => t.id === this.state.selectedTableItem.id);
+        this.setSelectedTableItem(updatedTableItem);
+      }
     });
   }
 

@@ -56,6 +56,7 @@ L.startCreateTableHandler = function startCreateTableHandler(channelKey) {
         logger.info(`Received reply: ${context}`);
         this.tableManager.setDealer(newTable.id, data);
         this.clientAmqpGateway.sendCreateTableReplyAsync(newTable, requestMessage).then((postedMessage) => {
+          console.log(newTable);
           logger.info(`Reply sent: ${postedMessage.context} [correlationId:${postedMessage.correlationId}]`);
         }).catch((ex) => {
           logger.error(ex);

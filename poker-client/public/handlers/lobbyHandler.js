@@ -83,7 +83,7 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
           logger.error(result);
         } else {
           logger.info('Disconnected from lobby');
-          this.enterGame({ tableId: data.id, tableLocation: data.location });
+          this.enterGame(data.id, data.location);
         }
       }
     }).catch((err) => {
@@ -111,7 +111,7 @@ L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
           logger.error(result);
         } else {
           logger.log('Disconnected from lobby');
-          this.enterGame(data.id);
+          this.enterGame(data.id, data.location);
         }
       }
     }).catch((err) => {
