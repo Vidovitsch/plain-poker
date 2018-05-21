@@ -74,8 +74,6 @@ T.joinTable = function joinTable(tableId, sessionId) {
  * @param  {String} tableId [description]
  */
 T.removeTable = function removeTable(tableId) {
-  console.log(`tableId: ${tableId}`);
-  console.log(`table: ${this.tables[tableId]}`);
   delete this.tables[tableId];
 };
 

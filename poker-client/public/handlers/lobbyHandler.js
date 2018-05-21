@@ -42,20 +42,14 @@ L.start = function start(gatewayProvider, ipcMain) {
  */
 L.startLobbyRequestHandler = function startLobbyRequestHandler(ipcMain) {
   ipcMain.on('lobby-request', (e) => {
-    logger.info('Send request: lobby-request');
     this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
-      logger.info(`Reply received: ${replyMessage.context}`);
-
-      // Initialize listener for future lobby updates
       this.lobbySocketGateway.onLobbyUpdate((err, message) => {
         if (err) {
           logger.error(err);
         } else {
-          logger.info(`Lobby update received: ${message.context}`);
           e.sender.send('lobby-update', message.data.tableItems);
         }
       });
-
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
     }).catch((err) => {
       logger.log(err);
@@ -95,10 +89,8 @@ L.startCreateTableHandler = function startCreateTableHandler(ipcMain) {
  * @return {Boolean}         [description]
  */
 L.startJoinTableHandler = function startJoinTableHandler(ipcMain) {
-  logger.info('Request send: join-table-request');
   ipcMain.on('join-table-request', (e, data) => {
     this.tableAmqpGateway.sendJoinTableRequestAsync(this.sessionId, data).then((replyMessage) => {
-      logger.info(`Reply received: ${replyMessage.context}`);
       if (replyMessage.type === 'error') {
         logger.error(replyMessage.error);
       } else {

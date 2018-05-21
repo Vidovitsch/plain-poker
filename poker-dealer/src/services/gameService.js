@@ -1,5 +1,6 @@
 const DeckHelper = require('./../util/deckHelper');
 const GameHandler = require('./../handlers/gameHandler');
+const logger = require('./../util/logger');
 
 /**
  * [GameService description]
@@ -24,7 +25,11 @@ G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
     gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
       const gameHandler = GameHandler.createInstance(this);
-      gameHandler.start(gatewayProvider, this.dealer.id);
+      if (gameHandler.start(gatewayProvider, this.dealer.id)) {
+        logger.info(`(dealer) Game services started successfully => [table:${this.dealer.tableId}]`);
+      } else {
+        logger.warn('(dealer) Not all game services have been started correctly');
+      }
       resolve();
     }).catch((err) => {
       reject(err);

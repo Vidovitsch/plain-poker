@@ -11,9 +11,9 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   const dealerManager = DealerManager.getInstance(gatewayProvider);
   const tableHandler = TableHandler.getInstance(dealerManager);
   if (tableHandler.start(gatewayProvider, 'default')) {
-    logger.info(`Dealer services started successfully => 127.0.0.1:${process.env.PORT}`);
+    logger.info(`(dealer) Services started successfully => [port:${process.env.PORT}]`);
   } else {
-    logger.warn('Not all dealer services have been started correctly');
+    logger.warn('(dealer) Not all services have been started correctly');
   }
 }).catch((err) => {
   logger.error(err);

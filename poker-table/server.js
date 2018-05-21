@@ -12,9 +12,9 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   const tableManager = TableManager.getInstance(gatewayProvider);
   const lobbyHandler = LobbyHandler.getInstance(tableManager);
   if (lobbyHandler.start(gatewayProvider, 'default')) {
-    logger.info(`Table services started successfully => 127.0.0.1:${process.env.PORT}`);
+    logger.info(`(table) Services started successfully => [port:${process.env.PORT}]`);
   } else {
-    logger.warn('Not all table services have been started correctly');
+    logger.warn('(table) Not all services have been started correctly');
   }
 });
 

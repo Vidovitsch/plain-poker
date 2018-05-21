@@ -26,9 +26,9 @@ G.startAsync = function startAsync(gatewayProvider) {
     gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
       const gameHandler = GameHandler.createInstance(this);
       if (gameHandler.start(gatewayProvider, this.table.id, this.table.location)) {
-        logger.info(`Game table services started successfully => ${this.table.id}`);
+        logger.info(`(table) Game services started successfully => [table:${this.table.id}]`);
       } else {
-        logger.warn('Not all game table services have been started correctly');
+        logger.warn('(table) Not all game services have been started correctly');
       }
       resolve();
     }).catch((err) => {

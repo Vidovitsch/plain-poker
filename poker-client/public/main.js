@@ -17,9 +17,9 @@ let mainWindow;
 const enterGame = function enterGame(tableId, tableLocation) {
   const gameHandler = GameHandler.getInstance(sessionId, tableId, tableLocation);
   if (gameHandler.start(gatewayProvider, ipcMain, 'default')) {
-    logger.info(`Game client services started successfully => ${tableId}`);
+    logger.info(`(client) Game services started successfully => [table:${tableId}]`);
   } else {
-    logger.warn('Not all game client services have been started correctly');
+    logger.warn('(client) Not all game services have been started correctly');
   }
 };
 
@@ -28,9 +28,12 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   const lobbyHandler = LobbyHandler.getInstance(sessionId, enterGame);
   if (lobbyHandler.start(gatewayProvider, ipcMain)) {
     lobbyHandler.connectToLobbyAsync().then(() => {
+      logger.info('(client) Services started successfully');
     }).catch((err) => {
       logger.error(err);
     });
+  } else {
+    logger.warn('(client) Not all services have been started correctly');
   }
 });
 

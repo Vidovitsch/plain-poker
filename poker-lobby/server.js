@@ -10,9 +10,9 @@ gatewayProvider.createSharedChannelAsync('default', 'default').then(() => {
   const lobbyManager = LobbyManager.getInstance();
   const clientHandler = ClientHandler.getInstance(lobbyManager);
   if (clientHandler.start(gatewayProvider, 'default')) {
-    logger.info(`Lobby services started successfully => 127.0.0.1:${process.env.PORT}`);
+    logger.info(`(lobby) Services started successfully => [port:${process.env.PORT}]`);
   } else {
-    logger.warn('Not all lobby services have been started correctly');
+    logger.warn('(lobby) Not all services have been started correctly');
   }
 });
 
