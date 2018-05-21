@@ -1,4 +1,5 @@
 const logger = require('./../util/logger');
+const TableItem = require('./../models/tableItem');
 
 /**
  * [GameHandler description]
@@ -8,6 +9,7 @@ const logger = require('./../util/logger');
 function GameHandler(gameService) {
   this.gameService = gameService;
   this.clientGameAmqpGateway = null;
+  this.lobbyAmqpGateway = null;
 }
 
 const G = GameHandler.prototype;
@@ -19,7 +21,8 @@ const G = GameHandler.prototype;
  * @return {Boolean}                 [description]
  */
 G.start = function start(gatewayProvider, channelKey, receiveFrom) {
-  if (this.checkClientGameAmqpGateway(gatewayProvider)) {
+  if (this.checkClientGameAmqpGateway(gatewayProvider) &&
+      this.checkLobbyAmqpGateway(gatewayProvider)) {
     this.startLeaveGameHandler(channelKey, receiveFrom);
     return true;
   }
@@ -37,8 +40,25 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom
     if (result instanceof Error) {
       logger.error(result);
     }
-    this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage).catch((ex) => {
+    this.sendLobbyUpdateAsync('delete', this.gameService.table).then(() => this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage)).then(() => {
+      // TODO:
+    }).catch((ex) => {
       logger.error(ex);
+    });
+  });
+};
+
+/**
+ * [sendUpdateToLobby description]
+ * @param  {Table} table [description]
+ */
+G.sendLobbyUpdateAsync = function sendLobbyUpdateAsync(action, table) {
+  return new Promise((resolve, reject) => {
+    const tableItem = TableItem.createInstance(table);
+    this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, tableItem).then(() => {
+      resolve();
+    }).catch((ex) => {
+      reject(ex);
     });
   });
 };
@@ -56,6 +76,23 @@ G.checkClientGameAmqpGateway = function checkClientGameAmqpGateway(gatewayProvid
       return false;
     }
     this.clientGameAmqpGateway = result;
+  }
+  return true;
+};
+
+/**
+ * [checkLobbyAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+G.checkLobbyAmqpGateway = function checkLobbyAmqpGateway(gatewayProvider) {
+  if (!this.lobbyAmqpGateway) {
+    const result = gatewayProvider.getLobbyGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.lobbyAmqpGateway = result;
   }
   return true;
 };

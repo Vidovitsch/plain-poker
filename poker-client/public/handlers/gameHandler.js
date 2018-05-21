@@ -68,6 +68,10 @@ G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider
   return true;
 };
 
+G.close = function close() {
+
+};
+
 module.exports = {
   /**
    * [getInstance description]

@@ -97,6 +97,10 @@ G.findWinner = function findWinner(hands) {
   return winner;
 };
 
+G.close = function close() {
+
+};
+
 module.exports = {
   /**
    * [createInstance description]
