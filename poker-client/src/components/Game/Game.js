@@ -1,12 +1,30 @@
 import React from 'react';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import './Game.css';
 import GameButton from './GameButton/GameButton';
-import Popup from 'react-popup';
 
 const electron = window.require('electron');
 const { ipcRenderer } = electron;
 
 class Game extends React.Component {
+  static confirm(title, message, callback) {
+    confirmAlert({
+      title,
+      message,
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: () => callback(true),
+        },
+        {
+          label: 'No',
+          onClick: () => callback(false),
+        },
+      ],
+    });
+  }
+
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
@@ -17,14 +35,16 @@ class Game extends React.Component {
   }
 
   leaveGame() {
-    Popup.alert('I am alert, nice to meet you');
-    this.ipcRenderer.send('leave-game');
+    Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet', (isConfirmed) => {
+      if (isConfirmed) {
+        this.ipcRenderer.send('leave-game');
+      }
+    });
   }
 
   render() {
     return (
       <div className="Game">
-        <Popup />
         <GameButton name="Leave" onClick={this.leaveGame} />
       </div>
     );

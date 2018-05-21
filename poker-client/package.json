@@ -32,9 +32,10 @@
     "plain-poker-gateway": "git://github.com/Vidovitsch/plain-poker-gateway.git",
     "prop-types": "^15.6.1",
     "react": "^16.3.2",
+    "react-confirm-alert": "^2.0.2",
     "react-dom": "^16.3.2",
-    "react-popup": "^0.9.3",
     "react-router-dom": "^4.2.2",
+    "react-s-alert": "^1.4.1",
     "react-scripts": "1.1.4",
     "uuid": "^3.2.1",
     "winston": "^2.4.2"
