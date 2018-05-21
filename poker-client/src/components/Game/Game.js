@@ -13,26 +13,18 @@ class Game extends React.Component {
     this.state = {
       table: props.location.state.table,
     };
-  }
-
-  setTable(table) {
-    this.setState({
-      table,
-    });
+    this.leaveGame = this.leaveGame.bind(this);
   }
 
   leaveGame() {
-    // this.ipcRenderer.send('leave-game');
-    // this.ipcRenderer.on('lobby-reply', (e, data) => {
-    //   this.setState({
-    //     tableItems: data,
-    //   });
-    // });
+    Popup.alert('I am alert, nice to meet you');
+    this.ipcRenderer.send('leave-game');
   }
 
   render() {
     return (
       <div className="Game">
+        <Popup />
         <GameButton name="Leave" onClick={this.leaveGame} />
       </div>
     );
