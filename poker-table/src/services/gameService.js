@@ -63,18 +63,18 @@ G.addPlayer = function addPlayer(sessionId) {
  * @return {Error}           [description]
  */
 G.removePlayer = function removePlayer(sessionId) {
-  const { players } = this.table;
-  let { ownerId } = this.table;
+  const { players, ownerId } = this.table;
   const player = players.find(p => p.id === sessionId);
   if (player) {
     players.splice(players.indexOf(player), 1);
+    console.log(`${ownerId} ::: ${sessionId}`);
     if (players.length === 0) {
       return {
         tableIsEmpty: true,
         table: this.table,
       };
     } else if (ownerId === sessionId) {
-      ownerId = players[0].id;
+      this.table.ownerId = players[0].id;
     }
     return {
       tableIsEmpty: false,
