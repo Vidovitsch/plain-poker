@@ -20,10 +20,10 @@ const G = GameHandler.prototype;
  * @param  {String} channelKey      [description]
  * @return {Boolean}                 [description]
  */
-G.start = function start(gatewayProvider, channelKey, receiveFrom) {
+G.start = function start(gatewayProvider, channelKey, gameQueue) {
   if (this.checkClientGameAmqpGateway(gatewayProvider) &&
       this.checkLobbyAmqpGateway(gatewayProvider)) {
-    this.startLeaveGameHandler(channelKey, receiveFrom, gatewayProvider);
+    this.startLeaveGameHandler(channelKey, gameQueue, gatewayProvider);
     return true;
   }
   return false;
@@ -33,15 +33,20 @@ G.start = function start(gatewayProvider, channelKey, receiveFrom) {
  * [startLeaveGameHandler description]
  * @param  {String} channelKey [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, receiveFrom, gatewayProvider) {
-  this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, receiveFrom, (err, requestMessage) => {
+G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
     const { sessionId } = requestMessage.data;
     const result = this.gameService.removePlayer(sessionId);
+    let updateAction = 'update';
     if (result instanceof Error) {
       logger.error(result);
+    } else if (result.tableRemoved) {
+      updateAction = 'delete';
     }
-    this.sendLobbyUpdateAsync('delete', this.gameService.table).then(() => this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage)).then(() => {
-      gatewayProvider.closeSharedChannel(this.gameService.table.id);
+    this.sendLobbyUpdateAsync(updateAction, result.table).then(() => {
+      this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage);
+    }).then(() => {
+      this.stop(result.table.id);
     }).catch((ex) => {
       logger.error(ex);
     });
@@ -95,6 +100,14 @@ G.checkLobbyAmqpGateway = function checkLobbyAmqpGateway(gatewayProvider) {
     this.lobbyAmqpGateway = result;
   }
   return true;
+};
+
+G.stop = function stop(channelKey) {
+  this.gatewayProvider.closeSharedChannel(channelKey);
+  this.gameService = null;
+  this.clientGameAmqpGateway = null;
+  this.lobbyAmqpGateway = null;
+  this.gameService.stop();
 };
 
 module.exports = {
