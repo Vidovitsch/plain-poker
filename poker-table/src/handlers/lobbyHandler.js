@@ -1,5 +1,6 @@
 const logger = require('./../util/logger');
 const TableItem = require('./../models/tableItem');
+const VariableTable = require('./../models/variableTable');
 
 // singleton support
 let instance = null;
@@ -50,10 +51,12 @@ L.startCreateTableHandler = function startCreateTableHandler(channelKey) {
         return this.dealerAmqpGateway.sendCreateDealerRequestAsync(table.id);
       }).then((replyMessage) => {
         this.tableManager.setDealer(newTable.id, replyMessage.data);
-        this.clientAmqpGateway.sendCreateTableReplyAsync(newTable, requestMessage).catch((ex) => {
+        const tableItem = TableItem.createInstance(newTable);
+        const variableTable = VariableTable.createInstance(newTable);
+        this.clientAmqpGateway.sendCreateTableReplyAsync({ tableItem, variableTable }, requestMessage).catch((ex) => {
           logger.error(ex);
         });
-        this.sendLobbyUpdate('create', newTable);
+        this.sendLobbyUpdate('create', tableItem);
       }).catch((ex) => {
         logger.error(ex);
       });
@@ -74,10 +77,12 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
       if (table instanceof Error) {
         logger.error(table);
       } else {
-        this.clientAmqpGateway.sendJoinTableReplyAsync(table, requestMessage).catch((ex) => {
+        const tableItem = TableItem.createInstance(table);
+        const variableTable = VariableTable.createInstance(table);
+        this.clientAmqpGateway.sendJoinTableReplyAsync({ tableItem, variableTable }, requestMessage).catch((ex) => {
           logger.error(ex);
         });
-        this.sendLobbyUpdate('update', table);
+        this.sendLobbyUpdate('update', tableItem);
       }
     }
   });
@@ -87,8 +92,7 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
  * [sendUpdateToLobby description]
  * @param  {Table} table [description]
  */
-L.sendLobbyUpdate = function sendLobbyUpdate(action, table) {
-  const tableItem = TableItem.createInstance(table);
+L.sendLobbyUpdate = function sendLobbyUpdate(action, tableItem) {
   this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, tableItem).catch((ex) => {
     logger.error(ex);
   });

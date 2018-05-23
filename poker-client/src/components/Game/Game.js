@@ -32,6 +32,10 @@ class Game extends React.Component {
     this.state = {
       table: {},
     };
+    // this.state = {
+    //   tableItem: this.props.location.state.tableItem,
+    //   variableTable: this.props.location.state.variableTable,
+    // };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);

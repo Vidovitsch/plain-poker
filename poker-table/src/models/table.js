@@ -18,6 +18,7 @@ function Table(ownerId, options) {
   this.maxPlayerNo = options.maxPlayerNo || 5;
   this.minBet = options.minBet || 1;
   this.startupAmount = options.startupAmount || 15;
+  this.dealer = '';
 
   // Table data (variable)
   this.status = 'waiting';
@@ -27,7 +28,6 @@ function Table(ownerId, options) {
   this.gameNo = 0;
   this.roundNo = 0;
   this.turnNo = 0;
-  this.dealer = '';
   this.players = [];
   this.bets = {};
   this.smallBlind = '';

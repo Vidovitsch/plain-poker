@@ -63,10 +63,10 @@ class Lobby extends React.Component {
     });
   }
 
-  goToGameView(table) {
+  goToGameView(data) {
     this.props.history.push({ // eslint-disable-line
       pathname: '/game',
-      state: { table },
+      state: data,
     });
   }
 
