@@ -63,22 +63,21 @@ G.addPlayer = function addPlayer(sessionId) {
  * @return {Error}           [description]
  */
 G.removePlayer = function removePlayer(sessionId) {
-  const { players, id: tableId } = this.table;
+  const { players } = this.table;
   let { ownerId } = this.table;
   const player = players.find(p => p.id === sessionId);
   if (player) {
     players.splice(players.indexOf(player), 1);
     if (players.length === 0) {
-      this.removeTable(tableId);
       return {
-        tableRemoved: true,
+        tableIsEmpty: true,
         table: this.table,
       };
     } else if (ownerId === sessionId) {
       ownerId = players[0].id;
     }
     return {
-      tableRemoved: false,
+      tableIsEmpty: false,
       table: this.table,
     };
   }
@@ -105,6 +104,7 @@ G.findWinner = function findWinner(hands) {
 };
 
 G.stop = function stop() {
+  this.removeTable(this.table.id);
   this.table = null;
   this.removeTable = null;
   this.handSolver = null;

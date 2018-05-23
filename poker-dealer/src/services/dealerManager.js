@@ -14,6 +14,7 @@ function DealerManager(gatewayProvider) {
   this.dealers = {};
   this.deckHelper = DeckHelper.getInstance();
   this.gatewayProvider = gatewayProvider;
+  this.removeDealer = this.removeDealer.bind(this);
 }
 
 const D = DealerManager.prototype;

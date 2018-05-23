@@ -25,7 +25,7 @@ G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
     gatewayProvider.createSharedChannelAsync(this.dealer.id, 'default').then(() => {
       const gameHandler = GameHandler.createInstance(this);
-      if (gameHandler.start(gatewayProvider, this.dealer.id)) {
+      if (gameHandler.start(gatewayProvider, this.dealer.id, this.dealer.location)) {
         logger.info(`(dealer) Game services started successfully => [table:${this.dealer.tableId}]`);
       } else {
         logger.warn('(dealer) Not all game services have been started correctly');
@@ -61,6 +61,26 @@ G.getPlayerCards = function getPlayerCards(numberOfCards, sessions) {
     wrappedCards = wrappedCards.concat(wrapped);
   });
   return wrappedCards;
+};
+
+G.addCardsToDeck = function addCardsToDeck(cards) {
+  const { id: dealerId, deck } = this.dealer;
+  const result = cards.every(card => card.card && card.dealerId === dealerId && !deck.includes(card.card));
+  if (result) {
+    return result;
+  }
+  return new Error('Card is invalid and can\t be added');
+};
+
+G.checkDeckForCompletion = function checkDeckForCompletion() {
+  return this.dealer.deck.length === 52;
+};
+
+G.stop = function stop() {
+  this.removeDealer(this.dealer.id);
+  this.dealer = null;
+  this.removeDealer = null;
+  this.deckHelper = null;
 };
 
 module.exports = {

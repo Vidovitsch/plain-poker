@@ -10,6 +10,7 @@ function GameHandler(gameService) {
   this.gameService = gameService;
   this.clientGameAmqpGateway = null;
   this.lobbyAmqpGateway = null;
+  this.dealerGameAmqpGateway = null;
   this.gatewayProvider = null;
 }
 
@@ -23,8 +24,10 @@ const G = GameHandler.prototype;
  */
 G.start = function start(gatewayProvider, channelKey, gameQueue) {
   if (this.checkClientGameAmqpGateway(gatewayProvider) &&
-      this.checkLobbyAmqpGateway(gatewayProvider)) {
-    this.startLeaveGameHandler(channelKey, gameQueue, gatewayProvider);
+      this.checkLobbyAmqpGateway(gatewayProvider) &&
+      this.checkDealerGameAmqpGateway(gatewayProvider)) {
+    this.gatewayProvider = gatewayProvider;
+    this.startLeaveGameHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -34,8 +37,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
  * [startLeaveGameHandler description]
  * @param  {String} channelKey [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue, gatewayProvider) {
-  this.gatewayProvider = gatewayProvider;
+G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
     const { sessionId } = requestMessage.data;
     const result = this.gameService.removePlayer(sessionId);
@@ -43,14 +45,20 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue, 
     if (result instanceof Error) {
       logger.error(result);
     } else {
-      if (result.tableRemoved) {
+      if (result.tableIsEmpty) {
         updateAction = 'delete';
       }
       this.sendLobbyUpdateAsync(updateAction, result.table).then(() => {
         this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage);
       }).then(() => {
-        if (result.tableRemoved) {
-          this.stop(result.table.id);
+        if (result.tableIsEmpty) {
+          const { communityCards, dealer: { location: dealerLocation } } = this.gameService.table;
+          logger.error(`CommunityCards: ${communityCards}`);
+          this.dealerGameAmqpGateway.sendEndGameRequestAsync(communityCards, dealerLocation).then(() => {
+            this.stop(channelKey);
+          }).catch((ex) => {
+            logger.error(ex);
+          });
         }
       }).catch((ex) => {
         logger.error(ex);
@@ -104,6 +112,23 @@ G.checkLobbyAmqpGateway = function checkLobbyAmqpGateway(gatewayProvider) {
       return false;
     }
     this.lobbyAmqpGateway = result;
+  }
+  return true;
+};
+
+/**
+ * [checkLobbyAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+G.checkDealerGameAmqpGateway = function checkDealerGameAmqpGateway(gatewayProvider) {
+  if (!this.dealerGameAmqpGateway) {
+    const result = gatewayProvider.getDealerGameGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.dealerGameAmqpGateway = result;
   }
   return true;
 };

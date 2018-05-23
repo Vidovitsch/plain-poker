@@ -18,12 +18,32 @@ const G = GameHandler.prototype;
  * @param  {String} channelKey      [description]
  * @return {Boolean}                 [description]
  */
-G.start = function start(gatewayProvider, channelKey) {
+G.start = function start(gatewayProvider, channelKey, gameQueue) {
   if (this.checkTableGameAmqpGateway(gatewayProvider)) {
-    // TODO:
+    this.gatewayProvider = gatewayProvider;
+    this.startEndGameHandler(channelKey, gameQueue);
     return true;
   }
   return false;
+};
+
+G.startEndGameHandler = function startEndGameHandler(channelKey, gameQueue) {
+  this.tableGameAmqpGateway.onEndGameRequest(channelKey, gameQueue, (err, requestMessage) => {
+    const { communityCards } = requestMessage.data;
+    if (communityCards) {
+      const result = this.gameService.addCardsToDeck(communityCards);
+      if (result instanceof Error) {
+        logger.error(result);
+      }
+    } else if (!this.gameService.checkDeckForCompletion()) {
+      logger.error(new Error('Deck is incomplete'));
+    }
+    this.tableGameAmqpGateway.sendEndGameReplyAsync({}, requestMessage).then(() => {
+      this.stop(channelKey);
+    }).catch((ex) => {
+      logger.error(ex);
+    });
+  });
 };
 
 /**
@@ -32,15 +52,22 @@ G.start = function start(gatewayProvider, channelKey) {
  * @return {Boolean}                 [description]
  */
 G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway(gatewayProvider) {
-  if (!this.clientGameAmqpGateway) {
+  if (!this.tableGameAmqpGateway) {
     const result = gatewayProvider.getTableGameGateway('amqp');
     if (result instanceof Error) {
       logger.error(result);
       return false;
     }
-    this.clientGameAmqpGateway = result;
+    this.tableGameAmqpGateway = result;
   }
   return true;
+};
+
+G.stop = function stop(channelKey) {
+  this.gatewayProvider.closeSharedChannel(channelKey);
+  this.gameService.stop();
+  this.gatewayProvider = null;
+  this.tableGameAmqpGateway = null;
 };
 
 module.exports = {
