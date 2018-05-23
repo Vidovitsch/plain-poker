@@ -1,0 +1,19 @@
+.GameButton {
+  width: 15%;
+  font-size: 1em;
+  padding: 0.75em;
+  background-color: #383D48;
+  color: #8D95A3;
+  border: none;
+  -webkit-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+}
+
+.GameButton:hover {
+  cursor: pointer;
+  background-color: #343842;
+  -webkit-box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  -moz-box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0px 2px rgba(0, 0, 0, 0.2);
+}

@@ -45,14 +45,14 @@ G.startAsync = function startAsync() {
  * @param  {IpcMain} ipcMain [description]
  */
 G.startLeaveGameHandler = function startLeaveGameHandler() {
-  const context = 'leave-game-request';
+  const context = 'leave-request';
   this.ipcMain.on(context, (e, tableLocation) => {
     logger.error(`Tablelocation: ${tableLocation}`);
     this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }
-      e.sender.send('leave-game-reply', replyMessage.data);
+      e.sender.send('leave-reply', replyMessage.data);
       this.stop();
       this.switchHandlers();
     }).catch((err) => {

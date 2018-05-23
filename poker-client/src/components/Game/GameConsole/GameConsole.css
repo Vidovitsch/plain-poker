@@ -1,0 +1,11 @@
+.GameConsole {
+  width: 100%;
+  text-align: center;
+  background-color: #272A31;
+  position: absolute;
+  bottom: 0px;
+}
+
+.GameConsole > .GameButton {
+  margin: 1em;
+}
