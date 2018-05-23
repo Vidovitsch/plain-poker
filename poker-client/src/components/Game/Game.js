@@ -2,7 +2,7 @@ import React from 'react';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import './Game.css';
-import GameButton from './GameButton/GameButton';
+import GameMenu from './GameMenu/GameMenu';
 import GameConsole from './GameConsole/GameConsole';
 
 const electron = window.require('electron');
@@ -30,9 +30,14 @@ class Game extends React.Component {
     super(props);
     this.ipcRenderer = ipcRenderer;
     this.state = {
-      tableItem: this.props.location.state.tableItem,
-      variableTable: this.props.location.state.variableTable,
+      tableItem: {},
+      variableTable: {},
     };
+    // this.state = {
+    //   session: this.props.location.state.session,
+    //   tableItem: this.props.location.state.tableItem,
+    //   variableTable: this.props.location.state.variableTable,
+    // };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);
@@ -121,7 +126,13 @@ class Game extends React.Component {
   render() {
     return (
       <div className="Game">
-        <GameButton name="Leave" onClick={this.leave} />
+        <GameMenu
+          session={this.state.session}
+          table={this.state.variableTable}
+          onLeave={this.leave}
+          onStart={this.start}
+          onReady={this.ready}
+        />
         <GameConsole
           table={this.state.variableTable}
           onCheck={this.check}

@@ -1,0 +1,10 @@
+.GameMenu {
+  width: 30%;
+  text-align: left;
+  background-color: #272A31;
+}
+
+.GameMenu > .GameButton {
+  width: 30%;
+  margin: 0.5em;
+}

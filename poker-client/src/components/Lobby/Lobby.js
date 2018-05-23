@@ -16,13 +16,24 @@ class Lobby extends React.Component {
     this.joinTable = this.joinTable.bind(this);
     this.setSelectedTableItem = this.setSelectedTableItem.bind(this);
     this.state = {
+      session: '',
       tableItems: [],
       selectedTableItem: null,
     };
   }
 
   componentWillMount() {
+    this.getSession();
     this.getLobby();
+  }
+
+  getSession() {
+    this.ipcRenderer.send('session-request');
+    this.ipcRenderer.on('session-reply', (e, sessionId) => {
+      this.setState({
+        session: sessionId,
+      });
+    });
   }
 
   getLobby() {
@@ -51,15 +62,23 @@ class Lobby extends React.Component {
 
   createTable(options) {
     this.ipcRenderer.send('create-table-request', options);
-    this.ipcRenderer.on('create-table-reply', (e, data) => {
-      this.goToGameView(data);
+    this.ipcRenderer.on('create-table-reply', (e, { tableItem, variableTable }) => {
+      this.goToGameView({
+        session: this.state.session,
+        tableItem,
+        variableTable,
+      });
     });
   }
 
   joinTable(tableId) {
     this.ipcRenderer.send('join-table-request', tableId);
-    this.ipcRenderer.on('join-table-reply', (e, data) => {
-      this.goToGameView(data);
+    this.ipcRenderer.on('join-table-reply', (e, { tableItem, variableTable }) => {
+      this.goToGameView({
+        session: this.state.session,
+        tableItem,
+        variableTable,
+      });
     });
   }
 

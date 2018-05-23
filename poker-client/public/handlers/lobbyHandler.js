@@ -34,6 +34,7 @@ L.startAsync = function startAsync() {
     if (this.checkTableAmqpGateway() && this.checkLobbySocketGateway()) {
       this.connectToLobbyAsync().then(() => {
         if (!this.isStarted) {
+          this.startSessionHandler();
           this.startLobbyRequestHandler();
           this.startCreateTableHandler();
           this.startJoinTableHandler();
@@ -110,6 +111,12 @@ L.startJoinTableHandler = function startJoinTableHandler() {
     }).catch((err) => {
       logger.log(err);
     });
+  });
+};
+
+L.startSessionHandler = function startSenssionHandler() {
+  this.ipcMain.on('session-request', (e) => {
+    e.sender.send('session-reply', this.sessionId);
   });
 };
 
