@@ -56,7 +56,6 @@ G.startEnterGameHandler = function startEnterGameHandler() {
 G.startLeaveGameHandler = function startLeaveGameHandler() {
   const context = 'leave-request';
   this.ipcMain.on(context, (e, tableLocation) => {
-    logger.error(`Tablelocation: ${tableLocation}`);
     this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);

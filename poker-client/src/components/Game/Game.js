@@ -9,35 +9,18 @@ const electron = window.require('electron');
 const { ipcRenderer } = electron;
 
 class Game extends React.Component {
-  static confirm(title, message, callback) {
-    confirmAlert({
-      title,
-      message,
-      buttons: [
-        {
-          label: 'Yes',
-          onClick: () => callback(true),
-        },
-        {
-          label: 'No',
-          onClick: () => callback(false),
-        },
-      ],
-    });
-  }
-
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
-    this.state = {
-      tableItem: {},
-      variableTable: {},
-    };
     // this.state = {
-    //   session: this.props.location.state.session,
-    //   tableItem: this.props.location.state.tableItem,
-    //   variableTable: this.props.location.state.variableTable,
+    //   tableItem: {},
+    //   variableTable: {},
     // };
+    this.state = {
+      session: this.props.location.state.session,
+      tableItem: this.props.location.state.tableItem,
+      variableTable: this.props.location.state.variableTable,
+    };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);
@@ -65,13 +48,9 @@ class Game extends React.Component {
   }
 
   leave() {
-    Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet!', (isConfirmed) => {
-      if (isConfirmed) {
-        this.ipcRenderer.send('leave-request', this.state.tableItem.location);
-        this.ipcRenderer.on('leave-reply', () => {
-          this.goToLobbyView();
-        });
-      }
+    this.ipcRenderer.send('leave-request', this.state.tableItem.location);
+    this.ipcRenderer.on('leave-reply', () => {
+      this.goToLobbyView();
     });
   }
 
