@@ -45,7 +45,7 @@ class GameMenu extends React.Component {
     }
     return (
       <div className="GameMenu">
-        <GameButton name="ready" onClick={this.ready} />
+        <GameButton name="ready" onClick={this.ready} disabled />
         <GameButton name="leave" onClick={this.leave} />
       </div>
     );

@@ -14,7 +14,8 @@ class GameButton extends React.Component {
 
   render() {
     return (
-      <button className="GameButton" onClick={this.handleClick}>{this.props.name}</button>
+      <button className="GameButton" onClick={this.handleClick} disabled={this.props.disabled}>{this.props.name}
+      </button>
     );
   }
 }
