@@ -10,8 +10,7 @@ function HandlerSwitch(args) {
   this.gatewayProvider = args.gatewayProvider;
   this.ipcMain = args.ipcMain;
   this.connectionKey = args.connectionKey;
-  this.channelKeyLobby = args.channelKeyLobby;
-  this.channelKeyGame = args.channelKeyGame;
+  this.channelKey = args.channelKey;
   this.currentHandler = null;
   this.lobbyHandler = null;
   this.gameHandler = null;
@@ -24,8 +23,7 @@ H.switchHandlers = function switchHandlers(data) {
   if (this.currentHandler === 'lobby') {
     this.initGame(data);
   } else {
-    this.currentHandler = 'lobby';
-    this.lobbyHandler.inGame = false;
+    this.initLobby(data);
   }
 };
 
@@ -64,7 +62,7 @@ H.checkGameHandler = function checkGameHandler() {
       gatewayProvider: this.gatewayProvider,
       ipcMain: this.ipcMain,
       connectionKey: this.connectionKey,
-      channelKey: this.channelKeyGame,
+      channelKey: this.channelKey,
       switchHanldersFunc: this.switchHandlers,
     });
   }
@@ -76,8 +74,6 @@ H.checkLobbyHandler = function checkLobbyHandler() {
       sessionId: this.sessionId,
       gatewayProvider: this.gatewayProvider,
       ipcMain: this.ipcMain,
-      connectionKey: this.connectionKey,
-      channelKey: this.channelKeyLobby,
       switchHanldersFunc: this.switchHandlers,
     });
   }

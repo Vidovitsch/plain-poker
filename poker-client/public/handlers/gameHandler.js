@@ -24,6 +24,7 @@ const G = GameHandler.prototype;
 G.startAsync = function startAsync(tableId, tableLocation) {
   return new Promise((resolve, reject) => {
     if (this.checkTableGameAmqpGateway()) {
+      logger.error(`CHANNELKEY START ${this.channelKey}`);
       this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => {
         this.startLeaveGameHandler(tableLocation);
         resolve();
@@ -74,6 +75,7 @@ G.checkTableGameAmqpGateway = function checkTableGameAmqpGateway() {
 };
 
 G.stop = function stop() {
+  logger.error(`CHANNELKEY STOP ${this.channelKey}`);
   this.gatewayProvider.closeSharedChannel(this.channelKey);
 };
 

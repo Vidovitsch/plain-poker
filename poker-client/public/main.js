@@ -18,8 +18,7 @@ HandlerSwitch.getInstance({
   gatewayProvider,
   ipcMain,
   connectionKey: 'default',
-  channelKeyLobby: 'lobby',
-  channelKeyGame: 'game',
+  channelKey: 'default',
 }).initLobby();
 
 /**

@@ -12,11 +12,8 @@ function LobbyHandler(args) {
   this.sessionId = args.sessionId;
   this.gatewayProvider = args.gatewayProvider;
   this.ipcMain = args.ipcMain;
-  this.connectionKey = args.connectionKey;
-  this.channelKey = args.channelKey;
   this.switchHandlers = args.switchHanldersFunc;
-  this.inGame = false;
-
+  this.isStarted = false;
   this.lobbySocketGateway = null;
   this.tableAmqpGateway = null;
   this.disconnectFromLobby = this.disconnectFromLobby.bind(this);
@@ -35,10 +32,13 @@ const L = LobbyHandler.prototype;
 L.startAsync = function startAsync() {
   return new Promise((resolve, reject) => {
     if (this.checkTableAmqpGateway() && this.checkLobbySocketGateway()) {
-      this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => this.connectToLobbyAsync()).then(() => {
-        this.startLobbyRequestHandler();
-        this.startCreateTableHandler();
-        this.startJoinTableHandler();
+      this.connectToLobbyAsync().then(() => {
+        if (!this.isStarted) {
+          this.startLobbyRequestHandler();
+          this.startCreateTableHandler();
+          this.startJoinTableHandler();
+          this.isStarted = true;
+        }
         resolve();
       }).catch((err) => {
         reject(err);
@@ -57,12 +57,10 @@ L.startLobbyRequestHandler = function startLobbyRequestHandler() {
   this.ipcMain.on('lobby-request', (e) => {
     this.lobbySocketGateway.sendLobbyRequestAsync().then((replyMessage) => {
       this.lobbySocketGateway.onLobbyUpdate((err, message) => {
-        if (!this.inGame) {
-          if (err) {
-            logger.error(err);
-          } else {
-            e.sender.send('lobby-update', message.data.tableItems);
-          }
+        if (err) {
+          logger.error(err);
+        } else {
+          e.sender.send('lobby-update', message.data.tableItems);
         }
       });
       e.sender.send('lobby-reply', replyMessage.data.tableItems);
@@ -85,13 +83,8 @@ L.startCreateTableHandler = function startCreateTableHandler() {
         logger.error(data);
       } else {
         e.sender.send('create-table-reply', data);
-        const result = this.disconnectFromLobby();
-        if (result instanceof Error) {
-          logger.error(result);
-        } else {
-          this.inGame = true;
-          this.switchHandlers(data);
-        }
+        this.stop();
+        this.switchHandlers(data);
       }
     }).catch((err) => {
       logger.error(err);
@@ -111,13 +104,8 @@ L.startJoinTableHandler = function startJoinTableHandler() {
         logger.error(replyMessage.error);
       } else {
         e.sender.send('join-table-reply', replyMessage.data);
-        const result = this.disconnectFromLobby();
-        if (result instanceof Error) {
-          logger.error(result);
-        } else {
-          this.inGame = true;
-          this.switchHandlers(replyMessage.data);
-        }
+        this.stop();
+        this.switchHandlers(data);
       }
     }).catch((err) => {
       logger.log(err);
@@ -182,6 +170,10 @@ L.checkLobbySocketGateway = function checkLobbySocketGateway() {
     this.lobbySocketGateway = result;
   }
   return true;
+};
+
+L.stop = function stop() {
+  this.disconnectFromLobby();
 };
 
 module.exports = {
