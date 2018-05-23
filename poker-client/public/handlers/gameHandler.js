@@ -28,6 +28,7 @@ G.startAsync = function startAsync() {
       this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => {
         if (!this.isStarted) {
           this.startLeaveGameHandler();
+          this.startEnterGameHandler();
           this.isStarted = true;
         }
         resolve();
@@ -37,6 +38,14 @@ G.startAsync = function startAsync() {
     } else {
       reject();
     }
+  });
+};
+
+G.startEnterGameHandler = function startEnterGameHandler() {
+  this.ipcMain.on('game-entered', (e, tableLocation) => {
+    this.tableGameAmqpGateway.onUpdate(this.channelKey, `client_${this.sessionId}`, tableLocation, (err, message) => {
+      e.sender.send('table-update', message.data);
+    });
   });
 };
 

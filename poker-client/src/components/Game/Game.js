@@ -30,12 +30,9 @@ class Game extends React.Component {
     super(props);
     this.ipcRenderer = ipcRenderer;
     this.state = {
-      table: {},
+      tableItem: this.props.location.state.tableItem,
+      variableTable: this.props.location.state.variableTable,
     };
-    // this.state = {
-    //   tableItem: this.props.location.state.tableItem,
-    //   variableTable: this.props.location.state.variableTable,
-    // };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);
@@ -46,10 +43,26 @@ class Game extends React.Component {
     this.fold = this.fold.bind(this);
   }
 
+  componentWillMount() {
+    // Makes sure the GameHandler is started correctly before starting the listener
+    setTimeout(() => {
+      this.startUpdateListener();
+    }, 500);
+  }
+
+  startUpdateListener() {
+    this.ipcRenderer.send('game-entered', this.state.tableItem.location);
+    this.ipcRenderer.on('table-update', (e, data) => {
+      this.setState({
+        variableTable: data,
+      });
+    });
+  }
+
   leave() {
     Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet!', (isConfirmed) => {
       if (isConfirmed) {
-        this.ipcRenderer.send('leave-request', this.state.table.location);
+        this.ipcRenderer.send('leave-request', this.state.tableItem.location);
         this.ipcRenderer.on('leave-reply', () => {
           this.goToLobbyView();
         });
@@ -58,43 +71,43 @@ class Game extends React.Component {
   }
 
   start() {
-    this.ipcRenderer.send('start-request', this.state.table.location);
+    this.ipcRenderer.send('start-request', this.state.tableItem.location);
     this.ipcRenderer.on('leave-game-reply', () => {
     });
   }
 
   ready() {
-    this.ipcRenderer.send('ready-request', this.state.table.location);
+    this.ipcRenderer.send('ready-request', this.state.tableItem.location);
     this.ipcRenderer.on('leave-game-reply', () => {
     });
   }
 
   check() {
-    this.ipcRenderer.send('check-request', this.state.table.location);
+    this.ipcRenderer.send('check-request', this.state.tableItem.location);
     this.ipcRenderer.on('check-reply', () => {
     });
   }
 
   call() {
-    this.ipcRenderer.send('call-request', this.state.table.location);
+    this.ipcRenderer.send('call-request', this.state.tableItem.location);
     this.ipcRenderer.on('call-reply', () => {
     });
   }
 
   bet(amount) {
-    this.ipcRenderer.send('bet-request', { location: this.state.table.location, amount });
+    this.ipcRenderer.send('bet-request', { location: this.state.tableItem.location, amount });
     this.ipcRenderer.on('bet-reply', () => {
     });
   }
 
   raise(amount) {
-    this.ipcRenderer.send('raise-request', { location: this.state.table.location, amount });
+    this.ipcRenderer.send('raise-request', { location: this.state.tableItem.location, amount });
     this.ipcRenderer.on('raise-reply', () => {
     });
   }
 
   fold() {
-    this.ipcRenderer.send('fold-request', this.state.table.location);
+    this.ipcRenderer.send('fold-request', this.state.tableItem.location);
     this.ipcRenderer.on('fold-reply', () => {
     });
   }
@@ -110,12 +123,12 @@ class Game extends React.Component {
       <div className="Game">
         <GameButton name="Leave" onClick={this.leave} />
         <GameConsole
-          table={this.state.table}
+          table={this.state.variableTable}
           onCheck={this.check}
           onCall={this.call}
           onBet={this.bet}
           onRaise={this.raise}
-          fold={this.fold}
+          onFold={this.fold}
         />
       </div>
     );

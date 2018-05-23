@@ -82,9 +82,9 @@ L.startCreateTableHandler = function startCreateTableHandler() {
       if (hasErrors) {
         logger.error(data);
       } else {
-        e.sender.send('create-table-reply', data);
         this.stop();
         this.switchHandlers();
+        e.sender.send('create-table-reply', data);
       }
     }).catch((err) => {
       logger.error(err);
@@ -103,9 +103,9 @@ L.startJoinTableHandler = function startJoinTableHandler() {
       if (replyMessage.type === 'error') {
         logger.error(replyMessage.error);
       } else {
-        e.sender.send('join-table-reply', replyMessage.data);
         this.stop();
         this.switchHandlers();
+        e.sender.send('join-table-reply', replyMessage.data);
       }
     }).catch((err) => {
       logger.log(err);

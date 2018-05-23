@@ -1,5 +1,6 @@
 const logger = require('./../util/logger');
 const TableItem = require('./../models/tableItem');
+const VariableTable = require('./../models/variableTable');
 
 /**
  * [GameHandler description]
@@ -48,9 +49,7 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
       if (result.tableIsEmpty) {
         updateAction = 'delete';
       }
-      this.sendLobbyUpdateAsync(updateAction, result.table).then(() => {
-        this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage);
-      }).then(() => {
+      this.sendLobbyUpdateAsync(updateAction, result.table).then(() => this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage)).then(() => {
         if (result.tableIsEmpty) {
           const { communityCards, dealer: { location: dealerLocation } } = this.gameService.table;
           logger.error(`CommunityCards: ${communityCards}`);
@@ -59,12 +58,19 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
           }).catch((ex) => {
             logger.error(ex);
           });
+        } else {
+          this.sendTableUpdate(result.table);
         }
       }).catch((ex) => {
         logger.error(ex);
       });
     }
   });
+};
+
+G.sendTableUpdate = function sendTableUpdate(table) {
+  const variableTable = VariableTable.createInstance(table);
+  this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);
 };
 
 /**

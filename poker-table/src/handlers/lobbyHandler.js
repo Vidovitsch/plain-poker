@@ -15,6 +15,7 @@ function LobbyHandler(tableManager) {
   this.clientAmqpGateway = null;
   this.lobbyAmqpGateway = null;
   this.dealerAmqpGateway = null;
+  this.clientGameAmqpGateway = null;
 }
 
 const L = LobbyHandler.prototype;
@@ -28,7 +29,8 @@ const L = LobbyHandler.prototype;
 L.start = function start(gatewayProvider, channelKey) {
   if (this.checkClientAmqpGateway(gatewayProvider) &&
       this.checkLobbyAmqpGateway(gatewayProvider) &&
-      this.checkDealerAmqpGateway(gatewayProvider)) {
+      this.checkDealerAmqpGateway(gatewayProvider) &&
+      this.checkClientGameAmqpGateway(gatewayProvider)) {
     this.startCreateTableHandler(channelKey);
     this.startJoinTableHandler(channelKey);
     return true;
@@ -82,10 +84,16 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
         this.clientAmqpGateway.sendJoinTableReplyAsync({ tableItem, variableTable }, requestMessage).catch((ex) => {
           logger.error(ex);
         });
+        this.sendTableUpdate(table);
         this.sendLobbyUpdate('update', tableItem);
       }
     }
   });
+};
+
+L.sendTableUpdate = function sendTableUpdate(table) {
+  const variableTable = VariableTable.createInstance(table);
+  this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);
 };
 
 /**
@@ -145,6 +153,23 @@ L.checkDealerAmqpGateway = function checkDealerAmqpGateway(gatewayProvider) {
       return false;
     }
     this.dealerAmqpGateway = result;
+  }
+  return true;
+};
+
+/**
+ * [checkClientGameAmqpGateway description]
+ * @param  {Object} gatewayProvider [description]
+ * @return {Boolean}                 [description]
+ */
+L.checkClientGameAmqpGateway = function checkClientGameAmqpGateway(gatewayProvider) {
+  if (!this.clientGameAmqpGateway) {
+    const result = gatewayProvider.getClientGameGateway('amqp');
+    if (result instanceof Error) {
+      logger.error(result);
+      return false;
+    }
+    this.clientGameAmqpGateway = result;
   }
   return true;
 };
