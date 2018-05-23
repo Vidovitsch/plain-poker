@@ -16,6 +16,9 @@ function GameHandler(args) {
   this.connectionKey = args.connectionKey;
   this.channelKey = args.channelKey;
   this.switchHandlers = args.switchHanldersFunc;
+  this.isStarted = false;
+  this.tableId = '';
+  this.tableLocation = '';
   this.tableGameAmqpGateway = null;
 }
 
@@ -23,10 +26,14 @@ const G = GameHandler.prototype;
 
 G.startAsync = function startAsync(tableId, tableLocation) {
   return new Promise((resolve, reject) => {
+    this.tableId = tableId;
+    this.tableLocation = tableLocation;
     if (this.checkTableGameAmqpGateway()) {
-      logger.error(`CHANNELKEY START ${this.channelKey}`);
       this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => {
-        this.startLeaveGameHandler(tableLocation);
+        if (!this.isStarted) {
+          this.startLeaveGameHandler();
+          this.isStarted = true;
+        }
         resolve();
       }).catch((err) => {
         reject(err);
@@ -41,10 +48,10 @@ G.startAsync = function startAsync(tableId, tableLocation) {
  * [startLeaveGameHandler description]
  * @param  {IpcMain} ipcMain [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(tableLocation) {
+G.startLeaveGameHandler = function startLeaveGameHandler() {
   const context = 'leave-game-request';
   this.ipcMain.on(context, (e) => {
-    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, this.tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }
