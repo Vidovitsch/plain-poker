@@ -37,7 +37,7 @@ class Game extends React.Component {
   leaveGame() {
     Game.confirm('Are you sure?', 'Leaving will cause to lose your current bet!', (isConfirmed) => {
       if (isConfirmed) {
-        this.ipcRenderer.send('leave-game-request', 'dummy');
+        this.ipcRenderer.send('leave-game-request', this.state.table.location);
         this.ipcRenderer.on('leave-game-reply', (e, replyData) => {
           this.goToLobbyView();
         });

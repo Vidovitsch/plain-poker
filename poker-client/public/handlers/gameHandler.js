@@ -17,17 +17,13 @@ function GameHandler(args) {
   this.channelKey = args.channelKey;
   this.switchHandlers = args.switchHanldersFunc;
   this.isStarted = false;
-  this.tableId = '';
-  this.tableLocation = '';
   this.tableGameAmqpGateway = null;
 }
 
 const G = GameHandler.prototype;
 
-G.startAsync = function startAsync(tableId, tableLocation) {
+G.startAsync = function startAsync() {
   return new Promise((resolve, reject) => {
-    this.tableId = tableId;
-    this.tableLocation = tableLocation;
     if (this.checkTableGameAmqpGateway()) {
       this.gatewayProvider.createSharedChannelAsync(this.channelKey, this.connectionKey).then(() => {
         if (!this.isStarted) {
@@ -50,8 +46,9 @@ G.startAsync = function startAsync(tableId, tableLocation) {
  */
 G.startLeaveGameHandler = function startLeaveGameHandler() {
   const context = 'leave-game-request';
-  this.ipcMain.on(context, (e) => {
-    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, this.tableLocation).then((replyMessage) => {
+  this.ipcMain.on(context, (e, tableLocation) => {
+    logger.error(`Tablelocation: ${tableLocation}`);
+    this.tableGameAmqpGateway.sendLeaveGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }

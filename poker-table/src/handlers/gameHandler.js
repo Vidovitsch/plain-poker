@@ -10,6 +10,7 @@ function GameHandler(gameService) {
   this.gameService = gameService;
   this.clientGameAmqpGateway = null;
   this.lobbyAmqpGateway = null;
+  this.gatewayProvider = null;
 }
 
 const G = GameHandler.prototype;
@@ -33,23 +34,28 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
  * [startLeaveGameHandler description]
  * @param  {String} channelKey [description]
  */
-G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) {
+G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue, gatewayProvider) {
+  this.gatewayProvider = gatewayProvider;
   this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
     const { sessionId } = requestMessage.data;
     const result = this.gameService.removePlayer(sessionId);
     let updateAction = 'update';
     if (result instanceof Error) {
       logger.error(result);
-    } else if (result.tableRemoved) {
-      updateAction = 'delete';
+    } else {
+      if (result.tableRemoved) {
+        updateAction = 'delete';
+      }
+      this.sendLobbyUpdateAsync(updateAction, result.table).then(() => {
+        this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage);
+      }).then(() => {
+        if (result.tableRemoved) {
+          this.stop(result.table.id);
+        }
+      }).catch((ex) => {
+        logger.error(ex);
+      });
     }
-    this.sendLobbyUpdateAsync(updateAction, result.table).then(() => {
-      this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage);
-    }).then(() => {
-      this.stop(result.table.id);
-    }).catch((ex) => {
-      logger.error(ex);
-    });
   });
 };
 
@@ -104,10 +110,10 @@ G.checkLobbyAmqpGateway = function checkLobbyAmqpGateway(gatewayProvider) {
 
 G.stop = function stop(channelKey) {
   this.gatewayProvider.closeSharedChannel(channelKey);
+  this.gameService.stop();
   this.gameService = null;
   this.clientGameAmqpGateway = null;
   this.lobbyAmqpGateway = null;
-  this.gameService.stop();
 };
 
 module.exports = {

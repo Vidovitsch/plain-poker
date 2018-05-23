@@ -19,17 +19,17 @@ function HandlerSwitch(args) {
 
 const H = HandlerSwitch.prototype;
 
-H.switchHandlers = function switchHandlers(data) {
+H.switchHandlers = function switchHandlers() {
   if (this.currentHandler === 'lobby') {
-    this.initGame(data);
+    this.initGame();
   } else {
-    this.initLobby(data);
+    this.initLobby();
   }
 };
 
-H.initGame = function initGame({ id, location }) {
+H.initGame = function initGame() {
   this.checkGameHandler();
-  this.gameHandler.startAsync(id, location).then(() => {
+  this.gameHandler.startAsync().then(() => {
     this.currentHandler = 'game';
     logger.info('(client) Game services started successfully');
   }).catch((err) => {

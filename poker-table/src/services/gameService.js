@@ -79,6 +79,7 @@ G.removePlayer = function removePlayer(sessionId) {
     }
     return {
       tableRemoved: false,
+      table: this.table,
     };
   }
   return new Error('Player doesn\'t exist');
