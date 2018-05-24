@@ -33,14 +33,19 @@ class GameConsole extends React.Component {
     this.props.onFold();
   }
 
+  renderCheckButton() {
+    return <GameButton name="Check" onClick={this.check} />;
+  }
+
+  renderBetButton() {
+    return <GameButton name="Bet" onClick={this.bet} />;
+  }
   render() {
     return (
       <div className="GameConsole">
-        <GameButton name="check" onClick={this.check} />
-        <GameButton name="call" onClick={this.call} />
-        <GameButton name="bet" onClick={this.bet} />
-        <GameButton name="raise" onClick={this.raise} />
-        <GameButton name="fold" onClick={this.fold} />
+        {this.renderCheckButton()}
+        {this.renderBetButton()}
+        <GameButton name="Fold" onClick={this.fold} />
       </div>
     );
   }
