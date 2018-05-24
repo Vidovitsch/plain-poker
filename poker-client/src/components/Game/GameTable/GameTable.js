@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GameTable.css';
 import gameTableImg from './images/gametable.png';
+import Card from './../Card/Card';
 
 class GameTable extends React.Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class GameTable extends React.Component {
     return (
       <div className="GameTable">
         <img id="gameTableImg" src={gameTableImg} alt="gametable" />
+        <Card wildValue="2c" />
       </div>
     );
   }

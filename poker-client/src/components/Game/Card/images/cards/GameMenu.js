@@ -1,4 +1,4 @@
-port React from 'react';
+ort React from 'react';
 import PropTypes from 'prop-types';
 import Popup from 'react-popup';
 import './popup.css';
