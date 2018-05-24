@@ -6,8 +6,9 @@ const randomName = require('node-random-name');
  * @constructor
  */
 function Player(args) {
+  const randName = randomName();
   this.id = args.sessionId;
-  this.name = randomName();
+  this.name = randName.substring(0, randName.indexOf(' '));
   this.location = `client_${this.id}`;
   this.status = 'waiting';
   this.amount = args.amount;

@@ -12,15 +12,10 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
-    // this.state = {
-    //   session: this.props.location.state.session,
-    //   staticTable: this.props.location.state.tableItem,
-    //   variableTable: this.props.location.state.variableTable,
-    // };
     this.state = {
-      session: 'this.props.location.state.session',
-      staticTable: {},
-      variableTable: {},
+      session: this.props.location.state.session,
+      staticTable: this.props.location.state.tableItem,
+      variableTable: this.props.location.state.variableTable,
     };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
@@ -42,6 +37,8 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
+      console.log('UPDATE!!!!!!!!!!!!!!!!!!!!!!');
+      console.log(data);
       this.setState({
         variableTable: data,
       });
@@ -115,7 +112,11 @@ class Game extends React.Component {
           onStart={this.start}
           onReady={this.ready}
         />
-        <GameTable />
+        <GameTable
+          session={this.state.session}
+          communityCards={this.state.variableTable.communityCards}
+          players={this.state.variableTable.players}
+        />
         <GameConsole
           table={this.state.variableTable}
           onCheck={this.check}

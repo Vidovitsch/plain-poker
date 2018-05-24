@@ -10,7 +10,8 @@ import PlayerItem from './../PlayerItem/PlayerItem';
 class Players extends React.Component {
   constructor(props) {
     super(props);
-    this.orderedPlayers = this.orderPlayers();
+    console.log(props);
+    // this.orderedPlayers = this.orderPlayers();
     // Every index of players has a unique class
     // that places the player on the correct position
     this.indexToClassMap = {
@@ -27,14 +28,13 @@ class Players extends React.Component {
    * @return {Array} [description]
    */
   orderPlayers() {
-    const { players, session } = this.props;
     let indexSelf = 0;
-    players.forEach((player, index) => {
-      if (player.id === session) {
+    this.props.players.forEach((player, index) => {
+      if (player.id === this.props.session) {
         indexSelf = index;
       }
     });
-    return players.concat(players.splice(0, indexSelf));
+    return this.props.players.concat(this.props.players.splice(0, indexSelf));
   }
 
   /**
@@ -64,7 +64,7 @@ class Players extends React.Component {
    */
   renderPlayerElements() {
     let index = 0;
-    return this.orderedPlayers.map((player) => {
+    return this.orderPlayers().map((player) => {
       const element = this.createPlayerElement(player, index);
       index += 1;
       return element;
