@@ -35,9 +35,11 @@ class GameMenu extends React.Component {
   }
 
   renderStatusButton() {
-    const btn = this.props.owner === this.props.session ?
-      <GameButton name="Start" onClick={this.start} /> :
-      <GameButton name="Ready" onClick={this.ready} disabled />;
+    const { minPlayerNo } = this.props.staticTable;
+    const { ownerId, players, status } = this.props.variableTable;
+    const btn = ownerId === this.props.session ?
+      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > players.length} /> :
+      <GameButton name="Ready" onClick={this.ready} disabled={status !== 'starting'} />;
     return btn;
   }
 
