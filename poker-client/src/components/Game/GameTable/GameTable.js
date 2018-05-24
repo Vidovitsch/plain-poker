@@ -32,6 +32,24 @@ const cards = [
     },
   },
 ];
+
+const players = [
+  {
+    id: 'Test1',
+    name: 'Test1',
+    amount: 2000,
+  },
+  {
+    id: 'Test2',
+    name: 'Test2',
+    amount: 2000,
+  },
+  {
+    id: 'Test3',
+    name: 'Test3',
+    amount: 2000,
+  },
+];
 class GameTable extends React.Component {
   constructor(props) {
     super(props);
@@ -48,7 +66,7 @@ class GameTable extends React.Component {
       <div className="GameTable">
         <img id="gameTableImg" src={gameTableImg} alt="gametable" />
         <CommunityCards cards={cards} />
-        <Players />
+        <Players session="Test1" players={players} />
       </div>
     );
   }

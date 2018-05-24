@@ -8,14 +8,19 @@ import Card from './../Card/Card';
  * @extends React
  */
 class PlayerCards extends React.Component {
+  createCardElement(card) {
+    if (this.props.self) {
+      return (<Card id={card.id} value={card.wild} hoverable overlap />);
+    }
+    return (<Card id={card.id} value={card.wild} overlap hidden />);
+  }
+
   /**
    * [renderCards description]
    * @return {Array} [description]
    */
-  renderCards() {
-    return this.props.cards.map(({ card }) => (
-      <Card id={card.id} value={card.wild} hoverable overlap />
-    ));
+  renderCardElements() {
+    return this.props.cards.map(({ card }) => this.createCardElement(card));
   }
   /**
    * [render description]
@@ -24,13 +29,14 @@ class PlayerCards extends React.Component {
   render() {
     return (
       <div className="PlayerCards">
-        {this.renderCards()}
+        {this.renderCardElements()}
       </div>
     );
   }
 }
 
 PlayerCards.propTypes = {
+  self: PropTypes.bool,
   cards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -47,6 +53,7 @@ PlayerCards.propTypes = {
 };
 
 PlayerCards.defaultProps = {
+  self: false,
   cards: [],
 };
 

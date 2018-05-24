@@ -38,18 +38,35 @@ class Players extends React.Component {
   }
 
   /**
+   * [createPlayerItem description]
+   * @param  {Player} player [description]
+   * @param  {Number} index  [description]
+   * @return {JSX}        [description]
+   */
+  createPlayerElement(player, index) {
+    if (this.props.session === player.id) {
+      return (
+        <div id={this.indexToClassMap[index]} className="PlayerItem-container">
+          <PlayerItem session={this.props.session} player={player} self />
+        </div>
+      );
+    }
+    return (
+      <div id={this.indexToClassMap[index]} className="PlayerItem-container">
+        <PlayerItem session={this.props.session} player={player} />
+      </div>
+    );
+  }
+
+  /**
    * [renderPlayerItems description]
    * @return {Array} [description]
    */
-  renderPlayerItems() {
-    let count = 0;
+  renderPlayerElements() {
+    let index = 0;
     return this.orderedPlayers.map((player) => {
-      const element = (
-        <div id={this.indexToClassMap[count]} className="PlayerItem-container">
-          <PlayerItem session={this.props.session} player={player} />
-        </div>
-      );
-      count += 1;
+      const element = this.createPlayerElement(player, index);
+      index += 1;
       return element;
     });
   }
@@ -61,7 +78,7 @@ class Players extends React.Component {
   render() {
     return (
       <div className="Players">
-        {this.renderPlayerItems()}
+        {this.renderPlayerElements()}
       </div>
     );
   }

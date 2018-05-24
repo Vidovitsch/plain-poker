@@ -5,18 +5,35 @@ import './Timer.css';
 class Timer extends React.Component {
   constructor(props) {
     super(props);
+    this.timer = null;
+    this.state = {
+      timeRemaining: 30,
+    };
+    this.startTimer();
   }
 
-  getNumberOfReadyPlayers() {
-    // <div>{this.props.turnTime}</div>
-    const { players } = this.props.table;
-    return players.filter(player => player.status === 'ready').length;
+  stopTimer() {
+    if (this.timer) {
+      clearInterval(this.timer);
+    }
+  }
+
+  startTimer() {
+    this.timer = setInterval(() => {
+      if (this.state.timeRemaining === 0) {
+        this.stopTimer();
+      } else {
+        this.setState({
+          timeRemaining: this.state.timeRemaining - 1,
+        });
+      }
+    }, 1000);
   }
 
   render() {
     return (
       <div className="Timer">
-        <div>30</div>
+        <div>{this.state.timeRemaining}</div>
       </div>
     );
   }

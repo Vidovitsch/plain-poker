@@ -34,7 +34,7 @@ class PlayerItem extends React.Component {
   render() {
     return (
       <div className="PlayerItem">
-        <PlayerCards cards={cards} />
+        <PlayerCards cards={cards} self={this.props.self} />
         <div id="PlayerItem-name">{this.props.player.name}</div>
         <img src={playerImage} />
         <img id="PlayerItem-chip" src={blackChipImage} />
