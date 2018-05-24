@@ -2,6 +2,7 @@ import React from 'react';
 import Popup from 'react-popup';
 import './Game.css';
 import GameMenu from './GameMenu/GameMenu';
+import GameTable from './GameTable/GameTable';
 import GameConsole from './GameConsole/GameConsole';
 
 const electron = window.require('electron');
@@ -114,6 +115,7 @@ class Game extends React.Component {
           onStart={this.start}
           onReady={this.ready}
         />
+        <GameTable />
         <GameConsole
           table={this.state.variableTable}
           onCheck={this.check}

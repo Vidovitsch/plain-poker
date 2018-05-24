@@ -1,8 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './Timer.css';
+import './GameTable.css';
+import gameTableImg from './images/gametable.png';
 
-class Timer extends React.Component {
+class GameTable extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -15,15 +16,15 @@ class Timer extends React.Component {
 
   render() {
     return (
-      <div className="Timer">
-        <div>30</div>
+      <div className="GameTable">
+        <img id="gameTableImg" src={gameTableImg} alt="gametable" />
       </div>
     );
   }
 }
 
-Timer.propTypes = {
+GameTable.propTypes = {
 
 };
 
-export default Timer;
+export default GameTable;
