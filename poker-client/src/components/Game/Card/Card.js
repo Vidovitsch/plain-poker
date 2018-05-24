@@ -26,7 +26,8 @@ class Card extends React.Component {
   getClasses() {
     return `Card
     ${this.props.hoverable ? 'hoverable' : ''}
-    ${this.props.highlight ? 'highlight' : ''}`;
+    ${this.props.highlight ? 'highlight' : ''}
+    ${this.props.overlap ? 'overlap' : ''}`;
   }
 
   /**

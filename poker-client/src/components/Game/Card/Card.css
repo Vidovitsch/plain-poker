@@ -3,6 +3,10 @@
   margin: 0.1em;
 }
 
+.overlap {
+  margin-right: -1.75em !important;
+}
+
 .hoverable:hover {
   transform: scale(1.4, 1.4);
   -moz-transform: scale(1.4, 1.4);

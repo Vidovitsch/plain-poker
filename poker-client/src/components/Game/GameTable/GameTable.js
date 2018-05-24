@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import './GameTable.css';
 import gameTableImg from './images/gametable.png';
 import CommunityCards from './../CommunityCards/CommunityCards';
+import Players from './../Players/Players';
 
 const cards = [
   {
@@ -47,6 +48,7 @@ class GameTable extends React.Component {
       <div className="GameTable">
         <img id="gameTableImg" src={gameTableImg} alt="gametable" />
         <CommunityCards cards={cards} />
+        <Players />
       </div>
     );
   }
