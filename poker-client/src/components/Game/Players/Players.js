@@ -3,29 +3,6 @@ import PropTypes from 'prop-types';
 import './Players.css';
 import PlayerItem from './../PlayerItem/PlayerItem';
 
-const players = [
-  {
-    name: 'Test',
-    amount: '5000',
-  },
-  {
-    name: 'Test1',
-    amount: '5001',
-  },
-  {
-    name: 'Test2',
-    amount: '5002',
-  },
-  {
-    name: 'Test3',
-    amount: '5003',
-  },
-  {
-    name: 'Test4',
-    amount: '5004',
-  },
-];
-
 /**
  * [Card description]
  * @extends React
@@ -33,7 +10,10 @@ const players = [
 class Players extends React.Component {
   constructor(props) {
     super(props);
-    this.playerIndexMap = {
+    this.orderedPlayers = this.orderPlayers();
+    // Every index of players has a unique class
+    // that places the player on the correct position
+    this.indexToClassMap = {
       0: 'self',
       1: 'other1',
       2: 'other2',
@@ -42,12 +22,31 @@ class Players extends React.Component {
     };
   }
 
+  /**
+   * [orderPlayers description]
+   * @return {Array} [description]
+   */
+  orderPlayers() {
+    const { players, session } = this.props;
+    let indexSelf = 0;
+    players.forEach((player, index) => {
+      if (player.id === session) {
+        indexSelf = index;
+      }
+    });
+    return players.concat(players.splice(0, indexSelf));
+  }
+
+  /**
+   * [renderPlayerItems description]
+   * @return {Array} [description]
+   */
   renderPlayerItems() {
     let count = 0;
-    return players.map((player) => {
+    return this.orderedPlayers.map((player) => {
       const element = (
-        <div id={this.playerIndexMap[count]} className="PlayerItem-container">
-          <PlayerItem player={player} />
+        <div id={this.indexToClassMap[count]} className="PlayerItem-container">
+          <PlayerItem session={this.props.session} player={player} />
         </div>
       );
       count += 1;
@@ -68,5 +67,15 @@ class Players extends React.Component {
   }
 }
 
+Players.propTypes = {
+  session: PropTypes.string.isRequired,
+  players: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    amount: PropTypes.number.isRequired,
+  })).isRequired,
+};
 
 export default Players;
