@@ -1,3 +1,20 @@
 .Card {
   width: 50px;
+  margin: 0.1em;
+}
+
+.hoverable:hover {
+  transform: scale(1.4, 1.4);
+  -moz-transform: scale(1.4, 1.4);
+  -ms-transform: scale(1.4, 1.4);
+  -webkit-transform: scale(1.4, 1.4);
+  -o-transform: scale(1.4, 1.4);
+  -moz-box-shadow: 0px 0px 50px #111111;
+  -webkit-box-shadow: 0px 0px 50px #111111;
+  box-shadow: 0px 0px 50px #111111;
+}
+
+.highlight {
+  border: 2px solid #FF6600;
+  border-radius: 3px;
 }

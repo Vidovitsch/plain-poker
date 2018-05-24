@@ -7,20 +7,25 @@ class Card extends React.Component {
     super(props);
   }
 
-  getCardImgSrc() {
-    return require(`./images/${this.props.wildValue}.svg`);
+  getImagePath() {
+    return require(`./images/${this.props.value}.svg`); // eslint-disable-line
+  }
+
+  getClasses() {
+    return `Card
+    ${this.props.hoverable ? 'hoverable' : ''} 
+    ${this.props.highlight ? 'highlight' : ''}`;
   }
 
   render() {
     return (
-      <img className="Card" src={this.getCardImgSrc()} alt={this.props.wildValue} />
+      <img className={this.getClasses()} src={this.getImagePath()} alt={this.props.value} />
     );
   }
 }
 
 Card.propTypes = {
-  onClick: PropTypes.func.isRequired,
-  name: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
 };
 
 export default Card;

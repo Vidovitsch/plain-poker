@@ -2,8 +2,35 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GameTable.css';
 import gameTableImg from './images/gametable.png';
-import Card from './../Card/Card';
+import CommunityCards from './../CommunityCards/CommunityCards';
 
+const cards = [
+  {
+    card: {
+      wild: '2s',
+    },
+  },
+  {
+    card: {
+      wild: '3h',
+    },
+  },
+  {
+    card: {
+      wild: '4c',
+    },
+  },
+  {
+    card: {
+      wild: '4c',
+    },
+  },
+  {
+    card: {
+      wild: '4c',
+    },
+  },
+];
 class GameTable extends React.Component {
   constructor(props) {
     super(props);
@@ -19,7 +46,7 @@ class GameTable extends React.Component {
     return (
       <div className="GameTable">
         <img id="gameTableImg" src={gameTableImg} alt="gametable" />
-        <Card wildValue="2c" />
+        <CommunityCards cards={cards} />
       </div>
     );
   }
