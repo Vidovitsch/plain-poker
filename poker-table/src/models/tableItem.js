@@ -7,6 +7,7 @@ function TableItem(table) {
   this.id = table.id;
   this.location = table.location;
   this.timestamp = table.timestamp;
+  this.turnTime = table.turnTime;
   this.name = table.name;
   this.playerNo = table.players.length;
   this.status = table.status;

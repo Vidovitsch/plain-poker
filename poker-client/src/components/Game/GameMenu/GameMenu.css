@@ -1,10 +1,14 @@
-.GameMenu {
+.menu-console {
   width: 30%;
   text-align: center;
   background-color: #272A31;
 }
 
-.GameMenu > .GameButton {
-  width: 35%;
+.menu-console > .GameButton {
+  width: 40%;
   margin: 0.5em;
+}
+
+.timer {
+  float: right;
 }

@@ -1,0 +1,11 @@
+.Timer {
+  width: 5%;
+  color: #AAAAAA;
+  background-color: #272A31;
+  display: flex;
+}
+
+.Timer > div {
+  font-size: 2em;
+  margin: auto;
+}

@@ -4,6 +4,7 @@ import Popup from 'react-popup';
 import './popup.css';
 import './GameMenu.css';
 import GameButton from './../GameButton/GameButton';
+import Timer from './../Timer/Timer';
 
 class GameMenu extends React.Component {
   constructor(props) {
@@ -33,20 +34,21 @@ class GameMenu extends React.Component {
     this.props.onReady();
   }
 
+  renderStatusButton() {
+    const btn = this.props.owner === this.props.session ?
+      <GameButton name="Start" onClick={this.start} /> :
+      <GameButton name="Ready" onClick={this.ready} disabled />;
+    return btn;
+  }
+
   render() {
-    if (this.props.table.ownerId === this.props.session) {
-      return (
-        <div className="GameMenu">
-          <Popup />
-          <GameButton name="start" onClick={this.start} />
-          <GameButton name="leave" onClick={this.leave} />
-        </div>
-      );
-    }
     return (
       <div className="GameMenu">
-        <GameButton name="ready" onClick={this.ready} disabled />
-        <GameButton name="leave" onClick={this.leave} />
+        <div className="menu-console">
+          <GameButton name="Leave" onClick={this.leave} />
+          {this.renderStatusButton()}
+        </div>
+        <Timer turnTime={this.props.staticTable.turnTime} />
       </div>
     );
   }

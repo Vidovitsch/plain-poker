@@ -14,11 +14,12 @@ function Table(ownerId, options) {
 
   // Table data (static)
   this.name = options.name || randomName();
-  this.minPlayerNo = options.minPlayerNo || 2;
+  this.minPlayerNo = options.minPlayerNo || 3;
   this.maxPlayerNo = options.maxPlayerNo || 5;
   this.minBet = options.minBet || 1;
   this.startupAmount = options.startupAmount || 15;
   this.dealer = '';
+  this.turnTime = 30;
 
   // Table data (variable)
   this.status = 'waiting';
