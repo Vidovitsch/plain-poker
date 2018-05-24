@@ -27,13 +27,19 @@ class PlayerItem extends React.Component {
     super(props);
   }
 
+
+  getClasses() {
+    return `PlayerItem
+    ${this.props.highlight ? 'highlight' : ''}`;
+  }
+
   /**
    * [render description]
    * @return {JSX} [description]
    */
   render() {
     return (
-      <div className="PlayerItem">
+      <div className={this.getClasses()}>
         <PlayerCards cards={cards} self={this.props.self} />
         <div id="PlayerItem-name">{this.props.player.name}</div>
         <img src={playerImage} />

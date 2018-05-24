@@ -44,16 +44,14 @@ class Players extends React.Component {
    * @return {JSX}        [description]
    */
   createPlayerElement(player, index) {
-    if (this.props.session === player.id) {
-      return (
-        <div id={this.indexToClassMap[index]} className="PlayerItem-container">
-          <PlayerItem session={this.props.session} player={player} self />
-        </div>
-      );
-    }
     return (
       <div id={this.indexToClassMap[index]} className="PlayerItem-container">
-        <PlayerItem session={this.props.session} player={player} />
+        <PlayerItem
+          session={this.props.session}
+          player={player}
+          highlight={player.status === 'ready' || player.status === 'on'}
+          self={this.props.session === player.id}
+        />
       </div>
     );
   }

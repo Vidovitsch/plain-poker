@@ -27,3 +27,8 @@
 #PlayerItem-name {
   padding: 0.25em;
 }
+
+.highlight {
+  border: 2px solid #FF6600;
+  border-radius: 3px;
+}
