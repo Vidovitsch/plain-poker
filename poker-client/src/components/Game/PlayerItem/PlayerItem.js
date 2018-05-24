@@ -35,9 +35,10 @@ class PlayerItem extends React.Component {
     return (
       <div className="PlayerItem">
         <PlayerCards cards={cards} />
-        <div id="PlayerItem-name">Name</div>
+        <div id="PlayerItem-name">{this.props.player.name}</div>
         <img src={playerImage} />
-        <img id="PlayerItem-chip" src={blackChipImage} /><div id="PlayerItem-amount">5000,-</div>
+        <img id="PlayerItem-chip" src={blackChipImage} />
+        <div id="PlayerItem-amount">€{this.props.player.amount}</div>
       </div>
     );
   }

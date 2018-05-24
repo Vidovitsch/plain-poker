@@ -1,21 +1,21 @@
 .PlayerItem {
-  height: 175px;
+  height: 155px;
   background: #25334F;
   color: #AAAAAA;
   text-align: center;
-  width: 120px;
+  font-size: 0.9em;
+  width: 100px;
   border-radius: 5px;
 }
 
 .PlayerItem > img {
   margin: auto;
-  width: 120px;
+  width: 100px;
 }
 
 #PlayerItem-amount {
-  padding: 0.25em;
-  float:left;
-  padding-left: 10px;
+  padding: 0.4em;
+  float: left;
 }
 
 #PlayerItem-chip {

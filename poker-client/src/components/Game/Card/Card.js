@@ -45,12 +45,14 @@ Card.propTypes = {
   value: PropTypes.string.isRequired,
   hoverable: PropTypes.bool,
   highlight: PropTypes.bool,
+  overlap: PropTypes.bool,
   hidden: PropTypes.bool,
 };
 
 Card.defaultProps = {
   hoverable: false,
   highlight: false,
+  overlap: false,
   hidden: false,
 };
 
