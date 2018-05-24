@@ -8,12 +8,15 @@ class Card extends React.Component {
   }
 
   getImagePath() {
+    if (this.props.hidden) {
+      return require(`./images/back.svg`); // eslint-disable-line
+    }
     return require(`./images/${this.props.value}.svg`); // eslint-disable-line
   }
 
   getClasses() {
     return `Card
-    ${this.props.hoverable ? 'hoverable' : ''} 
+    ${this.props.hoverable ? 'hoverable' : ''}
     ${this.props.highlight ? 'highlight' : ''}`;
   }
 
@@ -25,7 +28,13 @@ class Card extends React.Component {
 }
 
 Card.propTypes = {
-  value: PropTypes.string.isRequired,
+  hoverable: PropTypes.bool,
+  highlight: PropTypes.bool,
+};
+
+Card.defaultProps = {
+  hoverable: false,
+  highlight: false,
 };
 
 export default Card;

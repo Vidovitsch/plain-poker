@@ -10,7 +10,7 @@ class CommunityCards extends React.Component {
 
   renderCards() {
     return this.props.cards.map(({ card }) => (
-      <Card value={card.wild} hoverable />
+      <Card id={card.id} value={card.wild} hoverable hidden />
     ));
   }
 
