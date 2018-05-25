@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Popup from 'react-popup';
-import './popup.css';
 import './GameMenu.css';
 import GameButton from './../GameButton/GameButton';
 import Timer from './../Timer/Timer';
+import Popup from './../../../popupProvider';
 
 class GameMenu extends React.Component {
   constructor(props) {
@@ -15,7 +14,7 @@ class GameMenu extends React.Component {
   }
 
   leave() {
-    Popup.plugins().confirm('Are you sure?', 'Leaving will cause to lose your current bet!', (isConfirmed) => {
+    Popup.confirm('Are you sure?', 'Leaving will cause to lose your current bet!').then((isConfirmed) => {
       if (isConfirmed) {
         this.props.onLeave();
       }
@@ -23,7 +22,7 @@ class GameMenu extends React.Component {
   }
 
   start() {
-    Popup.plugins().confirm('Are you sure?', 'Every player gets 60 seconds to get ready after starting!', (isConfirmed) => {
+    Popup.confirm('Are you sure?', 'Every player gets 30 seconds to get ready!').then((isConfirmed) => {
       if (isConfirmed) {
         this.props.onStart();
       }
@@ -59,32 +58,6 @@ class GameMenu extends React.Component {
     );
   }
 }
-
-/* eslint-disable func-names */
-Popup.registerPlugin('confirm', function (title, content, callback) {
-  this.create({
-    title,
-    content,
-    buttons: {
-      left: [{
-        text: 'Cancel',
-        action() {
-          callback(false);
-          Popup.close();
-        },
-      }],
-      right: [{
-        text: 'Ok',
-        className: 'danger',
-        action() {
-          callback(true);
-          Popup.close();
-        },
-      }],
-    },
-  });
-});
-/* eslint-enable func-names */
 
 GameMenu.propTypes = {
   onLeave: PropTypes.func.isRequired,

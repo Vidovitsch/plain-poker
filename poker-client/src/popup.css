@@ -14,7 +14,7 @@
         height: 100%;
         z-index: 1000;
         overflow: auto;
-        background: rgba(0, 0, 0, .1);
+        background: rgba(0, 0, 0, .4);
     }
 
     .mm-popup__close {
