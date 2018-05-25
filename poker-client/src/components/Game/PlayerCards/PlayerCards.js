@@ -12,7 +12,7 @@ class PlayerCards extends React.Component {
     if (this.props.self) {
       return (<Card id={card.id} value={card.wild} hoverable overlap />);
     }
-    return (<Card id={card.id} value={card.wild} overlap hidden />);
+    return (<Card id={card.id} value={card.wild} hidden overlap />);
   }
 
   /**

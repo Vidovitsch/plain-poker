@@ -84,18 +84,27 @@ class Game extends React.Component {
     });
   }
 
+  renderGameMenu() {
+    return (
+      <GameMenu
+        session={this.state.session}
+        minPlayerNo={this.state.staticTable.minPlayerNo}
+        turnTime={this.state.staticTable.turnTime}
+        status={this.state.variableTable.status}
+        owner={this.state.variableTable.owner}
+        playersNo={this.state.variableTable.players}
+        onLeave={this.leave}
+        onStart={this.start}
+        onReady={this.ready}
+      />
+    );
+  }
+
   render() {
     return (
       <div className="Game">
         <Popup />
-        <GameMenu
-          session={this.state.session}
-          variableTable={this.state.variableTable}
-          staticTable={this.state.staticTable}
-          onLeave={this.leave}
-          onStart={this.start}
-          onReady={this.ready}
-        />
+        {this.renderGameMenu()}
         <GameTable
           session={this.state.session}
           communityCards={this.state.variableTable.communityCards}

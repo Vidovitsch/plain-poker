@@ -22,7 +22,8 @@ class GameMenu extends React.Component {
   }
 
   start() {
-    Popup.confirm('Are you sure?', 'Every player gets 30 seconds to get ready!').then((isConfirmed) => {
+    const { turnTime } = this.props;
+    Popup.confirm('Are you sure?', `Every player gets ${turnTime} seconds to get ready!`).then((isConfirmed) => {
       if (isConfirmed) {
         this.props.onStart();
       }
@@ -34,32 +35,39 @@ class GameMenu extends React.Component {
   }
 
   renderStatusButton() {
-    const { minPlayerNo } = this.props.staticTable;
-    const { ownerId, players, status } = this.props.variableTable;
-    const btn = ownerId === this.props.session ?
-      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > players.length} /> :
+    const {
+      session, minPlayerNo, status, owner, playerNo,
+    } = this.props;
+    return owner === session ?
+      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo} /> :
       <GameButton name="Ready" onClick={this.ready} disabled={status !== 'starting'} />;
-    return btn;
   }
 
   render() {
+    const { status, turnTime } = this.props;
     return (
       <div className="GameMenu">
         <div className="menu-console">
           <GameButton
             name="Leave"
             onClick={this.leave}
-            disabled={this.props.variableTable.status === 'starting'}
+            disabled={status === 'starting'}
           />
           {this.renderStatusButton()}
         </div>
-        <Timer turnTime={this.props.staticTable.turnTime} />
+        <Timer turnTime={turnTime} />
       </div>
     );
   }
 }
 
 GameMenu.propTypes = {
+  session: PropTypes.string.isRequired,
+  minPlayerNo: PropTypes.number.isRequired,
+  turnTime: PropTypes.number.isRequired,
+  status: PropTypes.string.isRequired,
+  owner: PropTypes.string.isRequired,
+  playerNo: PropTypes.number.isRequired,
   onLeave: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   onReady: PropTypes.func.isRequired,
