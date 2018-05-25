@@ -47,7 +47,11 @@ class GameMenu extends React.Component {
     return (
       <div className="GameMenu">
         <div className="menu-console">
-          <GameButton name="Leave" onClick={this.leave} />
+          <GameButton
+            name="Leave"
+            onClick={this.leave}
+            disabled={this.props.variableTable.status === 'starting'}
+          />
           {this.renderStatusButton()}
         </div>
         <Timer turnTime={this.props.staticTable.turnTime} />

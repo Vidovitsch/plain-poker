@@ -37,8 +37,6 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
-      console.log('UPDATE!!!!!!!!!!!!!!!!!!!!!!');
-      console.log(data);
       this.setState({
         variableTable: data,
       });
@@ -54,44 +52,30 @@ class Game extends React.Component {
 
   start() {
     this.ipcRenderer.send('start-request', this.state.staticTable.location);
-    this.ipcRenderer.on('leave-game-reply', () => {
-    });
   }
 
   ready() {
     this.ipcRenderer.send('ready-request', this.state.staticTable.location);
-    this.ipcRenderer.on('leave-game-reply', () => {
-    });
   }
 
   check() {
     this.ipcRenderer.send('check-request', this.state.staticTable.location);
-    this.ipcRenderer.on('check-reply', () => {
-    });
   }
 
   call() {
     this.ipcRenderer.send('call-request', this.state.staticTable.location);
-    this.ipcRenderer.on('call-reply', () => {
-    });
   }
 
   bet(amount) {
     this.ipcRenderer.send('bet-request', { location: this.state.staticTable.location, amount });
-    this.ipcRenderer.on('bet-reply', () => {
-    });
   }
 
   raise(amount) {
     this.ipcRenderer.send('raise-request', { location: this.state.staticTable.location, amount });
-    this.ipcRenderer.on('raise-reply', () => {
-    });
   }
 
   fold() {
     this.ipcRenderer.send('fold-request', this.state.staticTable.location);
-    this.ipcRenderer.on('fold-reply', () => {
-    });
   }
 
   goToLobbyView() {
