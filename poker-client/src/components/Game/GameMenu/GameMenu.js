@@ -67,7 +67,7 @@ class GameMenu extends React.Component {
     return (
       <div className="GameMenu">
         <div className="menu-console">
-          {gameOwner === session ? this.renderStartButton() : ''}
+          {gameOwner === session ? this.renderStartButton() : this.renderReadyButton()}
           {this.renderLeaveButton()}
         </div>
         {this.renderTimer()};

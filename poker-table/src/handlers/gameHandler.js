@@ -30,6 +30,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
     this.gatewayProvider = gatewayProvider;
     this.startLeaveGameHandler(channelKey, gameQueue);
     this.startStartGameHandler(channelKey, gameQueue);
+    this.startReadyGameHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -40,7 +41,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
  * @param  {String} channelKey [description]
  */
 G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
+  this.clientGameAmqpGateway.onLeaveGameRequestAsync(channelKey, gameQueue, (requestMessage) => {
     const { sessionId } = requestMessage.data;
     const result = this.gameService.removePlayer(sessionId);
     let updateAction = 'update';
@@ -62,8 +63,8 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
         } else {
           this.sendTableUpdate(result.table);
         }
-      }).catch((ex) => {
-        logger.error(ex);
+      }).catch((err) => {
+        logger.error(err);
       });
     }
   });
@@ -75,7 +76,7 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
  * @param  {String} gameQueue  [description]
  */
 G.startStartGameHandler = function startStartGameHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onStartGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
+  this.clientGameAmqpGateway.onStartGameRequestAsync(channelKey, gameQueue, (requestMessage) => {
     const result = this.gameService.startGame(requestMessage.data.sessionId);
     if (result instanceof Error) {
       logger.error(result);
@@ -87,9 +88,33 @@ G.startStartGameHandler = function startStartGameHandler(channelKey, gameQueue) 
       this.sendLobbyUpdateAsync('update', table);
     }
     // This reply will only contain an error or a 'true' value
-    this.clientGameAmqpGateway.sendStartGameReplyAsync(result, requestMessage).catch((ex) => {
-      logger.error(ex);
+    this.clientGameAmqpGateway.sendStartGameReplyAsync(result, requestMessage).catch((err) => {
+      logger.error(err);
     });
+  });
+};
+
+/**
+ * [startReadyGameHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onReadyGameRequestAsync(channelKey, gameQueue, (requestMessage) => {
+    const result = this.gameService.setReady(requestMessage.data.sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else {
+      // Send a lobby update and a table update if
+      // the table started successfully
+      const { table } = this.gameService;
+      this.sendTableUpdate(table);
+      this.sendLobbyUpdateAsync('update', table);
+      // This reply will only contain an error or a 'true' value
+      this.clientGameAmqpGateway.sendReadyGameReplyAsync(result, requestMessage).catch((err) => {
+        logger.error(err);
+      });
+    }
   });
 };
 

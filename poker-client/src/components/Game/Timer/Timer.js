@@ -11,12 +11,6 @@ class Timer extends React.Component {
     };
   }
 
-  componentWillUpdate({ status }) {
-    if (status === 'starting' && !this.timer) {
-      this.startTimer();
-    }
-  }
-
   stopTimer() {
     if (this.timer) {
       clearInterval(this.timer);

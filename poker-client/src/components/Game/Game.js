@@ -52,16 +52,10 @@ class Game extends React.Component {
 
   start() {
     this.ipcRenderer.send('start-game-request', this.state.staticTable.location);
-    this.ipcRenderer.send('start-reply', (e, data) => {
-
-    });
   }
 
   ready() {
-    this.ipcRenderer.send('ready-request', this.state.staticTable.location);
-    this.ipcRenderer.send('ready-reply', (e, data) => {
-
-    });
+    this.ipcRenderer.send('ready-game-request', this.state.staticTable.location);
   }
 
   check() {
@@ -98,7 +92,7 @@ class Game extends React.Component {
         turnTime={this.state.staticTable.turnTime}
         status={this.state.variableTable.status}
         gameOwner={this.state.variableTable.ownerId}
-        playersNo={this.state.variableTable.players}
+        playerNo={this.state.variableTable.players.length}
         onLeave={this.leave}
         onStart={this.start}
         onReady={this.ready}

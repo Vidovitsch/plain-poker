@@ -57,6 +57,18 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
+G.setReady = function setReady(sessionId) {
+  if (this.table.status === 'starting') {
+    const player = this.table.players.find(p => p.id === sessionId);
+    if (!player) {
+      return new Error('Player doesn\'t exist');
+    }
+    player.status = 'ready';
+    return true;
+  }
+  return new Error('The table status has to be set on starting before being able to get players ready');
+};
+
 /**
  * [addPlayer description]
  * @param {String} sessionId [description]

@@ -20,7 +20,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "electron-dev": "concurrently \"set BROWSER=none&& npm start\" \"wait-on http://localhost:3000 && electron .\"",
+    "electron-dev": "concurrently \"set BROWSER=none&& npm start\" \"wait-on http://localhost:3001 && electron .\"",
     "electron-pack": "build -c.extraMetadata.main=build/main.js",
     "preelectron-pack": "npm run build"
   },
