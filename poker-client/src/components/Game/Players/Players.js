@@ -3,20 +3,15 @@ import PropTypes from 'prop-types';
 import './Players.css';
 import PlayerItem from './../PlayerItem/PlayerItem';
 
-const players = [
-  {
-    id: 'asdf',
-    name: 'Test',
-    state: 'waiting',
-    amount: '123',
-  },
-];
-
 /**
  * [Card description]
  * @extends React
  */
 class Players extends React.Component {
+  /**
+   * [constructor description]
+   * @param {Object} props [description]
+   */
   constructor(props) {
     super(props);
     // Every index of players has a unique class
@@ -55,8 +50,9 @@ class Players extends React.Component {
       <div id={this.indexToClassMap[index]} className="PlayerItem-container">
         <PlayerItem
           session={this.props.session}
+          cards={this.props.cards}
           player={player}
-          currentTurn="asdf"
+          currentTurn={this.props.currentTurn}
         />
       </div>
     );
@@ -69,7 +65,7 @@ class Players extends React.Component {
   renderPlayerItems() {
     let index = 0;
     return this.orderPlayers().map((player) => {
-      const element = this.createPlayerElement(player, index);
+      const element = this.createPlayerItem(player, index);
       index += 1;
       return element;
     });
@@ -90,6 +86,20 @@ class Players extends React.Component {
 
 Players.propTypes = {
   session: PropTypes.string.isRequired,
+  currentTurn: PropTypes.string.isRequired,
+  cards: PropTypes.arrayOf(PropTypes.shape({
+    card: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      deckId: PropTypes.string.isRequired,
+      timestamp: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+      suit: PropTypes.string.isRequired,
+      wild: PropTypes.string.isRequired,
+      points: PropTypes.number.isRequired,
+    }).isRequired,
+    dealerId: PropTypes.string.isRequired,
+    ownerId: PropTypes.string.isRequired,
+  })),
   players: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
@@ -97,6 +107,10 @@ Players.propTypes = {
     status: PropTypes.string.isRequired,
     amount: PropTypes.number.isRequired,
   })).isRequired,
+};
+
+Players.defaultProps = {
+  cards: [],
 };
 
 export default Players;

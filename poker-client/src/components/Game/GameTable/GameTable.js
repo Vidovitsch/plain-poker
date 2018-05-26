@@ -5,24 +5,81 @@ import gameTableImg from './images/gametable.png';
 import CommunityCards from './../CommunityCards/CommunityCards';
 import Players from './../Players/Players';
 
+/* eslint-disable react/prefer-stateless-function */
 class GameTable extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
+    const { cards, session, table: { communityCards, players } } = this.props;
     return (
       <div className="GameTable">
-        <img id="gameTableImg" src={gameTableImg} alt="gametable" />
-        <CommunityCards cards={this.props.communityCards} />
-        <Players session={this.props.session} players={this.props.players} />
+        <img
+          id="gameTableImg"
+          src={gameTableImg}
+          alt="gametable"
+        />
+        <CommunityCards
+          cards={communityCards}
+        />
+        <Players
+          session={session}
+          cards={cards}
+          players={players}
+        />
       </div>
     );
   }
 }
+/* eslint-enable react/prefer-stateless-function */
 
 GameTable.propTypes = {
+  session: PropTypes.string.isRequired,
+  cards: PropTypes.arrayOf(PropTypes.shape({
+    card: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      deckId: PropTypes.string.isRequired,
+      timestamp: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+      suit: PropTypes.string.isRequired,
+      wild: PropTypes.string.isRequired,
+      points: PropTypes.number.isRequired,
+    }).isRequired,
+    dealerId: PropTypes.string.isRequired,
+    ownerId: PropTypes.string.isRequired,
+  })),
+  table: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    ownerId: PropTypes.string.isRequired,
+    players: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+    })).isRequired,
+    bets: PropTypes.shape({
+      playerId: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+    }),
+    smallBlind: PropTypes.string,
+    bigBlind: PropTypes.string,
+    communityCards: PropTypes.arrayOf(PropTypes.shape({
+      card: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        deckId: PropTypes.string.isRequired,
+        timestamp: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+        suit: PropTypes.string.isRequired,
+        wild: PropTypes.string.isRequired,
+        points: PropTypes.number.isRequired,
+      }).isRequired,
+      dealerId: PropTypes.string.isRequired,
+      ownerId: PropTypes.string.isRequired,
+    })),
+    totalBet: PropTypes.number,
+  }).isRequired,
+};
 
+GameTable.defaultProps = {
+  cards: [],
 };
 
 export default GameTable;

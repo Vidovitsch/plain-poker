@@ -9,23 +9,33 @@ import Card from './../Card/Card';
  */
 class PlayerCards extends React.Component {
   /**
-   * [createCardElement description]
-   * @param  {[type]} card [description]
-   * @return {[type]}      [description]
+   * [createCard description]
+   * @param  {Card} card [description]
+   * @return {JSX}      [description]
    */
-  createCardElement(card) {
+  createCard(card) {
     const { session, player: id } = this.props;
     return session === id ?
-      <Card id={card.id} value={card.wild} hoverable overlap /> :
-      <Card id={card.id} value={card.wild} hidden overlap />;
+      <Card
+        id={card.id}
+        value={card.wild}
+        hoverable
+        overlap
+      /> :
+      <Card
+        id={card.id}
+        value={card.wild}
+        hidden
+        overlap
+      />;
   }
 
   /**
    * [renderCards description]
    * @return {Array} [description]
    */
-  renderCardElements() {
-    return this.props.cards.map(({ card }) => this.createCardElement(card));
+  renderCards() {
+    return this.props.cards.map(({ card }) => this.createCard(card));
   }
 
   /**
@@ -35,7 +45,7 @@ class PlayerCards extends React.Component {
   render() {
     return (
       <div className="PlayerCards">
-        {this.renderCardElements()}
+        {this.renderCards()}
       </div>
     );
   }

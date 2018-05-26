@@ -1,8 +1,11 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import './Timer.css';
 
 class Timer extends React.Component {
+  /**
+   * [constructor description]
+   * @param {Object} props [description]
+   */
   constructor(props) {
     super(props);
     this.timer = null;
@@ -11,12 +14,18 @@ class Timer extends React.Component {
     };
   }
 
+  /**
+   * [stopTimer description]
+   */
   stopTimer() {
     if (this.timer) {
       clearInterval(this.timer);
     }
   }
 
+  /**
+   * [startTimer description]
+   */
   startTimer() {
     this.timer = setInterval(() => {
       if (this.state.timeRemaining === 0) {
@@ -29,6 +38,10 @@ class Timer extends React.Component {
     }, 1000);
   }
 
+  /**
+   * [render description]
+   * @return {JSX} [description]
+   */
   render() {
     return (
       <div className="Timer">
@@ -37,9 +50,5 @@ class Timer extends React.Component {
     );
   }
 }
-
-Timer.propTypes = {
-
-};
 
 export default Timer;
