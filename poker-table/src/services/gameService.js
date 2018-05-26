@@ -38,6 +38,26 @@ G.startAsync = function startAsync(gatewayProvider) {
 };
 
 /**
+ * @param  {String} sessionId [description]
+ * @return {Boolean}           [description]
+ * @return {Error}           [description]
+ */
+G.startGame = function startGame(sessionId) {
+  // Validate that the caller is indeed the owner of the table
+  if (sessionId !== this.table.ownerId) {
+    return new Error('Only a table owner can start a game');
+  }
+  if (this.table.status === 'waiting') {
+    this.table.status = 'starting';
+    // The owner gets the 'ready' status automatically
+    const tableOwner = this.table.players.find(p => p.id === this.table.ownerId);
+    tableOwner.status = 'ready';
+    return true;
+  }
+  return new Error('The table status has to be set on waiting before being able to start');
+};
+
+/**
  * [addPlayer description]
  * @param {String} sessionId [description]
  * @return {Boolean}           [description]

@@ -29,6 +29,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
       this.checkDealerGameAmqpGateway(gatewayProvider)) {
     this.gatewayProvider = gatewayProvider;
     this.startLeaveGameHandler(channelKey, gameQueue);
+    this.startStartGameHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -65,6 +66,30 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
         logger.error(ex);
       });
     }
+  });
+};
+
+/**
+ * [startStartGameHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startStartGameHandler = function startStartGameHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onStartGameRequestAsync(channelKey, gameQueue, (err, requestMessage) => {
+    const result = this.gameService.startGame(requestMessage.data.sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else {
+      // Send a lobby update and a table update if
+      // the table started successfully
+      const { table } = this.gameService;
+      this.sendTableUpdate(table);
+      this.sendLobbyUpdateAsync('update', table);
+    }
+    // This reply will only contain an error or a 'true' value
+    this.clientGameAmqpGateway.sendStartGameReplyAsync(result, requestMessage).catch((ex) => {
+      logger.error(ex);
+    });
   });
 };
 

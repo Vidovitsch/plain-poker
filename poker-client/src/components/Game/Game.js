@@ -37,6 +37,7 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
+      console.log(data);
       this.setState({
         variableTable: data,
       });
@@ -51,11 +52,17 @@ class Game extends React.Component {
   }
 
   start() {
-    this.ipcRenderer.send('start-request', this.state.staticTable.location);
+    this.ipcRenderer.send('start-game-request', this.state.staticTable.location);
+    this.ipcRenderer.send('start-reply', (e, data) => {
+
+    });
   }
 
   ready() {
     this.ipcRenderer.send('ready-request', this.state.staticTable.location);
+    this.ipcRenderer.send('ready-reply', (e, data) => {
+
+    });
   }
 
   check() {

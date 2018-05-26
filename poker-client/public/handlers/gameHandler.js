@@ -29,6 +29,7 @@ G.startAsync = function startAsync() {
         if (!this.isStarted) {
           this.startLeaveGameHandler();
           this.startEnterGameHandler();
+          this.startStartGameHandler();
           this.isStarted = true;
         }
         resolve();
@@ -63,6 +64,21 @@ G.startLeaveGameHandler = function startLeaveGameHandler() {
       e.sender.send('leave-reply', replyMessage.data);
       this.stop();
       this.switchHandlers();
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startStartGameHandler description]
+ */
+G.startStartGameHandler = function startStartGameHandler() {
+  this.ipcMain.on('start-game-request', (e, tableLocation) => {
+    this.tableGameAmqpGateway.sendStartGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
     }).catch((err) => {
       logger.error(err);
     });
