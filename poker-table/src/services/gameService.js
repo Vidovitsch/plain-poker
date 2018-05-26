@@ -57,6 +57,12 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
+/**
+ * [setReady description]
+ * @param {String} sessionId [description]
+ * @return {Boolean}           [description]
+ * @return {Error}           [description]
+ */
 G.setReady = function setReady(sessionId) {
   if (this.table.status === 'starting') {
     const player = this.table.players.find(p => p.id === sessionId);
@@ -67,6 +73,19 @@ G.setReady = function setReady(sessionId) {
     return true;
   }
   return new Error('The table status has to be set on starting before being able to get players ready');
+};
+
+/**
+ * [checkIfPlayersReady description]
+ * @return {Boolean} [description]
+ */
+G.checkEveryoneReady = function checkEveryoneReady() {
+  return this.table.players.every(({ status }) => {
+    if (status === 'ready') {
+      return true;
+    }
+    return false;
+  });
 };
 
 /**

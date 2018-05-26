@@ -24,7 +24,7 @@ function Table(ownerId, options) {
   // Table data (variable)
   this.status = 'waiting';
 
-  // Game data (variable)]
+  // Game data (variable)
   this.ownerId = ownerId;
   this.gameNo = 0;
   this.roundNo = 0;
@@ -35,6 +35,9 @@ function Table(ownerId, options) {
   this.bigBlind = '';
   this.communityCards = [];
   this.totalBet = 0;
+
+  // Secret data (variable)
+  this.playerCards = {};
 }
 
 module.exports = {
