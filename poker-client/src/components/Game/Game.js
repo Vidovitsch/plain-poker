@@ -12,10 +12,17 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
+    // this.state = {
+    //   session: this.props.location.state.session,
+    //   staticTable: this.props.location.state.tableItem,
+    //   variableTable: this.props.location.state.variableTable,
+    // };
     this.state = {
-      session: this.props.location.state.session,
-      staticTable: this.props.location.state.tableItem,
-      variableTable: this.props.location.state.variableTable,
+      session: 'this.props.location.state.session',
+      staticTable: {},
+      variableTable: {
+        players: [],
+      },
     };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
@@ -90,9 +97,7 @@ class Game extends React.Component {
         session={this.state.session}
         minPlayerNo={this.state.staticTable.minPlayerNo}
         turnTime={this.state.staticTable.turnTime}
-        status={this.state.variableTable.status}
-        gameOwner={this.state.variableTable.ownerId}
-        playerNo={this.state.variableTable.players.length}
+        table={this.state.variableTable}
         onLeave={this.leave}
         onStart={this.start}
         onReady={this.ready}

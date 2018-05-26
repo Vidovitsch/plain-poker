@@ -6,9 +6,6 @@
 function VariableTable(table) {
   this.status = table.status;
   this.ownerId = table.ownerId;
-  this.gameNo = table.gameNo;
-  this.roundNo = table.roundNo;
-  this.turnNo = table.trunNo;
   this.players = table.players;
   this.bets = table.bets;
   this.smallBlind = table.smallBlind;

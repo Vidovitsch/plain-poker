@@ -29,8 +29,23 @@ class PlayerItem extends React.Component {
 
 
   getClasses() {
+    const { status } = this.props.player;
     return `PlayerItem
-    ${this.props.highlight ? 'highlight' : ''}`;
+    ${status === 'folded' ? 'transparent' : ''}
+    ${status === 'turn' ? 'light' : ''}`;
+  }
+
+  renderPlayerState() {
+    const { status } = this.props.player;
+    return state === 'waiting' ? <div id="PlayerItem-state" /> :
+    <div id="PlayerItem-state">{status}</div>;
+  }
+
+  renderCards() {
+    const { session, player } = this.props;
+    return (
+      <PlayerCards session={session} player={player} />
+    );
   }
 
   /**
@@ -40,10 +55,11 @@ class PlayerItem extends React.Component {
   render() {
     return (
       <div className={this.getClasses()}>
-        <PlayerCards cards={cards} self={this.props.self} />
+        {this.renderCards()}
         <div id="PlayerItem-name">{this.props.player.name}</div>
         <img src={playerImage} />
-        <img id="PlayerItem-chip" src={blackChipImage} />
+        {this.renderPlayerState()}
+        <img id="PlayerItem-chip" src={blackChipImage} alt="black-poker-chip" />
         <div id="PlayerItem-amount">€{this.props.player.amount}</div>
       </div>
     );

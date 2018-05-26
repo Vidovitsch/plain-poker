@@ -8,11 +8,16 @@ import Card from './../Card/Card';
  * @extends React
  */
 class PlayerCards extends React.Component {
+  /**
+   * [createCardElement description]
+   * @param  {[type]} card [description]
+   * @return {[type]}      [description]
+   */
   createCardElement(card) {
-    if (this.props.self) {
-      return (<Card id={card.id} value={card.wild} hoverable overlap />);
-    }
-    return (<Card id={card.id} value={card.wild} hidden overlap />);
+    const { session, player: id } = this.props;
+    return session === id ?
+      <Card id={card.id} value={card.wild} hoverable overlap /> :
+      <Card id={card.id} value={card.wild} hidden overlap />;
   }
 
   /**
@@ -22,6 +27,7 @@ class PlayerCards extends React.Component {
   renderCardElements() {
     return this.props.cards.map(({ card }) => this.createCardElement(card));
   }
+
   /**
    * [render description]
    * @return {JSX} [description]
@@ -36,7 +42,7 @@ class PlayerCards extends React.Component {
 }
 
 PlayerCards.propTypes = {
-  self: PropTypes.bool,
+  session: PropTypes.string.isRequired,
   cards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
@@ -50,10 +56,16 @@ PlayerCards.propTypes = {
     dealerId: PropTypes.string.isRequired,
     ownerId: PropTypes.string.isRequired,
   })),
+  player: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    location: PropTypes.string.isRequired,
+    status: PropTypes.string.isRequired,
+    amount: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 PlayerCards.defaultProps = {
-  self: false,
   cards: [],
 };
 

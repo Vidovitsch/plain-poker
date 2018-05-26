@@ -26,9 +26,6 @@ function Table(ownerId, options) {
 
   // Game data (variable)
   this.ownerId = ownerId;
-  this.gameNo = 0;
-  this.roundNo = 0;
-  this.turnNo = 0;
   this.players = [];
   this.bets = {};
   this.smallBlind = '';

@@ -28,7 +28,18 @@
   padding: 0.25em;
 }
 
-.highlight {
-  border: 2px solid #FF6600;
-  border-radius: 3px;
+#PlayerItem-state {
+  position: absolute;
+  top: 64%;
+  padding: 0.25em;
+  color: #25334F;
+  font-weight: bold;
+}
+
+.transparent {
+  opacity: 0.5;
+}
+
+.light {
+  background-color: #394F7A;
 }

@@ -10,7 +10,6 @@ function TableItem(table) {
   this.turnTime = table.turnTime;
   this.name = table.name;
   this.playerNo = table.players.length;
-  this.status = table.status;
   this.minPlayerNo = table.minPlayerNo;
   this.maxPlayerNo = table.maxPlayerNo;
   this.minBet = table.minBet;

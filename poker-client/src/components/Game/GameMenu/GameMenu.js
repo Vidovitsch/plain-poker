@@ -35,35 +35,35 @@ class GameMenu extends React.Component {
   }
 
   renderStartButton() {
-    const { status, minPlayerNo, playerNo } = this.props;
+    const { minPlayerNo, table: { status, playerNo } } = this.props;
     return (
       <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo || status === 'starting'} />
     );
   }
 
   renderReadyButton() {
-    const { status } = this.props;
+    const { status } = this.props.table;
     return (
       <GameButton name="Ready" onClick={this.ready} disabled={status !== 'starting'} />
     );
   }
 
   renderLeaveButton() {
-    const { status } = this.props;
+    const { status } = this.props.table;
     return (
       <GameButton name="Leave" onClick={this.leave} disabled={status === 'starting'} />
     );
   }
 
   renderTimer() {
-    const { status, turnTime } = this.props;
+    const { table: { status }, turnTime } = this.props;
     return (
       <Timer status={status} turnTime={turnTime} />
     );
   }
 
   render() {
-    const { gameOwner, session } = this.props;
+    const { table: { gameOwner }, session } = this.props;
     return (
       <div className="GameMenu">
         <div className="menu-console">

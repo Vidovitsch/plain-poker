@@ -3,6 +3,15 @@ import PropTypes from 'prop-types';
 import './Players.css';
 import PlayerItem from './../PlayerItem/PlayerItem';
 
+const players = [
+  {
+    id: 'asdf',
+    name: 'Test',
+    state: 'waiting',
+    amount: '123',
+  },
+];
+
 /**
  * [Card description]
  * @extends React
@@ -10,8 +19,6 @@ import PlayerItem from './../PlayerItem/PlayerItem';
 class Players extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
-    // this.orderedPlayers = this.orderPlayers();
     // Every index of players has a unique class
     // that places the player on the correct position
     this.indexToClassMap = {
@@ -43,14 +50,13 @@ class Players extends React.Component {
    * @param  {Number} index  [description]
    * @return {JSX}        [description]
    */
-  createPlayerElement(player, index) {
+  createPlayerItem(player, index) {
     return (
       <div id={this.indexToClassMap[index]} className="PlayerItem-container">
         <PlayerItem
           session={this.props.session}
           player={player}
-          highlight={player.status === 'ready' || player.status === 'on'}
-          self={this.props.session === player.id}
+          currentTurn="asdf"
         />
       </div>
     );
@@ -60,7 +66,7 @@ class Players extends React.Component {
    * [renderPlayerItems description]
    * @return {Array} [description]
    */
-  renderPlayerElements() {
+  renderPlayerItems() {
     let index = 0;
     return this.orderPlayers().map((player) => {
       const element = this.createPlayerElement(player, index);
@@ -76,7 +82,7 @@ class Players extends React.Component {
   render() {
     return (
       <div className="Players">
-        {this.renderPlayerElements()}
+        {this.renderPlayerItems()}
       </div>
     );
   }

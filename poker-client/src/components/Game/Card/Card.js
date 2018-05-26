@@ -36,7 +36,11 @@ class Card extends React.Component {
    */
   render() {
     return (
-      <img className={this.getClasses()} src={this.getImagePath()} alt={this.props.value} />
+      <img
+        className={this.getClasses()}
+        src={this.getImagePath()}
+        alt={this.props.value}
+      />
     );
   }
 }
