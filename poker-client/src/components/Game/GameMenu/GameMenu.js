@@ -35,9 +35,9 @@ class GameMenu extends React.Component {
   }
 
   renderStartButton() {
-    const { minPlayerNo, playerNo } = this.props;
+    const { status, minPlayerNo, playerNo } = this.props;
     return (
-      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo} />
+      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo || status === 'starting'} />
     );
   }
 
@@ -56,9 +56,9 @@ class GameMenu extends React.Component {
   }
 
   renderTimer() {
-    const { turnTime } = this.props;
+    const { status, turnTime } = this.props;
     return (
-      <Timer turnTime={turnTime} />
+      <Timer status={status} turnTime={turnTime} />
     );
   }
 
