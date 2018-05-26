@@ -91,7 +91,7 @@ class Game extends React.Component {
         minPlayerNo={this.state.staticTable.minPlayerNo}
         turnTime={this.state.staticTable.turnTime}
         status={this.state.variableTable.status}
-        owner={this.state.variableTable.owner}
+        gameOwner={this.state.variableTable.ownerId}
         playersNo={this.state.variableTable.players}
         onLeave={this.leave}
         onStart={this.start}

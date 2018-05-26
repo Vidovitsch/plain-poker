@@ -34,28 +34,43 @@ class GameMenu extends React.Component {
     this.props.onReady();
   }
 
-  renderStatusButton() {
-    const {
-      session, minPlayerNo, status, owner, playerNo,
-    } = this.props;
-    return owner === session ?
-      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo} /> :
-      <GameButton name="Ready" onClick={this.ready} disabled={status !== 'starting'} />;
+  renderStartButton() {
+    const { minPlayerNo, playerNo } = this.props;
+    return (
+      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo} />
+    );
+  }
+
+  renderReadyButton() {
+    const { status } = this.props;
+    return (
+      <GameButton name="Ready" onClick={this.ready} disabled={status !== 'starting'} />
+    );
+  }
+
+  renderLeaveButton() {
+    const { status } = this.props;
+    return (
+      <GameButton name="Leave" onClick={this.leave} disabled={status === 'starting'} />
+    );
+  }
+
+  renderTimer() {
+    const { turnTime } = this.props;
+    return (
+      <Timer turnTime={turnTime} />
+    );
   }
 
   render() {
-    const { status, turnTime } = this.props;
+    const { gameOwner, session } = this.props;
     return (
       <div className="GameMenu">
         <div className="menu-console">
-          <GameButton
-            name="Leave"
-            onClick={this.leave}
-            disabled={status === 'starting'}
-          />
-          {this.renderStatusButton()}
+          {gameOwner === session ? this.renderStartButton() : ''}
+          {this.renderLeaveButton()}
         </div>
-        <Timer turnTime={turnTime} />
+        {this.renderTimer()};
       </div>
     );
   }
@@ -66,7 +81,7 @@ GameMenu.propTypes = {
   minPlayerNo: PropTypes.number.isRequired,
   turnTime: PropTypes.number.isRequired,
   status: PropTypes.string.isRequired,
-  owner: PropTypes.string.isRequired,
+  gameOwner: PropTypes.string.isRequired,
   playerNo: PropTypes.number.isRequired,
   onLeave: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,

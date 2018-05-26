@@ -9,7 +9,6 @@ class Timer extends React.Component {
     this.state = {
       timeRemaining: 30,
     };
-    this.startTimer();
   }
 
   stopTimer() {
