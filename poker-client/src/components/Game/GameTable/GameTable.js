@@ -6,7 +6,15 @@ import CommunityCards from './../CommunityCards/CommunityCards';
 import Players from './../Players/Players';
 
 /* eslint-disable react/prefer-stateless-function */
+/**
+ * [GameTable description]
+ * @extends React
+ */
 class GameTable extends React.Component {
+  /**
+   * [render description]
+   * @return {JSX} [description]
+   */
   render() {
     const { cards, session, table: { communityCards, players } } = this.props;
     return (

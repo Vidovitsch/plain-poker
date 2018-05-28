@@ -15,7 +15,7 @@ class Players extends React.Component {
   constructor(props) {
     super(props);
     // Every index of players has a unique class
-    // that places the player on the correct position
+    // that places the player in the correct position
     this.indexToClassMap = {
       0: 'self',
       1: 'other1',
