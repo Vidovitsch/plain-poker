@@ -62,11 +62,9 @@ G.setupTableAsync = function setupTableAsync() {
   return new Promise((resolve, reject) => {
     this.setPlayerCardsAsync().then(() => {
       this.table.status = 'in-game';
+      this.resetPlayerStatus();
       this.setSmallBlind();
       this.setBigBlind();
-      this.setSmallBlindBet();
-      this.setBigBlindBet();
-      this.setInitialTurn();
       resolve();
     }).catch((err) => {
       reject(err);
@@ -78,6 +76,9 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
     this.setupTableAsync().then(() => {
       this.table.gameRound = 'pre-flop';
+      this.setSmallBlindBet();
+      this.setBigBlindBet();
+      this.setInitialTurn();
       resolve();
     }).catch((err) => {
       reject(err);
@@ -160,6 +161,13 @@ G.setInitialTurn = function setInitialTurn() {
     return true;
   }
   return new Error('Can\'t set initial turn without a big blind');
+};
+
+G.resetPlayerStatus = function resetPlayerStatus() {
+  const { players } = this.table;
+  players.forEach((player) => {
+    player.status = 'waiting'; // eslint-disable-line no-param-reassign
+  });
 };
 
 G.setPlayerCardsAsync = function setPlayerCardsAsync() {
