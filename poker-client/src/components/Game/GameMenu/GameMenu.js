@@ -80,12 +80,40 @@ GameMenu.propTypes = {
   session: PropTypes.string.isRequired,
   minPlayerNo: PropTypes.number.isRequired,
   turnTime: PropTypes.number.isRequired,
-  status: PropTypes.string.isRequired,
-  gameOwner: PropTypes.string.isRequired,
-  playerNo: PropTypes.number.isRequired,
   onLeave: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   onReady: PropTypes.func.isRequired,
+  table: PropTypes.shape({
+    status: PropTypes.string.isRequired,
+    ownerId: PropTypes.string.isRequired,
+    players: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      location: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+    })).isRequired,
+    bets: PropTypes.shape({
+      playerId: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+    }),
+    smallBlind: PropTypes.string,
+    bigBlind: PropTypes.string,
+    communityCards: PropTypes.arrayOf(PropTypes.shape({
+      card: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        deckId: PropTypes.string.isRequired,
+        timestamp: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+        suit: PropTypes.string.isRequired,
+        wild: PropTypes.string.isRequired,
+        points: PropTypes.number.isRequired,
+      }).isRequired,
+      dealerId: PropTypes.string.isRequired,
+      ownerId: PropTypes.string.isRequired,
+    })),
+    totalBet: PropTypes.number,
+  }).isRequired,
 };
 
 export default GameMenu;
