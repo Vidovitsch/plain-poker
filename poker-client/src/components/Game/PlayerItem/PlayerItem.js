@@ -25,10 +25,10 @@ class PlayerItem extends React.Component {
    * [renderrState description]
    * @return {JSX} [description]
    */
-  renderState() {
+  renderStatus() {
     const { status } = this.props.player;
     return status === 'waiting' ? <div id="PlayerItem-state" /> :
-    <div id="PlayerItem-state">{status}</div>;
+    <div id="PlayerItem-state">{status.charAt(0).toUpperCase() + status.slice(1)}</div>;
   }
 
   /**
@@ -88,7 +88,7 @@ class PlayerItem extends React.Component {
         {this.renderCards()}
         {this.renderName()}
         <img src={playerImage} alt="profile" />
-        {this.renderState()}
+        {this.renderStatus()}
         {this.renderAmount()}
         {this.renderBlind()}
       </div>
