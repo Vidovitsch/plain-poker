@@ -68,6 +68,16 @@ class PlayerItem extends React.Component {
     );
   }
 
+  renderBlind() {
+    const { isBigBlind, isSmallBlind } = this.props.player;
+    if (isBigBlind) {
+      return (<div id="PlayerItem-blind">Big</div>);
+    } else if (isSmallBlind) {
+      return (<div id="PlayerItem-blind">Small</div>);
+    }
+    return '';
+  }
+
   /**
    * [render description]
    * @return {JSX} [description]
@@ -79,12 +89,8 @@ class PlayerItem extends React.Component {
         {this.renderName()}
         <img src={playerImage} alt="profile" />
         {this.renderState()}
-        <img
-          id="PlayerItem-chip"
-          src={blackChipImage}
-          alt="black-poker-chip"
-        />
         {this.renderAmount()}
+        {this.renderBlind()}
       </div>
     );
   }
