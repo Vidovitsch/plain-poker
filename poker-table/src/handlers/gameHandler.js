@@ -105,9 +105,10 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
     if (result instanceof Error) {
       logger.error(result);
     } else {
+      // Start game if everyone at the table has a 'ready' status
       if (this.gameService.checkEveryoneReady()) {
         this.gameService.startPreFlopRoundAsync().then(() => {
-          logger.log('done');
+          this.sendPlayerCards(this.gameService.table);
         });
       }
       // Send a lobby update and a table update if
@@ -130,6 +131,14 @@ G.getPlayerCardsAsync = function getPlayerCardsAsync(numberOfCards, sessions, de
     }).catch((err) => {
       reject(err);
     });
+  });
+};
+
+G.sendPlayerCards = function sendPlayerCards(table) {
+  Object.keys(table.playerCards).forEach((key) => {
+    const cards = table.playerCards[key];
+    const { location } = table.players.find(p => p.id === key);
+    this.clientGameAmqpGateway.sendPlayerCardsAsync(cards, location);
   });
 };
 

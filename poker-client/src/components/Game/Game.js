@@ -14,6 +14,7 @@ class Game extends React.Component {
     this.ipcRenderer = ipcRenderer;
     this.state = {
       session: this.props.location.state.session,
+      sessionCards: [],
       staticTable: this.props.location.state.tableItem,
       variableTable: this.props.location.state.variableTable,
     };
@@ -46,6 +47,12 @@ class Game extends React.Component {
     this.ipcRenderer.on('table-update', (e, data) => {
       this.setState({
         variableTable: data,
+      });
+    });
+    this.ipcRenderer.on('player-cards', (e, data) => {
+      console.log(data);
+      this.setState({
+        sessionCards: data,
       });
     });
   }
@@ -113,7 +120,7 @@ class Game extends React.Component {
         <GameTable
           session={this.state.session}
           table={this.state.variableTable}
-          cards={this.state.cards}
+          sessionCards={this.state.sessionCards}
           players={this.state.variableTable}
         />
         <GameConsole

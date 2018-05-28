@@ -47,11 +47,11 @@ class PlayerItem extends React.Component {
    * @return {JSX} [description]
    */
   renderCards() {
-    const { session, player, cards } = this.props;
+    const { session, player, sessionCards } = this.props;
     return (
       <PlayerCards
         session={session}
-        cards={cards}
+        sessionCards={sessionCards}
         player={player}
       />
     );
@@ -92,7 +92,7 @@ class PlayerItem extends React.Component {
 
 PlayerItem.propTypes = {
   session: PropTypes.string.isRequired,
-  cards: PropTypes.arrayOf(PropTypes.shape({
+  sessionCards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
       deckId: PropTypes.string.isRequired,
@@ -115,7 +115,7 @@ PlayerItem.propTypes = {
 };
 
 PlayerItem.defaultProps = {
-  cards: [],
+  sessionCards: [],
 };
 
 export default PlayerItem;

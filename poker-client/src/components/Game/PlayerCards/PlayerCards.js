@@ -9,33 +9,18 @@ import Card from './../Card/Card';
  */
 class PlayerCards extends React.Component {
   /**
-   * [createCard description]
-   * @param  {Card} card [description]
-   * @return {JSX}      [description]
-   */
-  createCard(card) {
-    const { session, player: id } = this.props;
-    return session === id ?
-      <Card
-        id={card.id}
-        value={card.wild}
-        hoverable
-        overlap
-      /> :
-      <Card
-        id={card.id}
-        value={card.wild}
-        hidden
-        overlap
-      />;
-  }
-
-  /**
    * [renderCards description]
    * @return {Array} [description]
    */
   renderCards() {
-    return this.props.cards.map(({ card }) => this.createCard(card));
+    const { session, sessionCards, player } = this.props;
+    if (sessionCards.length > 0) {
+      if (session === player.id) {
+        return this.props.sessionCards.map(({ card }) => <Card id={card.id} value={card.wild} hoverable overlap />);
+      }
+      return [0, 1].map(() => <Card value="As" hidden overlap />);
+    }
+    return '';
   }
 
   /**
@@ -53,7 +38,7 @@ class PlayerCards extends React.Component {
 
 PlayerCards.propTypes = {
   session: PropTypes.string.isRequired,
-  cards: PropTypes.arrayOf(PropTypes.shape({
+  sessionCards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
       deckId: PropTypes.string.isRequired,
@@ -76,7 +61,7 @@ PlayerCards.propTypes = {
 };
 
 PlayerCards.defaultProps = {
-  cards: [],
+  sessionCards: [],
 };
 
 export default PlayerCards;

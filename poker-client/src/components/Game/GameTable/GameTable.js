@@ -16,7 +16,7 @@ class GameTable extends React.Component {
    * @return {JSX} [description]
    */
   render() {
-    const { cards, session, table: { communityCards, players } } = this.props;
+    const { sessionCards, session, table: { communityCards, players } } = this.props;
     return (
       <div className="GameTable">
         <img
@@ -29,7 +29,7 @@ class GameTable extends React.Component {
         />
         <Players
           session={session}
-          cards={cards}
+          sessionCards={sessionCards}
           players={players}
         />
       </div>
@@ -40,7 +40,7 @@ class GameTable extends React.Component {
 
 GameTable.propTypes = {
   session: PropTypes.string.isRequired,
-  cards: PropTypes.arrayOf(PropTypes.shape({
+  sessionCards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
       deckId: PropTypes.string.isRequired,
@@ -87,7 +87,7 @@ GameTable.propTypes = {
 };
 
 GameTable.defaultProps = {
-  cards: [],
+  sessionCards: [],
 };
 
 export default GameTable;

@@ -48,6 +48,9 @@ G.startEnterGameHandler = function startEnterGameHandler() {
     this.tableGameAmqpGateway.onUpdate(this.channelKey, `client_${this.sessionId}`, tableLocation, (err, message) => {
       e.sender.send('table-update', message.data);
     });
+    this.tableGameAmqpGateway.onPlayerCards(this.channelKey, `client_${this.sessionId}`, (message) => {
+      e.sender.send('player-cards', message.data.cards);
+    });
   });
 };
 

@@ -50,7 +50,7 @@ class Players extends React.Component {
       <div id={this.indexToClassMap[index]} className="PlayerItem-container">
         <PlayerItem
           session={this.props.session}
-          cards={this.props.cards}
+          sessionCards={this.props.sessionCards}
           player={player}
           currentTurn={this.props.currentTurn}
         />
@@ -87,7 +87,7 @@ class Players extends React.Component {
 Players.propTypes = {
   session: PropTypes.string.isRequired,
   currentTurn: PropTypes.string.isRequired,
-  cards: PropTypes.arrayOf(PropTypes.shape({
+  sessionCards: PropTypes.arrayOf(PropTypes.shape({
     card: PropTypes.shape({
       id: PropTypes.string.isRequired,
       deckId: PropTypes.string.isRequired,
@@ -110,7 +110,7 @@ Players.propTypes = {
 };
 
 Players.defaultProps = {
-  cards: [],
+  sessionCards: [],
 };
 
 export default Players;

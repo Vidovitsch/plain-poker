@@ -58,10 +58,22 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
+G.setupTableAsync = function setupTableAsync() {
+  return new Promise((resolve, reject) => {
+    this.setPlayerCardsAsync().then(() => {
+      this.setSmallBlind();
+      this.setBigBlind();
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
-    this.getPlayerCardsAsync().then((cards) => {
-      console.log(cards);
+    this.setupTableAsync().then(() => {
+      resolve();
     }).catch((err) => {
       reject(err);
     });
@@ -80,12 +92,29 @@ G.startRiverRound = function startRiverRound() {
 
 };
 
-G.getPlayerCardsAsync = function getPlayerCardsAsync() {
+G.setSmallBlind = function setSmallBlind() {
+
+};
+
+G.setBigBlind = function setBigBlind() {
+
+};
+
+G.setPlayerCardsAsync = function setPlayerCardsAsync() {
   return new Promise((resolve, reject) => {
     const { players, dealer } = this.table;
     const sessions = players.map(player => player.id);
     this.gameHandler.getPlayerCardsAsync(2, sessions, dealer.location).then((cards) => {
-      resolve(cards);
+      cards.forEach((card) => {
+        const playerCards = this.table.playerCards[card.ownerId];
+        if (playerCards) {
+          playerCards.push(card);
+        } else {
+          this.table.playerCards[card.ownerId] = [];
+          this.table.playerCards[card.ownerId].push(card);
+        }
+      });
+      resolve();
     }).catch((err) => {
       reject(err);
     });
