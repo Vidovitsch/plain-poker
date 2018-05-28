@@ -39,7 +39,10 @@ D.getRandomCards = function getRandomCards(deck, numberOfCards) {
   const cards = [];
   let counter = 0;
   while (numberOfCards > counter) {
-    const randomIndex = Math.floor(Math.random() * deck);
+    const randomIndex = Math.floor(Math.random() * deck.length);
+    console.log(deck.length);
+    console.log(deck[randomIndex]);
+    console.log(deck);
     cards.push(deck[randomIndex]);
     deck.splice(randomIndex, 1);
     counter += 1;

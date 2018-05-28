@@ -22,6 +22,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
   if (this.checkTableGameAmqpGateway(gatewayProvider)) {
     this.gatewayProvider = gatewayProvider;
     this.startEndGameHandler(channelKey, gameQueue);
+    this.startPlayerCardHandler(channelKey, gameQueue);
     return true;
   }
   return false;
