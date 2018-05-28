@@ -2,6 +2,48 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './Players.css';
 import PlayerItem from './../PlayerItem/PlayerItem';
+import PlayerBet from './../PlayerBet/PlayerBet';
+
+const players = [
+  {
+    id: 'test1',
+    name: 'test1',
+    status: 'turn',
+    amount: '1000',
+  },
+  {
+    id: 'test2',
+    name: 'test2',
+    status: 'waiting',
+    amount: '1000',
+  },
+  {
+    id: 'test3',
+    name: 'test3',
+    status: 'waiting',
+    amount: '1000',
+  },
+  {
+    id: 'test4',
+    name: 'test4',
+    status: 'waiting',
+    amount: '1000',
+  },
+  {
+    id: 'test5',
+    name: 'test5',
+    status: 'waiting',
+    amount: '1000',
+  },
+];
+
+const bets = {
+  test1: 12,
+  test2: 13,
+  test3: 14,
+  test4: 15,
+  test5: 16,
+};
 
 /**
  * [Card description]
@@ -16,12 +58,19 @@ class Players extends React.Component {
     super(props);
     // Every index of players has a unique class
     // that places the player in the correct position
-    this.indexToClassMap = {
+    this.playerIndexToClassMap = {
       0: 'self',
       1: 'other1',
       2: 'other2',
       3: 'other3',
       4: 'other4',
+    };
+    this.betIndexToClassMap = {
+      0: 'self-bet',
+      1: 'other1-bet',
+      2: 'other2-bet',
+      3: 'other3-bet',
+      4: 'other4-bet',
     };
   }
 
@@ -30,7 +79,7 @@ class Players extends React.Component {
    * @return {Array} [description]
    */
   orderPlayers() {
-    const { players } = this.props;
+    // const { players } = this.props;
     const orderedPlayers = [];
     const beforeSelf = [];
     let self = null;
@@ -47,6 +96,14 @@ class Players extends React.Component {
     return orderedPlayers.concat(beforeSelf);
   }
 
+  syncBetsWithOrderedPlayers() {
+    const orderedBets = {};
+    this.orderPlayers().forEach((player) => {
+      orderedBets[player.id] = bets[player.id];
+    });
+    return orderedBets;
+  }
+
   /**
    * [createPlayerItem description]
    * @param  {Player} player [description]
@@ -55,13 +112,21 @@ class Players extends React.Component {
    */
   createPlayerItem(player, index) {
     return (
-      <div id={this.indexToClassMap[index]} className="PlayerItem-container">
+      <div id={this.playerIndexToClassMap[index]} className="PlayerItem-container">
         <PlayerItem
           session={this.props.session}
           sessionCards={this.props.sessionCards}
           player={player}
           currentTurn={this.props.currentTurn}
         />
+      </div>
+    );
+  }
+
+  createBetItem(amount, index) {
+    return (
+      <div id={this.betIndexToClassMap[index]} className="bet-container">
+        <PlayerBet amount={amount} />
       </div>
     );
   }
@@ -79,6 +144,11 @@ class Players extends React.Component {
     });
   }
 
+  renderBets() {
+    const orderedBets = this.syncBetsWithOrderedPlayers();
+    return Object.keys(orderedBets).map((key, index) => this.createBetItem(orderedBets[key], index));
+  }
+
   /**
    * [render description]
    * @return {JSX} [description]
@@ -87,6 +157,7 @@ class Players extends React.Component {
     return (
       <div className="Players">
         {this.renderPlayerItems()}
+        {this.renderBets()}
       </div>
     );
   }

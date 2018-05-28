@@ -16,7 +16,7 @@ class GameTable extends React.Component {
    * @return {JSX} [description]
    */
   render() {
-    const { sessionCards, session, table: { communityCards, players } } = this.props;
+    const { sessionCards, session, table: { communityCards, players, bets } } = this.props;
     return (
       <div className="GameTable">
         <img
@@ -30,6 +30,7 @@ class GameTable extends React.Component {
         <Players
           session={session}
           sessionCards={sessionCards}
+          bets={bets}
           players={players}
         />
       </div>

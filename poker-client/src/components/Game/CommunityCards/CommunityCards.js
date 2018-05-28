@@ -3,6 +3,34 @@ import PropTypes from 'prop-types';
 import './CommunityCards.css';
 import Card from './../Card/Card';
 
+const cards = [
+  {
+    card: {
+      wild: 'As',
+    },
+  },
+  {
+    card: {
+      wild: 'As',
+    },
+  },
+  {
+    card: {
+      wild: 'As',
+    },
+  },
+  {
+    card: {
+      wild: 'As',
+    },
+  },
+  {
+    card: {
+      wild: 'As',
+    },
+  },
+];
+
 /**
  * [CommunityCards description]
  * @extends React
@@ -13,7 +41,7 @@ class CommunityCards extends React.Component {
    * @return {Array} [description]
    */
   renderCards() {
-    return this.props.cards.map(({ card }) => (
+    return cards.map(({ card }) => (
       <Card id={card.id} value={card.wild} hoverable />
     ));
   }

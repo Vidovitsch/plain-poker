@@ -1,0 +1,16 @@
+.PlayerBet {
+  background-color: #272A31;
+  color: #FFFFFF;
+  border-radius: 1em;
+  text-align: center;
+  display: inline-block;
+}
+
+.PlayerBet > img {
+  width: 30px;
+  float: left;
+}
+
+#PlayerBet-amount {
+  padding: 0.2em 1em 0.2em 1em;
+}

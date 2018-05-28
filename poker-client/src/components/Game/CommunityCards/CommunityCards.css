@@ -1,6 +1,7 @@
 .CommunityCards {
   text-align: center;
   position: absolute;
-  top: 40%;
+  top: 43%;
   width: 100%;
+  z-index: 1;
 }

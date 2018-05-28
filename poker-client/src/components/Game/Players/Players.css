@@ -2,8 +2,12 @@
   position: fixed;
 }
 
+.bet-container {
+  position: fixed;
+}
+
 #self {
-  top: 64%;
+  top: 65%;
   left: 43%;
   width: 100%;
 }
@@ -28,6 +32,36 @@
 
 #other4 {
   top: 55%;
-  left: 65%;
+  left: 66%;
+  width: 100%;
+}
+
+#self-bet {
+  top: 61%;
+  right: 3%;
+  width: 100%;
+}
+
+#other1-bet {
+  top: 55%;
+  right: 16%;
+  width: 100%;
+}
+
+#other2-bet {
+  top: 33%;
+  right: 10%;
+  width: 100%;
+}
+
+#other3-bet {
+  top: 35%;
+  left: 8%;
+  width: 100%;
+}
+
+#other4-bet {
+  top: 50%;
+  left: 14%;
   width: 100%;
 }
