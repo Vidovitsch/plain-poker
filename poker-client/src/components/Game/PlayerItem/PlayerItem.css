@@ -30,13 +30,13 @@
 }
 
 #PlayerItem-blind {
-  background: #25334F;
+  background: #383D48;
   position: absolute;
   z-index: -1;
   text-align: left;
   width: 7.5%;
   top: 78%;
-  left: -5%;
+  left: -4%;
   padding: 0.2em 0.7em 0.2em 0.7em;
   border-radius: 0.25em;
 }

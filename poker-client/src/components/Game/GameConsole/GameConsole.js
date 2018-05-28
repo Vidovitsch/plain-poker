@@ -33,19 +33,43 @@ class GameConsole extends React.Component {
     this.props.onFold();
   }
 
-  renderCheckButton() {
-    return <GameButton name="Check" onClick={this.check} />;
+  getPreviousPlayer(currentPlayer) {
+    let index = this.props.table.players.indexOf(currentPlayer) - 1;
+    if (index === -1) {
+      index = this.props.table.players.length - 1;
+    }
+    return this.props.table.players[index];
   }
 
-  renderBetButton() {
-    return <GameButton name="Bet" onClick={this.bet} />;
+  renderCheckOrCallButton() {
+    const currentPlayer = this.props.table.players.find(p => p.status === 'turn');
+    if (currentPlayer) {
+      const previousPlayer = this.getPreviousPlayer(currentPlayer);
+      if (this.props.table.bets[previousPlayer.id] > this.props.table.bets[this.props.session]) {
+        return (<GameButton name="Call" onClick={this.call} />);
+      }
+    }
+    return (<GameButton name="Check" onClick={this.check} />);
   }
+
+  renderBetOrRaiseButton() {
+    const betPlayer = this.props.table.players.find(p => p.startus === 'bet');
+    if (betPlayer && betPlayer.id !== this.props.session) {
+      return (<GameButton name="Raise" onClick={this.raise} />);
+    }
+    return (<GameButton name="Bet" onClick={this.bet} />);
+  }
+
+  renderFoldButton() {
+    return (<GameButton name="Fold" onClick={this.fold} />);
+  }
+
   render() {
     return (
       <div className="GameConsole">
-        {this.renderCheckButton()}
-        {this.renderBetButton()}
-        <GameButton name="Fold" onClick={this.fold} />
+        {this.renderCheckOrCallButton()}
+        {this.renderBetOrRaiseButton()}
+        {this.renderFoldButton()}
       </div>
     );
   }

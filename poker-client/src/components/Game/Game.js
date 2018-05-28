@@ -38,7 +38,6 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
-      console.log(data);
       this.setState({
         variableTable: data,
       });
@@ -116,6 +115,7 @@ class Game extends React.Component {
           sessionCards={this.state.sessionCards}
         />
         <GameConsole
+          session={this.state.session}
           table={this.state.variableTable}
           onCheck={this.check}
           onCall={this.call}
