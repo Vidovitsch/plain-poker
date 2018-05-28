@@ -45,12 +45,13 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
+      console.log(`Number of players after ipc: ${data.players.length}`);
+      console.log(data.players);
       this.setState({
         variableTable: data,
       });
     });
     this.ipcRenderer.on('player-cards', (e, data) => {
-      console.log(data);
       this.setState({
         sessionCards: data,
       });
@@ -121,7 +122,6 @@ class Game extends React.Component {
           session={this.state.session}
           table={this.state.variableTable}
           sessionCards={this.state.sessionCards}
-          players={this.state.variableTable}
         />
         <GameConsole
           table={this.state.variableTable}

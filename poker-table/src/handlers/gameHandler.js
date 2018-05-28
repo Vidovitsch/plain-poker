@@ -54,7 +54,6 @@ G.startLeaveGameHandler = function startLeaveGameHandler(channelKey, gameQueue) 
       this.sendLobbyUpdateAsync(updateAction, result.table).then(() => this.clientGameAmqpGateway.sendLeaveGameReplyAsync(result, requestMessage)).then(() => {
         if (result.tableIsEmpty) {
           const { communityCards, dealer: { location: dealerLocation } } = this.gameService.table;
-          logger.error(`CommunityCards: ${communityCards}`);
           this.dealerGameAmqpGateway.sendEndGameRequestAsync(communityCards, dealerLocation).then(() => {
             this.stop(channelKey);
           }).catch((ex) => {
@@ -144,6 +143,7 @@ G.sendPlayerCards = function sendPlayerCards(table) {
 
 G.sendTableUpdate = function sendTableUpdate(table) {
   const variableTable = VariableTable.createInstance(table);
+  logger.info(`Number of players: ${variableTable.players.length}`);
   this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);
 };
 

@@ -46,6 +46,7 @@ G.startAsync = function startAsync() {
 G.startEnterGameHandler = function startEnterGameHandler() {
   this.ipcMain.on('game-entered', (e, tableLocation) => {
     this.tableGameAmqpGateway.onUpdate(this.channelKey, `client_${this.sessionId}`, tableLocation, (err, message) => {
+      logger.info(message.data.players);
       e.sender.send('table-update', message.data);
     });
     this.tableGameAmqpGateway.onPlayerCards(this.channelKey, `client_${this.sessionId}`, (message) => {

@@ -30,13 +30,21 @@ class Players extends React.Component {
    * @return {Array} [description]
    */
   orderPlayers() {
-    let indexSelf = 0;
-    this.props.players.forEach((player, index) => {
+    const { players } = this.props;
+    const orderedPlayers = [];
+    const beforeSelf = [];
+    let self = null;
+    players.forEach((player) => {
       if (player.id === this.props.session) {
-        indexSelf = index;
+        self = player;
+        orderedPlayers.push(self);
+      } else if (self) {
+        orderedPlayers.push(player);
+      } else {
+        beforeSelf.push(player);
       }
     });
-    return this.props.players.concat(this.props.players.splice(0, indexSelf));
+    return orderedPlayers.concat(beforeSelf);
   }
 
   /**
