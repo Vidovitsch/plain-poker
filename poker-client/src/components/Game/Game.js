@@ -45,8 +45,6 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
-      console.log(`Number of players after ipc: ${data.players.length}`);
-      console.log(data.players);
       this.setState({
         variableTable: data,
       });

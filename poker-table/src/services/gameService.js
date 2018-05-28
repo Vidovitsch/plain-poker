@@ -61,6 +61,7 @@ G.startGame = function startGame(sessionId) {
 G.setupTableAsync = function setupTableAsync() {
   return new Promise((resolve, reject) => {
     this.setPlayerCardsAsync().then(() => {
+      this.table.status = 'in-game';
       this.setSmallBlind();
       this.setBigBlind();
       resolve();
@@ -93,11 +94,19 @@ G.startRiverRound = function startRiverRound() {
 };
 
 G.setSmallBlind = function setSmallBlind() {
-
+  const { players } = this.table;
+  const randomIndex = Math.floor(Math.random() * players.length);
+  players[randomIndex].isSmallBlind = true;
 };
 
 G.setBigBlind = function setBigBlind() {
-
+  const { players } = this.table;
+  const smallBlindPlayer = players.find(p => p.isSmallBlind);
+  let bigBlindIndex = players.indexOf(smallBlindPlayer) + 1;
+  if (bigBlindIndex === players.length) {
+    bigBlindIndex = 0;
+  }
+  players[bigBlindIndex].isBigBlind = true;
 };
 
 G.setPlayerCardsAsync = function setPlayerCardsAsync() {
