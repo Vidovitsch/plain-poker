@@ -5,6 +5,7 @@
  */
 function VariableTable(table) {
   this.status = table.status;
+  this.gameRound = table.gameRound;
   this.ownerId = table.ownerId;
   this.players = table.players;
   this.bets = table.bets;

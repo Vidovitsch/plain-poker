@@ -105,8 +105,8 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
     if (result instanceof Error) {
       logger.error(result);
     } else {
-      if (this.checkEveryoneReady()) {
-        // TODO:
+      if (this.gameService.checkEveryoneReady()) {
+        this.gameService.startPreFlopRound();
       }
       // Send a lobby update and a table update if
       // the table started successfully

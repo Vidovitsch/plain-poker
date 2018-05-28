@@ -57,6 +57,22 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
+G.startPreFlopRound = function startPreFlopRound() {
+
+};
+
+G.startFlopRound = function startFlopRound() {
+
+};
+
+G.startTurnRound = function startTurnRound() {
+
+};
+
+G.startRiverRound = function startRiverRound() {
+
+};
+
 /**
  * [setReady description]
  * @param {String} sessionId [description]

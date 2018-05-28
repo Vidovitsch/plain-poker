@@ -25,6 +25,7 @@ function Table(ownerId, options) {
   this.status = 'waiting';
 
   // Game data (variable)
+  this.gameRound = '';
   this.ownerId = ownerId;
   this.players = [];
   this.bets = {};
