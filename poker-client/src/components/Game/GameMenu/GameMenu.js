@@ -63,11 +63,11 @@ class GameMenu extends React.Component {
   }
 
   render() {
-    const { table: { gameOwner }, session } = this.props;
+    const { table: { ownerId }, session } = this.props;
     return (
       <div className="GameMenu">
         <div className="menu-console">
-          {gameOwner === session ? this.renderStartButton() : this.renderReadyButton()}
+          {ownerId === session ? this.renderStartButton() : this.renderReadyButton()}
           {this.renderLeaveButton()}
         </div>
         {this.renderTimer()};

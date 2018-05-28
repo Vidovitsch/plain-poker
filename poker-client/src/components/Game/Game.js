@@ -112,8 +112,9 @@ class Game extends React.Component {
         {this.renderGameMenu()}
         <GameTable
           session={this.state.session}
-          communityCards={this.state.variableTable.communityCards}
-          players={this.state.variableTable.players}
+          table={this.state.variableTable}
+          cards={this.state.cards}
+          players={this.state.variableTable}
         />
         <GameConsole
           table={this.state.variableTable}
