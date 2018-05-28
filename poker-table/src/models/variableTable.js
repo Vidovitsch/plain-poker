@@ -8,8 +8,6 @@ function VariableTable(table) {
   this.ownerId = table.ownerId;
   this.players = table.players;
   this.bets = table.bets;
-  this.smallBlind = table.smallBlind;
-  this.bigBlind = table.bigBlind;
   this.communityCards = table.communityCards;
   this.totalBet = table.totalBet;
 }

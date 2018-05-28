@@ -28,8 +28,6 @@ function Table(ownerId, options) {
   this.ownerId = ownerId;
   this.players = [];
   this.bets = {};
-  this.smallBlind = '';
-  this.bigBlind = '';
   this.communityCards = [];
   this.totalBet = 0;
 

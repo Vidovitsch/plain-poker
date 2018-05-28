@@ -12,6 +12,8 @@ function Player(args) {
   this.location = `client_${this.id}`;
   this.status = 'waiting';
   this.amount = args.amount;
+  this.isSmallBlind = false;
+  this.isBigBlind = false;
 }
 
 module.exports = {
