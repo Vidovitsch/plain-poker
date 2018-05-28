@@ -12,16 +12,11 @@ class Game extends React.Component {
   constructor(props) {
     super(props);
     this.ipcRenderer = ipcRenderer;
-    // this.state = {
-    //   session: this.props.location.state.session,
-    //   sessionCards: [],
-    //   staticTable: this.props.location.state.tableItem,
-    //   variableTable: this.props.location.state.variableTable,
-    // };
     this.state = {
-      session: 'test1',
-      staticTable: {},
-      variableTable: {},
+      session: this.props.location.state.session,
+      sessionCards: [],
+      staticTable: this.props.location.state.tableItem,
+      variableTable: this.props.location.state.variableTable,
     };
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);

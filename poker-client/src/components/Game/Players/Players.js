@@ -4,47 +4,6 @@ import './Players.css';
 import PlayerItem from './../PlayerItem/PlayerItem';
 import PlayerBet from './../PlayerBet/PlayerBet';
 
-const players = [
-  {
-    id: 'test1',
-    name: 'test1',
-    status: 'turn',
-    amount: '1000',
-  },
-  {
-    id: 'test2',
-    name: 'test2',
-    status: 'waiting',
-    amount: '1000',
-  },
-  {
-    id: 'test3',
-    name: 'test3',
-    status: 'waiting',
-    amount: '1000',
-  },
-  {
-    id: 'test4',
-    name: 'test4',
-    status: 'waiting',
-    amount: '1000',
-  },
-  {
-    id: 'test5',
-    name: 'test5',
-    status: 'waiting',
-    amount: '1000',
-  },
-];
-
-const bets = {
-  test1: 12,
-  test2: 13,
-  test3: 14,
-  test4: 15,
-  test5: 16,
-};
-
 /**
  * [Card description]
  * @extends React
@@ -83,7 +42,7 @@ class Players extends React.Component {
     const orderedPlayers = [];
     const beforeSelf = [];
     let self = null;
-    players.forEach((player) => {
+    this.props.players.forEach((player) => {
       if (player.id === this.props.session) {
         self = player;
         orderedPlayers.push(self);
@@ -99,7 +58,7 @@ class Players extends React.Component {
   syncBetsWithOrderedPlayers() {
     const orderedBets = {};
     this.orderPlayers().forEach((player) => {
-      orderedBets[player.id] = bets[player.id];
+      orderedBets[player.id] = this.props.bets[player.id];
     });
     return orderedBets;
   }
@@ -164,6 +123,10 @@ class Players extends React.Component {
 }
 
 Players.propTypes = {
+  bets: PropTypes.shape({
+    playerId: PropTypes.string.isRequired,
+    amount: PropTypes.number.isRequired,
+  }),
   session: PropTypes.string.isRequired,
   currentTurn: PropTypes.string.isRequired,
   sessionCards: PropTypes.arrayOf(PropTypes.shape({
@@ -190,6 +153,7 @@ Players.propTypes = {
 
 Players.defaultProps = {
   sessionCards: [],
+  bets: {},
 };
 
 export default Players;

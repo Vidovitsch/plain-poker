@@ -13,10 +13,11 @@ class PlayerBet extends React.Component {
    * @return {JSX} [description]
    */
   renderAmount() {
-    const { amount } = this.props.amount;
-    return (
-      <div id="PlayerItem-amount">€{amount}</div>
-    );
+    const { amount } = this.props;
+    if (amount) {
+      return (<span id="PlayerBet-amount">€{amount}</span>);
+    }
+    return '';
   }
 
   /**
@@ -26,7 +27,7 @@ class PlayerBet extends React.Component {
   render() {
     return (
       <span className="PlayerBet">
-        <span id="PlayerBet-amount">€{this.props.amount}</span>
+        {this.renderAmount()}
       </span>
     );
   }
