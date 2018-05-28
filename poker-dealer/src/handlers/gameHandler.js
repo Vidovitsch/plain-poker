@@ -27,6 +27,16 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
   return false;
 };
 
+G.startPlayerCardHandler = function startPlayerCardHandler(channelKey, gameQueue) {
+  this.tableGameAmqpGateway.onPlayerCardsRequest(channelKey, gameQueue, (requestMessage) => {
+    const { numberOfCards, sessions } = requestMessage.data;
+    const cards = this.gameService.getPlayerCards(numberOfCards, sessions);
+    this.tableGameAmqpGateway.sendPlayerCardsReplyAsync({ cards }, requestMessage).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
 G.startEndGameHandler = function startEndGameHandler(channelKey, gameQueue) {
   this.tableGameAmqpGateway.onEndGameRequest(channelKey, gameQueue, (err, requestMessage) => {
     const { communityCards } = requestMessage.data;

@@ -121,6 +121,16 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
   });
 };
 
+G.getPlayerCardsAsync = function getPlayerCardsAsync(numberOfCards, sessions, dealerLocation) {
+  return new Promise((resolve, reject) => {
+    this.dealerGameAmqpGateway.sendPlayerCardsRequestAsync(numberOfCards, sessions, dealerLocation).then((replyMessage) => {
+      resolve(replyMessage.data.cards);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
 G.sendTableUpdate = function sendTableUpdate(table) {
   const variableTable = VariableTable.createInstance(table);
   this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);

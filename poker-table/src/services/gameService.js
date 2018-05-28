@@ -13,6 +13,7 @@ function GameService(table, removeTableFunc) {
   this.table = table;
   this.removeTable = removeTableFunc;
   this.handSolver = HandSolver.getInstance();
+  this.gameHandler = null;
 }
 
 const G = GameService.prototype;
@@ -24,8 +25,8 @@ const G = GameService.prototype;
 G.startAsync = function startAsync(gatewayProvider) {
   return new Promise((resolve, reject) => {
     gatewayProvider.createSharedChannelAsync(this.table.id, 'default').then(() => {
-      const gameHandler = GameHandler.createInstance(this);
-      if (gameHandler.start(gatewayProvider, this.table.id, this.table.location)) {
+      this.gameHandler = GameHandler.createInstance(this);
+      if (this.gameHandler.start(gatewayProvider, this.table.id, this.table.location)) {
         logger.info(`(table) Game services started successfully => [table:${this.table.id}]`);
       } else {
         logger.warn('(table) Not all game services have been started correctly');
@@ -57,8 +58,14 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
-G.startPreFlopRound = function startPreFlopRound() {
-
+G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
+  return new Promise((resolve, reject) => {
+    this.getPlayerCardsAsync().then((cards) => {
+      console.log(cards);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
 };
 
 G.startFlopRound = function startFlopRound() {
@@ -71,6 +78,18 @@ G.startTurnRound = function startTurnRound() {
 
 G.startRiverRound = function startRiverRound() {
 
+};
+
+G.getPlayerCardsAsync = function getPlayerCardsAsync() {
+  return new Promise((resolve, reject) => {
+    const { players, dealer } = this.table;
+    const sessions = players.map(player => player.id);
+    this.gameHandler.getPlayerCardsAsync(2, sessions, dealer.location).then((cards) => {
+      resolve(cards);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
 };
 
 /**
