@@ -64,6 +64,9 @@ G.setupTableAsync = function setupTableAsync() {
       this.table.status = 'in-game';
       this.setSmallBlind();
       this.setBigBlind();
+      this.setSmallBlindBet();
+      this.setBigBlindBet();
+      this.setInitialTurn();
       resolve();
     }).catch((err) => {
       reject(err);
@@ -74,6 +77,7 @@ G.setupTableAsync = function setupTableAsync() {
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
     this.setupTableAsync().then(() => {
+      this.table.gameRound = 'pre-flop';
       resolve();
     }).catch((err) => {
       reject(err);
@@ -93,20 +97,69 @@ G.startRiverRound = function startRiverRound() {
 
 };
 
+G.setBet = function setBet(player, amount) {
+  const { bets } = this.table;
+  if (player.amount < amount) {
+    return new Error('Can\'t spend more than your current value');
+  }
+  bets[player.id] = amount;
+  player.amount -= amount; // eslint-disable-line no-param-reassign
+  return true;
+};
+
 G.setSmallBlind = function setSmallBlind() {
   const { players } = this.table;
   const randomIndex = Math.floor(Math.random() * players.length);
   players[randomIndex].isSmallBlind = true;
+  return true;
 };
 
 G.setBigBlind = function setBigBlind() {
   const { players } = this.table;
   const smallBlindPlayer = players.find(p => p.isSmallBlind);
-  let bigBlindIndex = players.indexOf(smallBlindPlayer) + 1;
-  if (bigBlindIndex === players.length) {
-    bigBlindIndex = 0;
+  if (smallBlindPlayer) {
+    let bigBlindIndex = players.indexOf(smallBlindPlayer) + 1;
+    if (bigBlindIndex === players.length) {
+      bigBlindIndex = 0;
+    }
+    players[bigBlindIndex].isBigBlind = true;
+    return true;
   }
-  players[bigBlindIndex].isBigBlind = true;
+  return new Error('Can\'t set big blind without a small blind');
+};
+
+G.setSmallBlindBet = function setSmallBlindBet() {
+  const { players, minBet } = this.table;
+  const smallBlindPlayer = players.find(p => p.isSmallBlind);
+  if (smallBlindPlayer) {
+    this.setBet(smallBlindPlayer, Math.ceil(minBet / 2));
+    return true;
+  }
+  return new Error('Can\'t set initial small blind bet without a small blind');
+};
+
+G.setBigBlindBet = function setBigBlindBet() {
+  const { players, minBet } = this.table;
+  const bigBlindPlayer = players.find(p => p.isBigBlind);
+  if (bigBlindPlayer) {
+    this.setBet(bigBlindPlayer, minBet);
+    return true;
+  }
+  return new Error('Can\'t set initial small blind bet without a big blind');
+};
+
+G.setInitialTurn = function setInitialTurn() {
+  const { players } = this.table;
+  const bigBlindPlayer = players.find(p => p.isBigBlind);
+  if (bigBlindPlayer) {
+    let index = players.indexOf(bigBlindPlayer) + 1;
+    if (index === players.length) {
+      index = 0;
+    }
+    players[index].status = 'turn';
+    return true;
+  }
+  return new Error('Can\'t set initial turn without a big blind');
 };
 
 G.setPlayerCardsAsync = function setPlayerCardsAsync() {

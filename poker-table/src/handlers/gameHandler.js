@@ -108,13 +108,13 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
       if (this.gameService.checkEveryoneReady()) {
         this.gameService.startPreFlopRoundAsync().then(() => {
           this.sendPlayerCards(this.gameService.table);
+          this.sendTableUpdate(this.gameService.table);
+          this.sendLobbyUpdateAsync('update', this.gameService.table);
         });
+      } else {
+        this.sendTableUpdate(this.gameService);
+        this.sendLobbyUpdateAsync('update', this.gameService);
       }
-      // Send a lobby update and a table update if
-      // the table started successfully
-      const { table } = this.gameService;
-      this.sendTableUpdate(table);
-      this.sendLobbyUpdateAsync('update', table);
       // This reply will only contain an error or a 'true' value
       this.clientGameAmqpGateway.sendReadyGameReplyAsync(result, requestMessage).catch((err) => {
         logger.error(err);
