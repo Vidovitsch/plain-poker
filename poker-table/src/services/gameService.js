@@ -105,6 +105,7 @@ G.setBet = function setBet(player, amount) {
   }
   bets[player.id] = amount;
   player.amount -= amount; // eslint-disable-line no-param-reassign
+  player.status = 'bet'; // eslint-disable-line no-param-reassign
   return true;
 };
 
@@ -252,7 +253,6 @@ G.removePlayer = function removePlayer(sessionId) {
   const player = players.find(p => p.id === sessionId);
   if (player) {
     players.splice(players.indexOf(player), 1);
-    console.log(`${ownerId} ::: ${sessionId}`);
     if (players.length === 0) {
       return {
         tableIsEmpty: true,

@@ -53,7 +53,7 @@ class GameConsole extends React.Component {
   }
 
   renderBetOrRaiseButton() {
-    const betPlayer = this.props.table.players.find(p => p.startus === 'bet');
+    const betPlayer = this.props.table.players.find(p => p.status === 'bet');
     if (betPlayer && betPlayer.id !== this.props.session) {
       return (<GameButton name="Raise" onClick={this.raise} />);
     }
