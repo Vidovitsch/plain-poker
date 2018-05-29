@@ -1,11 +1,14 @@
+import React from 'react';
 import Popup from 'react-popup';
 import './popup.css';
+import Prompt from './components/Prompt/Prompt';
 
 // Singleton support
 let instance = null;
 
 function PopupProvider() {
   this.createConfirmTemplate();
+  this.createPromptTemplate();
 }
 
 const P = PopupProvider.prototype;
@@ -18,6 +21,14 @@ P.confirm = function confirm(title, message) {
   });
 };
 
+P.prompt = function prompt(title, placeholder, initialValue) {
+  return new Promise((resolve) => {
+    Popup.plugins().prompt(title, placeholder, initialValue, (value) => {
+      resolve(value);
+    });
+  });
+};
+
 P.createConfirmTemplate = function createConfirmTemplate() {
   /* eslint-disable func-names */
   Popup.registerPlugin('confirm', function (title, content, callback) {
@@ -25,18 +36,50 @@ P.createConfirmTemplate = function createConfirmTemplate() {
       title,
       content,
       buttons: {
-        right: [{
+        left: [{
           text: 'No',
           action() {
             callback(false);
             Popup.close();
           },
         }],
-        left: [{
+        right: [{
           text: 'Yes',
           className: 'danger',
           action() {
             callback(true);
+            Popup.close();
+          },
+        }],
+      },
+    });
+  });
+  /* eslint-enable func-names */
+};
+
+P.createPromptTemplate = function createPromptTemplate() {
+  /* eslint-disable func-names */
+  Popup.registerPlugin('prompt', function (title, placeholder, initialValue, callback) {
+    let promptValue = null;
+    const promptChange = function (value) {
+      promptValue = value;
+    };
+    this.create({
+      title,
+      content: <Prompt onChange={promptChange} placeholder={placeholder} value={initialValue} />,
+      buttons: {
+        left: [{
+          text: 'Cancel',
+          action() {
+            callback(false);
+            Popup.close();
+          },
+        }],
+        right: [{
+          text: 'Save',
+          className: 'success',
+          action() {
+            callback(promptValue);
             Popup.close();
           },
         }],

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './GameConsole.css';
 import GameButton from './../GameButton/GameButton';
+import Popup from './../../../popupProvider';
 
 class GameConsole extends React.Component {
   constructor(props) {
@@ -13,6 +14,14 @@ class GameConsole extends React.Component {
     this.fold = this.fold.bind(this);
   }
 
+  getPreviousPlayer(currentPlayer) {
+    let index = this.props.table.players.indexOf(currentPlayer) - 1;
+    if (index === -1) {
+      index = this.props.table.players.length - 1;
+    }
+    return this.props.table.players[index];
+  }
+
   check() {
     this.props.onCheck();
   }
@@ -22,6 +31,7 @@ class GameConsole extends React.Component {
   }
 
   bet() {
+    Popup.prompt('test', 'test', 'test');
     this.props.onBet();
   }
 
@@ -31,14 +41,6 @@ class GameConsole extends React.Component {
 
   fold() {
     this.props.onFold();
-  }
-
-  getPreviousPlayer(currentPlayer) {
-    let index = this.props.table.players.indexOf(currentPlayer) - 1;
-    if (index === -1) {
-      index = this.props.table.players.length - 1;
-    }
-    return this.props.table.players[index];
   }
 
   renderCheckOrCallButton() {
