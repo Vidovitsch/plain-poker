@@ -174,8 +174,8 @@ G.setCall = function setCall(playerId) {
     const previousPlayer = this.getPreviousPlayer(player);
     const betPreviousPlayer = this.findCurrentBet(previousPlayer);
     const betCurrentPlayer = this.findCurrentBet(player);
-    const amountDifference = betPreviousPlayer - betCurrentPlayer;
-    this.addToCurrentBet(player, amountDifference);
+    const betDifference = betPreviousPlayer - betCurrentPlayer;
+    this.addToCurrentBet(player, betDifference);
     player.status = 'called';
     return true;
   }
@@ -190,6 +190,48 @@ G.setCall = function setCall(playerId) {
  * @return {Error}          [description]
  */
 G.setBet = function setBet(playerId, amount) {
+  const player = this.findPlayer(playerId);
+  if (player instanceof Error) {
+    return player;
+  }
+  if (this.canBet(player, amount)) {
+    this.addToCurrentBet(player, amount);
+    this.table.minRaise = amount;
+    player.status = 'bet';
+    return true;
+  }
+  return new Error('Player can\'t bet');
+};
+
+/**
+ * [setRaise description]
+ * @param {String} playerId [description]
+ * @param {Number} amount   [description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
+G.setRaise = function setRaise(playerId, amount) {
+  const player = this.findPlayer(playerId);
+  if (player instanceof Error) {
+    return player;
+  }
+  if (this.canRaise(player, amount)) {
+    this.addToCurrentBet(player, amount);
+    this.table.minRaise = amount;
+    player.status = 'raised';
+    return true;
+  }
+  return new Error('Player can\'t raise');
+};
+
+/**
+ * [setBet description]
+ * @param {String} playerId [description]
+ * @param {Number} amount   [description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
+G.setBt = function setBt(playerId, amount) {
   const { minBet, bets, players } = this.table;
   const player = players.find(p => p.id === playerId);
   if (player.amount >= amount && amount >= minBet) {
@@ -428,6 +470,30 @@ G.canCall = function canCall(player) {
 };
 
 /**
+ * [canBet description]
+ * @param  {Player} player [description]
+ * @param  {Number} amount [description]
+ * @return {Boolean}        [description]
+ */
+G.canBet = function canBet(player, amount) {
+  const { players, minBet } = this.table;
+  const hasBets = players.some(p => p.status === 'bet');
+  return player.status === 'turn' && !hasBets && amount >= minBet;
+};
+
+/**
+ * [canRaise description]
+ * @param  {Player} player [description]
+ * @param  {Number} amount [description]
+ * @return {Boolean}        [description]
+ */
+G.canRaise = function canRaise(player, amount) {
+  const { players, minRaise } = this.table;
+  const hasBets = players.some(p => p.status === 'bet');
+  return player.status === 'turn' && hasBets && amount >= minRaise;
+};
+
+/**
  * [getNextPlayer description]
  * @param  {Player} currentPlayer [description]
  * @return {Player}               [description]
@@ -455,9 +521,16 @@ G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
   return players[previousIndex];
 };
 
+/**
+ * [addToCurrentBet description]
+ * @param {Player} player [description]
+ * @param {Number} amount [description]
+ */
 G.addToCurrentBet = function addToCurrentBet(player, amount) {
-  this.table.bets[player.id] += amount;
+  const currentBet = this.findCurrentBet(player);
+  this.table.bets[player.id] = currentBet ? currentBet + amount : amount;
   player.amount -= amount; // eslint-disable-line no-param-reassign
+  return true;
 };
 
 /**
