@@ -198,7 +198,7 @@ G.setBet = function setBet(playerId, amount) {
     this.addToCurrentBet(player, amount);
     this.table.minRaise = amount;
     player.hasBet = true;
-    player.status = 'bet';
+    player.status = player.amount === 0 ? 'all-in' : 'bet';
     return true;
   }
   return new Error('Player can\'t bet');
@@ -220,7 +220,7 @@ G.setRaise = function setRaise(playerId, amount) {
     this.addToCurrentBet(player, amount);
     this.table.minRaise = amount;
     player.hasRaised = true;
-    player.status = 'raised';
+    player.status = player.amount === 0 ? 'all-in' : 'raised';
     return true;
   }
   return new Error('Player can\'t raise');
