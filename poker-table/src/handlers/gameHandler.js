@@ -135,7 +135,9 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
  */
 G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onCheckRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    // TODO:
+    this.clientGameAmqpGateway.sendCheckReplyAsync({}, requestMessage).catch((err) => {
+      logger.error(err);
+    });
   });
 };
 
@@ -146,7 +148,9 @@ G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
  */
 G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onCallRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    // TODO:
+    this.clientGameAmqpGateway.sendCallReplyAsync({}, requestMessage).catch((err) => {
+      logger.error(err);
+    });
   });
 };
 
@@ -157,7 +161,9 @@ G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
  */
 G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onBetRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    // TODO:
+    this.clientGameAmqpGateway.sendBetReplyAsync({}, requestMessage).catch((err) => {
+      logger.error(err);
+    });
   });
 };
 
@@ -168,7 +174,9 @@ G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
  */
 G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onRaiseRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    // TODO:
+    this.clientGameAmqpGateway.sendRaiseReplyAsync({}, requestMessage).catch((err) => {
+      logger.error(err);
+    });
   });
 };
 
@@ -179,7 +187,9 @@ G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
  */
 G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onFoldRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    // TODO:
+    this.clientGameAmqpGateway.sendFoldReplyAsync({}, requestMessage).catch((err) => {
+      logger.error(err);
+    });
   });
 };
 
