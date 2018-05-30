@@ -141,12 +141,22 @@ G.startShowdownRound = function startShowdownRound() {
   });
 };
 
+/**
+ * [setCheck description]
+ * @param {String} playerId [description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
 G.setCheck = function setCheck(playerId) {
   const player = this.findPlayer(playerId);
   if (player instanceof Error) {
     return player;
   }
-  if (player.status === 'turn' && )
+  if (this.canCheck(player)) {
+    player.status = 'checked';
+    return true;
+  }
+  return new Error('Player can\'t check');
 };
 
 /**
@@ -370,9 +380,15 @@ G.findWinner = function findWinner(hands) {
   return winner;
 };
 
+/**
+ * [canCheck description]
+ * @param  {Player} player [description]
+ * @return {Boolean}        [description]
+ */
 G.canCheck = function canCheck(player) {
-  if (player.status === 'turn' && pla)
-}
+  const previousPlayer = this.getPreviousPlayer(player);
+  return player.status === 'turn' && previousPlayer.amount === player.amount;
+};
 
 /**
  * [getNextPlayer description]
@@ -381,7 +397,7 @@ G.canCheck = function canCheck(player) {
  */
 G.getNextPlayer = function getNextPlayer(currentPlayer) {
   const { players } = this.table;
-  let nextIndex = players.indexOf(currentPlayer) + 1;
+  const nextIndex = players.indexOf(currentPlayer) + 1;
   if (previousIndex === players.length) {
     previousIndex = 0;
   }
