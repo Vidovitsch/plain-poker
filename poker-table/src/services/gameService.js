@@ -130,12 +130,12 @@ G.nextRoundAsync = function nextRoundAsync() {
  */
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
-    this.resetRound();
     this.setupTableAsync().then(() => {
-      this.table.gameRound = 'pre-flop';
+      this.resetRound();
       this.setSmallBlindBet();
       this.setBigBlindBet();
       this.setInitialTurn();
+      this.table.gameRound = 'pre-flop';
       resolve(true);
     }).catch((err) => {
       reject(err);
@@ -618,7 +618,12 @@ G.resetPlayerStatus = function resetPlayerStatus(includeFolded) {
   const { players } = this.table;
   players.forEach((player) => {
     if (includeFolded || player.status !== 'folded') {
-      player.status = 'waiting'; // eslint-disable-line no-param-reassign
+      /* eslint-disable no-param-reassign */
+      player.status = 'waiting';
+      player.hasTurn = false;
+      player.hasBet = false;
+      player.hasRaised = false;
+      /* eslint-enable no-param-reassign */
     }
   });
   return true;

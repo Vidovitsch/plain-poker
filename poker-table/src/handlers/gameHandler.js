@@ -165,7 +165,24 @@ G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
  */
 G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onCallRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    this.clientGameAmqpGateway.sendCallReplyAsync({}, requestMessage).catch((err) => {
+    const result = this.gameService.setCall(requestMessage.data.sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else if (this.gameService.checkRoundFinished()) {
+      this.gameService.nextRoundAsync().then(() => {
+        // Update after next round has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }).catch((err) => {
+        logger.error(err);
+      });
+    } else {
+      this.gameService.nextTurn();
+      // Update after next turn has started
+      this.sendTableUpdate(this.gameService.table);
+      this.sendLobbyUpdateAsync('update', this.gameService.table);
+    }
+    this.clientGameAmqpGateway.sendCallReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });
   });
@@ -178,7 +195,24 @@ G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
  */
 G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onBetRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    this.clientGameAmqpGateway.sendBetReplyAsync({}, requestMessage).catch((err) => {
+    const result = this.gameService.setBet(requestMessage.data.sessionId, requestMessage.data.amount);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else if (this.gameService.checkRoundFinished()) {
+      this.gameService.nextRoundAsync().then(() => {
+        // Update after next round has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }).catch((err) => {
+        logger.error(err);
+      });
+    } else {
+      this.gameService.nextTurn();
+      // Update after next turn has started
+      this.sendTableUpdate(this.gameService.table);
+      this.sendLobbyUpdateAsync('update', this.gameService.table);
+    }
+    this.clientGameAmqpGateway.sendBetReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });
   });
@@ -191,7 +225,24 @@ G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
  */
 G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onRaiseRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    this.clientGameAmqpGateway.sendRaiseReplyAsync({}, requestMessage).catch((err) => {
+    const result = this.gameService.setRaise(requestMessage.data.sessionId, requestMessage.data.amount);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else if (this.gameService.checkRoundFinished()) {
+      this.gameService.nextRoundAsync().then(() => {
+        // Update after next round has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }).catch((err) => {
+        logger.error(err);
+      });
+    } else {
+      this.gameService.nextTurn();
+      // Update after next turn has started
+      this.sendTableUpdate(this.gameService.table);
+      this.sendLobbyUpdateAsync('update', this.gameService.table);
+    }
+    this.clientGameAmqpGateway.sendRaiseReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });
   });
@@ -204,7 +255,24 @@ G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
  */
 G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onFoldRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    this.clientGameAmqpGateway.sendFoldReplyAsync({}, requestMessage).catch((err) => {
+    const result = this.gameService.setFold(requestMessage.data.sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else if (this.gameService.checkRoundFinished()) {
+      this.gameService.nextRoundAsync().then(() => {
+        // Update after next round has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }).catch((err) => {
+        logger.error(err);
+      });
+    } else {
+      this.gameService.nextTurn();
+      // Update after next turn has started
+      this.sendTableUpdate(this.gameService.table);
+      this.sendLobbyUpdateAsync('update', this.gameService.table);
+    }
+    this.clientGameAmqpGateway.sendFoldReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });
   });
