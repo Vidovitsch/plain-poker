@@ -95,15 +95,19 @@ G.nextRoundAsync = function nextRoundAsync() {
     let nextRoundPromise = {};
     switch (this.table.gameRound) {
       case 'pre-flop':
+        this.addBetsToPot();
         nextRoundPromise = this.startFlopRound();
         break;
       case 'flop':
+        this.addBetsToPot();
         nextRoundPromise = this.startTurnRound();
         break;
       case 'turn':
+        this.addBetsToPot();
         nextRoundPromise = this.startRiverRound();
         break;
       case 'river':
+        this.addBetsToPot();
         nextRoundPromise = this.startShowdownRound();
         break;
       default:
@@ -201,7 +205,7 @@ G.setCall = function setCall(playerId) {
     const betPreviousPlayer = this.findCurrentBet(previousPlayer);
     const betCurrentPlayer = this.findCurrentBet(player);
     const betDifference = betPreviousPlayer - betCurrentPlayer;
-    this.addToCurrentBet(player, betDifference);
+    this.addToTotalBet(player, betDifference);
     player.status = 'called';
     return true;
   }
@@ -221,7 +225,7 @@ G.setBet = function setBet(playerId, amount) {
     return player;
   }
   if (this.canBet(player, amount)) {
-    this.addToCurrentBet(player, amount);
+    this.addToTotalBet(player, amount);
     this.table.minRaise = amount;
     player.hasBet = true;
     player.status = player.amount === 0 ? 'all-in' : 'bet';
@@ -243,7 +247,7 @@ G.setRaise = function setRaise(playerId, amount) {
     return player;
   }
   if (this.canRaise(player, amount)) {
-    this.addToCurrentBet(player, amount);
+    this.addToTotalBet(player, amount);
     this.table.minRaise = amount;
     player.hasRaised = true;
     player.status = player.amount === 0 ? 'all-in' : 'raised';
@@ -522,10 +526,21 @@ G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
  * @param {Player} player [description]
  * @param {Number} amount [description]
  */
-G.addToCurrentBet = function addToCurrentBet(player, amount) {
+G.addToTotalBet = function addToTotalBet(player, amount) {
   const currentBet = this.findCurrentBet(player);
   this.table.bets[player.id] = currentBet ? currentBet + amount : amount;
   player.amount -= amount; // eslint-disable-line no-param-reassign
+  return true;
+};
+
+/**
+ * [addBetsToPot description]
+ * @param {Number} amount [description]
+ */
+G.addBetsToPot = function addBetsToPot() {
+  Object.values(this.table.bets).forEach((value) => {
+    this.table.pot += value;
+  });
   return true;
 };
 

@@ -10,7 +10,7 @@ function VariableTable(table) {
   this.players = table.players;
   this.bets = table.bets;
   this.communityCards = table.communityCards;
-  this.totalBet = table.totalBet;
+  this.pot = table.pot;
   this.minRaise = table.minRaise;
 }
 

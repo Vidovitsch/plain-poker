@@ -30,7 +30,7 @@ function Table(ownerId, options) {
   this.players = [];
   this.bets = {};
   this.communityCards = [];
-  this.totalBet = 0;
+  this.pot = 0;
   this.minRaise = 0;
 
   // Secret data (variable)
