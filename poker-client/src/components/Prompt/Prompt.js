@@ -1,14 +1,11 @@
 import React from 'react';
 
-/** The prompt content component */
 class Prompt extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       value: this.props.defaultValue,
     };
-
     this.onChange = e => this._onChange(e);
   }
 
@@ -25,7 +22,18 @@ class Prompt extends React.Component {
   }
 
   render() {
-    return <input type="text" placeholder={this.props.placeholder} className="mm-popup__input" value={this.state.value} onChange={this.onChange} />;
+    return (
+      <div className="Prompt">
+        <input
+          type="text"
+          placeholder={this.props.placeholder}
+          className="mm-popup__input"
+          value={this.state.value}
+          onChange={this.onChange}
+        />
+        <span>{this.props.message}</span>
+      </div>
+    );
   }
 }
 

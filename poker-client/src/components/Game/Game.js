@@ -117,6 +117,7 @@ class Game extends React.Component {
         <GameConsole
           session={this.state.session}
           table={this.state.variableTable}
+          minBet={this.state.staticTable}
           onCheck={this.check}
           onCall={this.call}
           onBet={this.bet}

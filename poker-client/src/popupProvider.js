@@ -21,9 +21,9 @@ P.confirm = function confirm(title, message) {
   });
 };
 
-P.prompt = function prompt(title, placeholder, initialValue) {
+P.prompt = function prompt(title, message, placeholder, initialValue) {
   return new Promise((resolve) => {
-    Popup.plugins().prompt(title, placeholder, initialValue, (value) => {
+    Popup.plugins().prompt(title, message, placeholder, initialValue, (value) => {
       resolve(value);
     });
   });
@@ -59,14 +59,19 @@ P.createConfirmTemplate = function createConfirmTemplate() {
 
 P.createPromptTemplate = function createPromptTemplate() {
   /* eslint-disable func-names */
-  Popup.registerPlugin('prompt', function (title, placeholder, initialValue, callback) {
+  Popup.registerPlugin('prompt', function (title, message, placeholder, initialValue, callback) {
     let promptValue = null;
     const promptChange = function (value) {
       promptValue = value;
     };
     this.create({
       title,
-      content: <Prompt onChange={promptChange} placeholder={placeholder} value={initialValue} />,
+      content: <Prompt
+        onChange={promptChange}
+        placeholder={placeholder}
+        value={initialValue}
+        message={message}
+      />,
       buttons: {
         left: [{
           text: 'Cancel',

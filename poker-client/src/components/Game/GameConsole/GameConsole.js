@@ -22,6 +22,15 @@ class GameConsole extends React.Component {
     return this.props.table.players[index];
   }
 
+  validateBet(amount) {
+    const { minBet, session, table: { players } } = this.props;
+    const self = players.find(p => p.id === session);
+    if (amount >= minBet && amount <= self.amount) {
+      return true;
+    }
+    return false;
+  }
+
   check() {
     this.props.onCheck();
   }
@@ -31,11 +40,30 @@ class GameConsole extends React.Component {
   }
 
   bet() {
-    Popup.prompt('test', 'test', 'test');
+    const { minBet } = this.props;
+    const title = 'How much do you want to bet?';
+    const message = `You have to bet a minimum of €${minBet}.`;
+    const placeholder = 'Your bet';
+    const initialValue = minBet;
+    Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
+      if (this.validateBet(amount)) {
+        // TODO:
+      }
+    });
     this.props.onBet();
   }
 
   raise() {
+    const { minRaise } = this.props.table;
+    const title = 'How much do you want to raise?';
+    const message = `You have to raise a minimum of €${minRaise}.`;
+    const placeholder = 'Your raise';
+    const initialValue = minRaise;
+    Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
+      if (this.validateBet(amount)) {
+        // TODO:
+      }
+    });
     this.props.onRaise();
   }
 

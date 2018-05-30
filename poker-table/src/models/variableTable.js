@@ -11,6 +11,7 @@ function VariableTable(table) {
   this.bets = table.bets;
   this.communityCards = table.communityCards;
   this.totalBet = table.totalBet;
+  this.minRaise = table.minRaise;
 }
 
 module.exports = {
