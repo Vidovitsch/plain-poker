@@ -197,6 +197,7 @@ G.setBet = function setBet(playerId, amount) {
   if (this.canBet(player, amount)) {
     this.addToCurrentBet(player, amount);
     this.table.minRaise = amount;
+    player.hasBet = true;
     player.status = 'bet';
     return true;
   }
@@ -218,6 +219,7 @@ G.setRaise = function setRaise(playerId, amount) {
   if (this.canRaise(player, amount)) {
     this.addToCurrentBet(player, amount);
     this.table.minRaise = amount;
+    player.hasRaised = true;
     player.status = 'raised';
     return true;
   }
@@ -477,7 +479,7 @@ G.canCall = function canCall(player) {
  */
 G.canBet = function canBet(player, amount) {
   const { players, minBet } = this.table;
-  const hasBets = players.some(p => p.status === 'bet');
+  const hasBets = players.some(p => p.hasBet);
   return player.status === 'turn' && !hasBets && amount >= minBet;
 };
 
@@ -489,8 +491,8 @@ G.canBet = function canBet(player, amount) {
  */
 G.canRaise = function canRaise(player, amount) {
   const { players, minRaise } = this.table;
-  const hasBets = players.some(p => p.status === 'bet');
-  return player.status === 'turn' && hasBets && amount >= minRaise;
+  const hasBets = players.some(p => p.hasBet);
+  return player.status === 'turn' && !player.hasRaised && !player.hasBet && hasBets && amount >= minRaise;
 };
 
 /**
