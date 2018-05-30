@@ -56,7 +56,7 @@ class GameConsole extends React.Component {
     const initialValue = minBet;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
       if (this.validateBet(amount)) {
-        this.props.onBet();
+        this.props.onBet(amount);
       }
     });
   }
@@ -69,7 +69,7 @@ class GameConsole extends React.Component {
     const initialValue = minRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
       if (this.validateRaise(amount)) {
-        this.props.onRaise();
+        this.props.onRaise(amount);
       }
     });
   }

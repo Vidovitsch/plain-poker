@@ -73,11 +73,11 @@ class Game extends React.Component {
   }
 
   bet(amount) {
-    this.ipcRenderer.send('bet-request', { location: this.state.staticTable.location, amount });
+    this.ipcRenderer.send('bet-request', { tableLocation: this.state.staticTable.location, amount });
   }
 
   raise(amount) {
-    this.ipcRenderer.send('raise-request', { location: this.state.staticTable.location, amount });
+    this.ipcRenderer.send('raise-request', { tableLocation: this.state.staticTable.location, amount });
   }
 
   fold() {

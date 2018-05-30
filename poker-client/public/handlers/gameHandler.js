@@ -31,6 +31,11 @@ G.startAsync = function startAsync() {
           this.startEnterGameHandler();
           this.startStartGameHandler();
           this.startReadyGameHandler();
+          this.startCheckHandler();
+          this.startCallHandler();
+          this.startBetHandler();
+          this.startRaiseHandler();
+          this.startFoldHandler();
           this.isStarted = true;
         }
         resolve();
@@ -96,6 +101,81 @@ G.startStartGameHandler = function startStartGameHandler() {
 G.startReadyGameHandler = function startReadyGameHandler() {
   this.ipcMain.on('ready-game-request', (e, tableLocation) => {
     this.tableGameAmqpGateway.sendReadyGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startCheckHandler description]
+ */
+G.startCheckHandler = function startCheckHandler() {
+  this.ipcMain.on('check-request', (e, tableLocation) => {
+    this.tableGameAmqpGateway.sendCheckRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startCallHandler description]
+ */
+G.startCallHandler = function startCallHandler() {
+  this.ipcMain.on('call-request', (e, tableLocation) => {
+    this.tableGameAmqpGateway.sendCallRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startBetHandler description]
+ */
+G.startBetHandler = function startBetHandler() {
+  this.ipcMain.on('bet-request', (e, { tableLocation, amount }) => {
+    this.tableGameAmqpGateway.sendBetRequestAsync(this.sessionId, amount, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startRaiseHandler description]
+ */
+G.startRaiseHandler = function startRaiseHandler() {
+  this.ipcMain.on('raise-request', (e, { tableLocation, amount }) => {
+    this.tableGameAmqpGateway.sendRaiseRequestAsync(this.sessionId, amount, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+/**
+ * [startFoldHandler description]
+ */
+G.startFoldHandler = function startFoldHandler() {
+  this.ipcMain.on('fold-request', (e, tableLocation) => {
+    this.tableGameAmqpGateway.sendFoldRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }
