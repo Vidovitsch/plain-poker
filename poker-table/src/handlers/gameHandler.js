@@ -135,6 +135,7 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
  */
 G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onCheckRequestAsync(channelKey, gameQueue, (requestMessage) => {
+    this.gameService.setCheck(requestMessage.data.sessionId);
     this.clientGameAmqpGateway.sendCheckReplyAsync({}, requestMessage).catch((err) => {
       logger.error(err);
     });

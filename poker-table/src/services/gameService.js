@@ -141,6 +141,14 @@ G.startShowdownRound = function startShowdownRound() {
   });
 };
 
+G.setCheck = function setCheck(playerId) {
+  const player = this.findPlayer(playerId);
+  if (player instanceof Error) {
+    return player;
+  }
+  if (player.status === 'turn' && )
+};
+
 /**
  * [setBet description]
  * @param {String} playerId [description]
@@ -360,6 +368,49 @@ G.findWinner = function findWinner(hands) {
     }
   });
   return winner;
+};
+
+G.canCheck = function canCheck(player) {
+  if (player.status === 'turn' && pla)
+}
+
+/**
+ * [getNextPlayer description]
+ * @param  {Player} currentPlayer [description]
+ * @return {Player}               [description]
+ */
+G.getNextPlayer = function getNextPlayer(currentPlayer) {
+  const { players } = this.table;
+  let nextIndex = players.indexOf(currentPlayer) + 1;
+  if (previousIndex === players.length) {
+    previousIndex = 0;
+  }
+  return players[previousIndex];
+};
+
+/**
+ * [getPreviousPlayer description]
+ * @param  {Player} currentPlayer [description]
+ * @return {Player}               [description]
+ */
+G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
+  const { players } = this.table;
+  let previousIndex = players.indexOf(currentPlayer) - 1;
+  if (previousIndex === -1) {
+    previousIndex = players.length - 1;
+  }
+  return players[previousIndex];
+};
+
+/**
+ * [findPlayer description]
+ * @param  {String} playerId [description]
+ * @return {Player}          [description]
+ * @return {Error}          [description]
+ */
+G.findPlayer = function findPlayer(playerId) {
+  const player = this.table.players.find(p => p.id === playerId);
+  return player || new Error(`Player not found with id ${playerId}`);
 };
 
 G.stop = function stop() {
