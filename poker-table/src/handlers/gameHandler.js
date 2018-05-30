@@ -106,7 +106,7 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
     } else {
       // Start game if everyone at the table has a 'ready' status
       if (this.gameService.checkEveryoneReady()) {
-        this.gameService.startPreFlopRoundAsync().then(() => {
+        this.gameService.nextRoundAsync().then(() => {
           this.sendPlayerCards(this.gameService.table);
           this.sendTableUpdate(this.gameService.table);
           this.sendLobbyUpdateAsync('update', this.gameService.table);

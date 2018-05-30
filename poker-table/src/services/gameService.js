@@ -72,6 +72,37 @@ G.setupTableAsync = function setupTableAsync() {
   });
 };
 
+/**
+ * [nextRoundAsync description]
+ * @return {Promise} [description]
+ */
+G.nextRoundAsync = function nextRoundAsync() {
+  return new Promise((resolve, reject) => {
+    let nextRoundPromise = {};
+    switch (this.table.gameRound) {
+      case 'pre-flop':
+        nextRoundPromise = this.startFlopRound();
+        break;
+      case 'flop':
+        nextRoundPromise = this.startTurnRound();
+        break;
+      case 'turn':
+        nextRoundPromise = this.startRiverRound();
+        break;
+      case 'river':
+        nextRoundPromise = this.startShowdownRound();
+        break;
+      default:
+        nextRoundPromise = this.startPreFlopRoundAsync();
+    }
+    nextRoundPromise.then(() => {
+      resolve(true);
+    }).call((err) => {
+      reject(err);
+    });
+  });
+};
+
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
     this.setupTableAsync().then(() => {
@@ -79,7 +110,7 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
       this.setSmallBlindBet();
       this.setBigBlindBet();
       this.setInitialTurn();
-      resolve();
+      resolve(true);
     }).catch((err) => {
       reject(err);
     });
@@ -87,15 +118,27 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
 };
 
 G.startFlopRound = function startFlopRound() {
-
+  return new Promise((resolve) => {
+    resolve();
+  });
 };
 
 G.startTurnRound = function startTurnRound() {
-
+  return new Promise((resolve) => {
+    resolve();
+  });
 };
 
 G.startRiverRound = function startRiverRound() {
+  return new Promise((resolve) => {
+    resolve();
+  });
+};
 
+G.startShowdownRound = function startShowdownRound() {
+  return new Promise((resolve) => {
+    resolve();
+  });
 };
 
 /**
