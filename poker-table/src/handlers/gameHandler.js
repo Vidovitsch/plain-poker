@@ -31,6 +31,11 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
     this.startLeaveGameHandler(channelKey, gameQueue);
     this.startStartGameHandler(channelKey, gameQueue);
     this.startReadyGameHandler(channelKey, gameQueue);
+    this.startCheckHandler(channelKey, gameQueue);
+    this.startCallHandler(channelKey, gameQueue);
+    this.startBetHandler(channelKey, gameQueue);
+    this.startRaiseHandler(channelKey, gameQueue);
+    this.startFoldHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -120,6 +125,61 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
         logger.error(err);
       });
     }
+  });
+};
+
+/**
+ * [startCheckHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onCheckRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+    // TODO:
+  });
+};
+
+/**
+ * [startCallHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onCallRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+    // TODO:
+  });
+};
+
+/**
+ * [startBetHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onBetRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+    // TODO:
+  });
+};
+
+/**
+ * [startRaiseHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onRaiseRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+    // TODO:
+  });
+};
+
+/**
+ * [startFoldHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onFoldRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+    // TODO:
   });
 };
 
