@@ -58,6 +58,10 @@ G.startGame = function startGame(sessionId) {
   return new Error('The table status has to be set on waiting before being able to start');
 };
 
+/**
+ * [setupTableAsync description]
+ * @return {Promise} [description]
+ */
 G.setupTableAsync = function setupTableAsync() {
   return new Promise((resolve, reject) => {
     this.setPlayerCardsAsync().then(() => {
@@ -121,6 +125,10 @@ G.nextRoundAsync = function nextRoundAsync() {
   });
 };
 
+/**
+ * [startPreFlopRoundAsync description]
+ * @return {Promise} [description]
+ */
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
     this.setupTableAsync().then(() => {
@@ -135,7 +143,7 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   });
 };
 
-G.startFlopRound = function startFlopRound() {
+G.startFlopRoundAsync = function startFlopRoundAsync() {
   return new Promise((resolve) => {
     resolve();
   });
@@ -254,6 +262,22 @@ G.setRaise = function setRaise(playerId, amount) {
     return true;
   }
   return new Error('Player can\'t raise');
+};
+
+/**
+ * [setFold description]
+ * @param {String} playerId [description]
+ */
+G.setFold = function setFold(playerId) {
+  const player = this.findPlayer(playerId);
+  if (player instanceof Error) {
+    return player;
+  }
+  if (this.canFold(player)) {
+    player.status = 'folded';
+    return true;
+  }
+  return new Error('Player can\'t fold');
 };
 
 G.setSmallBlind = function setSmallBlind() {
@@ -491,6 +515,10 @@ G.canRaise = function canRaise(player, amount) {
   const { players, minRaise } = this.table;
   const hasBets = players.some(p => p.hasBet);
   return player.status === 'turn' && !player.hasRaised && !player.hasBet && hasBets && amount >= minRaise;
+};
+
+G.canFold = function canFold(player) {
+  return player.status === ' turn';
 };
 
 /**
