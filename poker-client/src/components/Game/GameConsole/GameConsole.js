@@ -31,6 +31,15 @@ class GameConsole extends React.Component {
     return false;
   }
 
+  validateRaise(amount) {
+    const { minRaise, session, table: { players } } = this.props;
+    const self = players.find(p => p.id === session);
+    if (amount >= minRaise && amount <= self.amount) {
+      return true;
+    }
+    return false;
+  }
+
   check() {
     this.props.onCheck();
   }
@@ -47,10 +56,9 @@ class GameConsole extends React.Component {
     const initialValue = minBet;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
       if (this.validateBet(amount)) {
-        // TODO:
+        this.props.onBet();
       }
     });
-    this.props.onBet();
   }
 
   raise() {
@@ -60,15 +68,18 @@ class GameConsole extends React.Component {
     const placeholder = 'Your raise';
     const initialValue = minRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
-      if (this.validateBet(amount)) {
-        // TODO:
+      if (this.validateRaise(amount)) {
+        this.props.onRaise();
       }
     });
-    this.props.onRaise();
   }
 
   fold() {
-    this.props.onFold();
+    Popup.confirm('Are you sure?', 'You will lose your current bet if you fold!').then((isConfirmed) => {
+      if (isConfirmed) {
+        this.props.onFold();
+      }
+    });
   }
 
   renderCheckOrCallButton() {
