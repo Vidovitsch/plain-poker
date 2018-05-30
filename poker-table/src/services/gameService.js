@@ -160,6 +160,29 @@ G.setCheck = function setCheck(playerId) {
 };
 
 /**
+ * [setCall description]
+ * @param {String} playerId [description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
+G.setCall = function setCall(playerId) {
+  const player = this.findPlayer(playerId);
+  if (player instanceof Error) {
+    return player;
+  }
+  if (this.canCall(player)) {
+    const previousPlayer = this.getPreviousPlayer(player);
+    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+    const betCurrentPlayer = this.findCurrentBet(player);
+    const amountDifference = betPreviousPlayer - betCurrentPlayer;
+    this.addToCurrentBet(player, amountDifference);
+    player.status = 'called';
+    return true;
+  }
+  return new Error('Player can\'t call');
+};
+
+/**
  * [setBet description]
  * @param {String} playerId [description]
  * @param {Number} amount   [description]
@@ -387,7 +410,21 @@ G.findWinner = function findWinner(hands) {
  */
 G.canCheck = function canCheck(player) {
   const previousPlayer = this.getPreviousPlayer(player);
-  return player.status === 'turn' && previousPlayer.amount === player.amount;
+  const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+  const betCurrentPlayer = this.findCurrentBet(player);
+  return player.status === 'turn' && betPreviousPlayer === betCurrentPlayer;
+};
+
+/**
+ * [canCall description]
+ * @param  {Player} player [description]
+ * @return {Boolean}        [description]
+ */
+G.canCall = function canCall(player) {
+  const previousPlayer = this.getPreviousPlayer(player);
+  const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+  const betCurrentPlayer = this.findCurrentBet(player);
+  return player.status === 'turn' && betPreviousPlayer > betCurrentPlayer;
 };
 
 /**
@@ -397,11 +434,11 @@ G.canCheck = function canCheck(player) {
  */
 G.getNextPlayer = function getNextPlayer(currentPlayer) {
   const { players } = this.table;
-  const nextIndex = players.indexOf(currentPlayer) + 1;
-  if (previousIndex === players.length) {
-    previousIndex = 0;
+  let nextIndex = players.indexOf(currentPlayer) + 1;
+  if (nextIndex === players.length) {
+    nextIndex = 0;
   }
-  return players[previousIndex];
+  return players[nextIndex];
 };
 
 /**
@@ -416,6 +453,21 @@ G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
     previousIndex = players.length - 1;
   }
   return players[previousIndex];
+};
+
+G.addToCurrentBet = function addToCurrentBet(player, amount) {
+  this.table.bets[player.id] += amount;
+  player.amount -= amount; // eslint-disable-line no-param-reassign
+};
+
+/**
+ * [findCurrentBet description]
+ * @param  {Player} player [description]
+ * @return {Number}        [description]
+ */
+G.findCurrentBet = function findCurrentBet(player) {
+  const currentBet = this.table.bets[player.id];
+  return currentBet || 0;
 };
 
 /**
