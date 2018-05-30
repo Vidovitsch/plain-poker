@@ -134,7 +134,7 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
  * @param  {String} gameQueue  [description]
  */
 G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onCheckRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onCheckRequestAsync(channelKey, gameQueue, (requestMessage) => {
     // TODO:
   });
 };
@@ -145,7 +145,7 @@ G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
  * @param  {String} gameQueue  [description]
  */
 G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onCallRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onCallRequestAsync(channelKey, gameQueue, (requestMessage) => {
     // TODO:
   });
 };
@@ -156,7 +156,7 @@ G.startCallHandler = function startCallHandler(channelKey, gameQueue) {
  * @param  {String} gameQueue  [description]
  */
 G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onBetRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onBetRequestAsync(channelKey, gameQueue, (requestMessage) => {
     // TODO:
   });
 };
@@ -167,7 +167,7 @@ G.startBetHandler = function startBetHandler(channelKey, gameQueue) {
  * @param  {String} gameQueue  [description]
  */
 G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onRaiseRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onRaiseRequestAsync(channelKey, gameQueue, (requestMessage) => {
     // TODO:
   });
 };
@@ -178,7 +178,7 @@ G.startRaiseHandler = function startRaiseHandler(channelKey, gameQueue) {
  * @param  {String} gameQueue  [description]
  */
 G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onFoldRequestAysnc(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onFoldRequestAsync(channelKey, gameQueue, (requestMessage) => {
     // TODO:
   });
 };
