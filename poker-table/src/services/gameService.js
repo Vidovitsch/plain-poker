@@ -112,7 +112,7 @@ G.setBet = function setBet(playerId, amount) {
     const currentBet = bets[playerId];
     bets[playerId] = currentBet ? currentBet + amount : amount;
     player.amount -= amount;
-    player.status = 'bet';
+    player.status = player.amount === amount ? 'all-in' : 'bet';
     this.table.minRaise = amount;
     return true;
   }
@@ -133,7 +133,7 @@ G.setRaise = function setRaise(playerId, amount) {
     const currentBet = bets[playerId];
     bets[playerId] = currentBet ? currentBet + amount : amount;
     player.amount -= amount;
-    player.status = 'raised';
+    player.status = player.amount === amount ? 'all-in' : 'raised';
     this.table.minRaise = amount;
     return true;
   }
