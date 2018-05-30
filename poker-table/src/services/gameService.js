@@ -73,6 +73,20 @@ G.setupTableAsync = function setupTableAsync() {
 };
 
 /**
+ * [checkRoundFinished description]
+ * @return {Boolean} [description]
+ */
+G.checkRoundFinished = function checkRoundFinished() {
+  const currentPlayer = this.table.players.find(p => p.hasTurn);
+  const nextPlayer = this.getNextPlayer(currentPlayer);
+  // The next player must have had a turn is this round.
+  // The current player has to either checked, called or folded his turn.
+  // Both results concludes that every player has the same bet on the table.
+  return nextPlayer.status !== 'waiting' &&
+    (currentPlayer.status === 'checked' || currentPlayer.status === 'called' || currentPlayer.status === 'folded');
+};
+
+/**
  * [nextRoundAsync description]
  * @return {Promise} [description]
  */
