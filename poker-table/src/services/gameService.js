@@ -226,48 +226,6 @@ G.setRaise = function setRaise(playerId, amount) {
   return new Error('Player can\'t raise');
 };
 
-/**
- * [setBet description]
- * @param {String} playerId [description]
- * @param {Number} amount   [description]
- * @return {Boolean}        [description]
- * @return {Error}          [description]
- */
-G.setBt = function setBt(playerId, amount) {
-  const { minBet, bets, players } = this.table;
-  const player = players.find(p => p.id === playerId);
-  if (player.amount >= amount && amount >= minBet) {
-    const currentBet = bets[playerId];
-    bets[playerId] = currentBet ? currentBet + amount : amount;
-    player.amount -= amount;
-    player.status = player.amount === amount ? 'all-in' : 'bet';
-    this.table.minRaise = amount;
-    return true;
-  }
-  return new Error('Invalid bet');
-};
-
-/**
- * [setRaise description]
- * @param {String} playerId [description]
- * @param {Number} amount   [description]
- * @return {Boolean}        [description]
- * @return {Error}          [description]
- */
-G.setRaise = function setRaise(playerId, amount) {
-  const { minRaise, bets, players } = this.table;
-  const player = players.find(p => p.id === playerId);
-  if (player.amount >= amount && amount >= minRaise) {
-    const currentBet = bets[playerId];
-    bets[playerId] = currentBet ? currentBet + amount : amount;
-    player.amount -= amount;
-    player.status = player.amount === amount ? 'all-in' : 'raised';
-    this.table.minRaise = amount;
-    return true;
-  }
-  return new Error('Invalid raise');
-};
-
 G.setSmallBlind = function setSmallBlind() {
   const { players } = this.table;
   const randomIndex = Math.floor(Math.random() * players.length);
@@ -289,22 +247,30 @@ G.setBigBlind = function setBigBlind() {
   return new Error('Can\'t set big blind without a small blind');
 };
 
+/**
+ * [setSmallBlindBet description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
 G.setSmallBlindBet = function setSmallBlindBet() {
   const { players, minBet } = this.table;
   const smallBlindPlayer = players.find(p => p.isSmallBlind);
   if (smallBlindPlayer) {
-    this.setBet(smallBlindPlayer.id, Math.ceil(minBet / 2));
-    return true;
+    return this.setBet(smallBlindPlayer.id, Math.ceil(minBet / 2));
   }
   return new Error('Can\'t set initial small blind bet without a small blind');
 };
 
+/**
+ * [setBigBlindBet description]
+ * @return {Boolean}        [description]
+ * @return {Error}          [description]
+ */
 G.setBigBlindBet = function setBigBlindBet() {
   const { players, minBet } = this.table;
   const bigBlindPlayer = players.find(p => p.isBigBlind);
   if (bigBlindPlayer) {
-    this.setBet(bigBlindPlayer.id, minBet);
-    return true;
+    return this.setBet(bigBlindPlayer.id, minBet);
   }
   return new Error('Can\'t set initial small blind bet without a big blind');
 };
