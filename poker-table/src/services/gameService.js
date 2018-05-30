@@ -142,6 +142,18 @@ G.startShowdownRound = function startShowdownRound() {
 };
 
 /**
+ * @return {Boolean} [description]
+ */
+G.nextTurn = function nextTurn() {
+  const currentPlayer = this.table.players.find(p => p.hasTurn);
+  const nextPlayer = this.getNextPlayer(currentPlayer);
+  currentPlayer.hasTurn = false;
+  nextPlayer.hasTurn = true;
+  nextPlayer.status = 'turn';
+  return true;
+};
+
+/**
  * [setCheck description]
  * @param {String} playerId [description]
  * @return {Boolean}        [description]
@@ -283,7 +295,9 @@ G.setInitialTurn = function setInitialTurn() {
     if (index === players.length) {
       index = 0;
     }
-    players[index].status = 'turn';
+    const currentPlayer = players[index];
+    currentPlayer.status = 'turn';
+    currentPlayer.hasTurn = true;
     return true;
   }
   return new Error('Can\'t set initial turn without a big blind');

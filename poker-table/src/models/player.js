@@ -11,6 +11,7 @@ function Player(args) {
   this.name = randName.substring(0, randName.indexOf(' '));
   this.location = `client_${this.id}`;
   this.status = 'waiting';
+  this.hasTurn = false;
   this.hasBet = false;
   this.hasRaised = false;
   this.amount = args.amount;
