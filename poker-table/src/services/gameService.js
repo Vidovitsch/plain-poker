@@ -66,7 +66,6 @@ G.setupTableAsync = function setupTableAsync() {
   return new Promise((resolve, reject) => {
     this.setPlayerCardsAsync().then(() => {
       this.table.status = 'in-game';
-      this.resetPlayerStatus();
       this.setSmallBlind();
       this.setBigBlind();
       resolve();
@@ -131,6 +130,7 @@ G.nextRoundAsync = function nextRoundAsync() {
  */
 G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
   return new Promise((resolve, reject) => {
+    this.resetRound();
     this.setupTableAsync().then(() => {
       this.table.gameRound = 'pre-flop';
       this.setSmallBlindBet();
@@ -145,24 +145,28 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
 
 G.startFlopRoundAsync = function startFlopRoundAsync() {
   return new Promise((resolve) => {
+    this.resetRound();
     resolve();
   });
 };
 
 G.startTurnRound = function startTurnRound() {
   return new Promise((resolve) => {
+    this.resetRound();
     resolve();
   });
 };
 
 G.startRiverRound = function startRiverRound() {
   return new Promise((resolve) => {
+    this.resetRound();
     resolve();
   });
 };
 
 G.startShowdownRound = function startShowdownRound() {
   return new Promise((resolve) => {
+    this.resetRound();
     resolve();
   });
 };
@@ -345,13 +349,6 @@ G.setInitialTurn = function setInitialTurn() {
   return new Error('Can\'t set initial turn without a big blind');
 };
 
-G.resetPlayerStatus = function resetPlayerStatus() {
-  const { players } = this.table;
-  players.forEach((player) => {
-    player.status = 'waiting'; // eslint-disable-line no-param-reassign
-  });
-};
-
 G.setPlayerCardsAsync = function setPlayerCardsAsync() {
   return new Promise((resolve, reject) => {
     const { players, dealer } = this.table;
@@ -517,6 +514,11 @@ G.canRaise = function canRaise(player, amount) {
   return player.status === 'turn' && !player.hasRaised && !player.hasBet && hasBets && amount >= minRaise;
 };
 
+/**
+ * [canFold description]
+ * @param  {Player} player [description]
+ * @return {Boolean}        [description]
+ */
 G.canFold = function canFold(player) {
   return player.status === ' turn';
 };
@@ -532,7 +534,11 @@ G.getNextPlayer = function getNextPlayer(currentPlayer) {
   if (nextIndex === players.length) {
     nextIndex = 0;
   }
-  return players[nextIndex];
+  const nextPlayer = players[nextIndex];
+  if (nextPlayer.status === 'folded') {
+    return this.getNextPlayer(nextPlayer);
+  }
+  return nextPlayer;
 };
 
 /**
@@ -593,11 +599,41 @@ G.findPlayer = function findPlayer(playerId) {
   return player || new Error(`Player not found with id ${playerId}`);
 };
 
+/**
+ * [resetRound description]
+ * @return {Boolean} [description]
+ */
+G.resetRound = function resetRound() {
+  this.resetPlayerStatus(false);
+  this.table.bets = {};
+  return true;
+};
+
+/**
+ * [resetPlayerStatus description]
+ * @param {Boolean} includeFolded [description]
+ * @return {Boolean}              [description]
+ */
+G.resetPlayerStatus = function resetPlayerStatus(includeFolded) {
+  const { players } = this.table;
+  players.forEach((player) => {
+    if (includeFolded || player.status !== 'folded') {
+      player.status = 'waiting'; // eslint-disable-line no-param-reassign
+    }
+  });
+  return true;
+};
+
+/**
+ * [stop description]
+ * @return {Boolean} [description]
+ */
 G.stop = function stop() {
   this.removeTable(this.table.id);
   this.table = null;
   this.removeTable = null;
   this.handSolver = null;
+  return true;
 };
 
 module.exports = {

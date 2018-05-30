@@ -135,8 +135,24 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
  */
 G.startCheckHandler = function startCheckHandler(channelKey, gameQueue) {
   this.clientGameAmqpGateway.onCheckRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    this.gameService.setCheck(requestMessage.data.sessionId);
-    this.clientGameAmqpGateway.sendCheckReplyAsync({}, requestMessage).catch((err) => {
+    const result = this.gameService.setCheck(requestMessage.data.sessionId);
+    if (result instanceof Error) {
+      logger.error(result);
+    } else if (this.gameService.checkRoundFinished()) {
+      this.gameService.nextRoundAsync().then(() => {
+        // Update after next round has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }).catch((err) => {
+        logger.error(err);
+      });
+    } else {
+      this.gameService.nextTurn();
+      // Update after next turn has started
+      this.sendTableUpdate(this.gameService.table);
+      this.sendLobbyUpdateAsync('update', this.gameService.table);
+    }
+    this.clientGameAmqpGateway.sendCheckReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });
   });
