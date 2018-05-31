@@ -41,7 +41,7 @@ class GameConsole extends React.Component {
   }
 
   bet() {
-    const { minBet } = this.props;
+    const { minBet } = this.props.table;
     const title = 'How much do you want to bet?';
     const message = `You have to bet a minimum of €${minBet}.`;
     const placeholder = 'Your bet';
@@ -54,17 +54,17 @@ class GameConsole extends React.Component {
   }
 
   raise() {
-    let { minRaise } = this.props.table;
+    const { minRaise } = this.props.table;
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
     const previousPlayer = this.getPreviousPlayer(currentPlayer);
     const betPreviousPlayer = this.findCurrentBet(previousPlayer);
     const betCurrentPlayer = this.findCurrentBet(currentPlayer);
-    minRaise += minRaise + (betPreviousPlayer - betCurrentPlayer);
+    const minAmountToRaise = minRaise + (betPreviousPlayer - betCurrentPlayer);
 
     const title = 'How much do you want to raise?';
-    const message = `You have to raise a minimum of €${minRaise}.`;
+    const message = `You have to raise a minimum of €${minAmountToRaise}.`;
     const placeholder = 'Your raise';
-    const initialValue = minRaise;
+    const initialValue = minAmountToRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
       if (this.validateRaise(amount)) {
         this.props.onRaise(amount);

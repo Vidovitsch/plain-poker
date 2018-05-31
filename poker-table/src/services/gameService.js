@@ -85,7 +85,7 @@ G.checkRoundFinished = function checkRoundFinished() {
   // The next player must have had a turn is this round.
   // The current player has to either checked, called or folded his turn.
   // Both results concludes that every player has the same bet on the table.
-  return nextPlayer.status !== 'waiting' &&
+  return (nextPlayer.status !== 'waiting' || nextPlayer.status !== 'big-bet' || nextPlayer.status !== 'small-bet') &&
     (currentPlayer.status === 'checked' || currentPlayer.status === 'called' || currentPlayer.status === 'folded');
 };
 
@@ -308,7 +308,8 @@ G.setSmallBlindBet = function setSmallBlindBet() {
   const { players, minBet } = this.table;
   const smallBlindPlayer = players.find(p => p.isSmallBlind);
   if (smallBlindPlayer) {
-    smallBlindPlayer.status = 'bet';
+    smallBlindPlayer.status = 'small-bet';
+    smallBlindPlayer.hasBet = true;
     return this.addToTotalBet(smallBlindPlayer, Math.ceil(minBet / 2));
   }
   return new Error('Can\'t set initial small blind bet without a small blind');
@@ -323,7 +324,8 @@ G.setBigBlindBet = function setBigBlindBet() {
   const { players, minBet } = this.table;
   const bigBlindPlayer = players.find(p => p.isBigBlind);
   if (bigBlindPlayer) {
-    bigBlindPlayer.status = 'bet';
+    bigBlindPlayer.status = 'big-bet';
+    bigBlindPlayer.hasBet = true;
     return this.addToTotalBet(bigBlindPlayer, minBet);
   }
   return new Error('Can\'t set initial small blind bet without a big blind');

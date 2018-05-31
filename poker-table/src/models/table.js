@@ -16,7 +16,7 @@ function Table(ownerId, options) {
   this.name = options.name || randomName();
   this.minPlayerNo = options.minPlayerNo || 2;
   this.maxPlayerNo = options.maxPlayerNo || 5;
-  this.minBet = options.minBet || 2;
+  this.minBet = parseInt(options.minBet, 10) || 2;
   this.startupAmount = options.startupAmount || 15;
   this.dealer = '';
   this.turnTime = 30;
