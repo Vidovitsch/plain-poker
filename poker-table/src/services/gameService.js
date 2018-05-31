@@ -480,13 +480,9 @@ G.canCheck = function canCheck(player) {
  * @return {Boolean}        [description]
  */
 G.canCall = function canCall(player) {
-  console.log(player);
   const previousPlayer = this.getPreviousPlayer(player);
-  console.log(`PreviousPlayer: ${previousPlayer.name}`);
   const betPreviousPlayer = this.findCurrentBet(previousPlayer);
-  console.log(`PreviousBet: ${betPreviousPlayer}`);
   const betCurrentPlayer = this.findCurrentBet(player);
-  console.log(`currentBet: ${betCurrentPlayer}`);
   return player.status === 'turn' && betPreviousPlayer > betCurrentPlayer;
 };
 

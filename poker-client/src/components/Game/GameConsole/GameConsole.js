@@ -14,30 +14,22 @@ class GameConsole extends React.Component {
     this.fold = this.fold.bind(this);
   }
 
+  /**
+   * [getPreviousPlayer description]
+   * @param  {Player} currentPlayer [description]
+   * @return {Player}               [description]
+   */
   getPreviousPlayer(currentPlayer) {
-    let index = this.props.table.players.indexOf(currentPlayer) - 1;
-    if (index === -1) {
-      index = this.props.table.players.length - 1;
+    let previousIndex = this.props.table.players.indexOf(currentPlayer) - 1;
+    if (previousIndex === -1) {
+      previousIndex = this.props.table.players.length - 1;
     }
-    return this.props.table.players[index];
+    return this.props.table.players[previousIndex];
   }
 
-  validateBet(amount) {
-    const { minBet, session, table: { players } } = this.props;
-    const self = players.find(p => p.id === session);
-    if (amount >= minBet && amount <= self.amount) {
-      return true;
-    }
-    return false;
-  }
-
-  validateRaise(amount) {
-    const { minRaise, session, table: { players } } = this.props;
-    const self = players.find(p => p.id === session);
-    if (amount >= minRaise && amount <= self.amount) {
-      return true;
-    }
-    return false;
+  findCurrentBet(player) {
+    const currentBet = this.props.table.bets[player.id];
+    return currentBet || 0;
   }
 
   check() {
@@ -82,24 +74,73 @@ class GameConsole extends React.Component {
     });
   }
 
-  renderCheckOrCallButton() {
-    const currentPlayer = this.props.table.players.find(p => p.status === 'turn');
-    if (currentPlayer) {
-      const previousPlayer = this.getPreviousPlayer(currentPlayer);
-      if (this.props.table.bets[previousPlayer.id] > this.props.table.bets[this.props.session]) {
-        return (<GameButton name="Call" onClick={this.call} />);
-      }
+  /**
+   * [canCheck description]
+   * @param  {Player} player [description]
+   * @return {Boolean}        [description]
+   */
+  canCheck(currentPlayer) {
+    const previousPlayer = this.getPreviousPlayer(currentPlayer);
+    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+    const betCurrentPlayer = this.findCurrentBet(currentPlayer);
+    return currentPlayer.status === 'turn' && betPreviousPlayer === betCurrentPlayer;
+  }
+
+  /**
+   * [canBet description]
+   * @param  {Player} player [description]
+   * @param  {Number} amount [description]
+   * @return {Boolean}        [description]
+   */
+  canBet(currentPlayer) {
+    const hasBets = this.props.table.players.some(p => p.hasBet);
+    return currentPlayer.status === 'turn' && !hasBets;
+  }
+
+  validateBet(amount) {
+    const { minBet, session, table: { players } } = this.props;
+    const self = players.find(p => p.id === session);
+    if (amount >= minBet && amount <= self.amount) {
+      return true;
     }
-    return (<GameButton name="Check" onClick={this.check} />);
+    return false;
+  }
+
+  validateRaise(amount) {
+    const { minRaise, session, table: { players } } = this.props;
+    const self = players.find(p => p.id === session);
+    if (amount >= minRaise && amount <= self.amount) {
+      return true;
+    }
+    return false;
+  }
+
+  renderCheckOrCallButton() {
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    if (currentPlayer) {
+      return this.canCheck(currentPlayer) ?
+        (<GameButton name="Check" onClick={this.check} disabled={currentPlayer.id !== this.props.session} />) :
+        (<GameButton name="Call" onClick={this.call} disabled={currentPlayer.id !== this.props.session} />);
+    }
+    return (<GameButton name="Check" disabled />);
   }
 
   renderBetOrRaiseButton() {
-    const betPlayer = this.props.table.players.find(p => p.status === 'bet');
-    return (<GameButton name="Raise" onClick={this.raise} />);
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    if (currentPlayer) {
+      return this.canBet(currentPlayer) ?
+        (<GameButton name="Bet" onClick={this.bet} disabled={currentPlayer.id !== this.props.session} />) :
+        (<GameButton name="Raise" onClick={this.raise} disabled={currentPlayer.id !== this.props.session} />);
+    }
+    return (<GameButton name="Bet" disabled />);
   }
 
   renderFoldButton() {
-    return (<GameButton name="Fold" onClick={this.fold} />);
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    if (currentPlayer) {
+      return (<GameButton name="Fold" onClick={this.fold} disabled={currentPlayer.id !== this.props.session} />);
+    }
+    return (<GameButton name="Fold" disabled />);
   }
 
   render() {
