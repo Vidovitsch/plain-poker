@@ -514,7 +514,7 @@ G.canRaise = function canRaise(player, amount) {
   const hasBets = players.some(p => p.hasBet);
   return player.status === 'turn' &&
     !player.hasRaised &&
-    !player.hasBet &&
+    (!player.hasBet || player.status !== 'big-bet' || player.status !== 'small-bet') &&
     hasBets &&
     amount >= minRaise + (betPreviousPlayer - betCurrentPlayer);
 };
@@ -567,7 +567,7 @@ G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
  */
 G.addToTotalBet = function addToTotalBet(player, amount) {
   const currentBet = this.findCurrentBet(player);
-  this.table.bets[player.id] = currentBet ? currentBet + amount : amount;
+  this.table.bets[player.id] = currentBet ? currentBet + parseInt(amount, 10) : parseInt(amount, 10);
   player.amount -= amount; // eslint-disable-line no-param-reassign
   return true;
 };

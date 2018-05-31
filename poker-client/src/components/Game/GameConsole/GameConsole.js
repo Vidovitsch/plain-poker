@@ -42,12 +42,13 @@ class GameConsole extends React.Component {
 
   bet() {
     const { minBet } = this.props.table;
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
     const title = 'How much do you want to bet?';
     const message = `You have to bet a minimum of €${minBet}.`;
     const placeholder = 'Your bet';
     const initialValue = minBet;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
-      if (this.validateBet(amount)) {
+      if (amount >= minBet && amount <= currentPlayer.amount) {
         this.props.onBet(amount);
       }
     });
@@ -66,7 +67,7 @@ class GameConsole extends React.Component {
     const placeholder = 'Your raise';
     const initialValue = minAmountToRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
-      if (this.validateRaise(amount)) {
+      if (amount >= minAmountToRaise && minAmountToRaise <= currentPlayer.amount) {
         this.props.onRaise(amount);
       }
     });
@@ -101,24 +102,6 @@ class GameConsole extends React.Component {
   canBet(currentPlayer) {
     const hasBets = this.props.table.players.some(p => p.hasBet);
     return currentPlayer.status === 'turn' && !hasBets;
-  }
-
-  validateBet(amount) {
-    const { minBet, session, table: { players } } = this.props;
-    const self = players.find(p => p.id === session);
-    if (amount >= minBet && amount <= self.amount) {
-      return true;
-    }
-    return false;
-  }
-
-  validateRaise(amount) {
-    const { minRaise, session, table: { players } } = this.props;
-    const self = players.find(p => p.id === session);
-    if (amount >= minRaise && amount <= self.amount) {
-      return true;
-    }
-    return false;
   }
 
   renderCheckOrCallButton() {
