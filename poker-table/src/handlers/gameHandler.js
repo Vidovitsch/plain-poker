@@ -117,8 +117,8 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
           this.sendLobbyUpdateAsync('update', this.gameService.table);
         });
       } else {
-        this.sendTableUpdate(this.gameService);
-        this.sendLobbyUpdateAsync('update', this.gameService);
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
       }
       // This reply will only contain an error or a 'true' value
       this.clientGameAmqpGateway.sendReadyGameReplyAsync(result, requestMessage).catch((err) => {
@@ -298,7 +298,6 @@ G.sendPlayerCards = function sendPlayerCards(table) {
 
 G.sendTableUpdate = function sendTableUpdate(table) {
   const variableTable = VariableTable.createInstance(table);
-  logger.info(`Number of players: ${variableTable.players.length}`);
   this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);
 };
 
