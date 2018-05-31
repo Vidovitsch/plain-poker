@@ -54,7 +54,13 @@ class GameConsole extends React.Component {
   }
 
   raise() {
-    const { minRaise } = this.props.table;
+    let { minRaise } = this.props.table;
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    const previousPlayer = this.getPreviousPlayer(currentPlayer);
+    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+    const betCurrentPlayer = this.findCurrentBet(currentPlayer);
+    minRaise += minRaise + (betPreviousPlayer - betCurrentPlayer);
+
     const title = 'How much do you want to raise?';
     const message = `You have to raise a minimum of €${minRaise}.`;
     const placeholder = 'Your raise';

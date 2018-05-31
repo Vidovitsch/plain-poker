@@ -506,8 +506,15 @@ G.canBet = function canBet(player, amount) {
  */
 G.canRaise = function canRaise(player, amount) {
   const { players, minRaise } = this.table;
+  const previousPlayer = this.getPreviousPlayer(player);
+  const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+  const betCurrentPlayer = this.findCurrentBet(player);
   const hasBets = players.some(p => p.hasBet);
-  return player.status === 'turn' && !player.hasRaised && !player.hasBet && hasBets && amount >= minRaise;
+  return player.status === 'turn' &&
+    !player.hasRaised &&
+    !player.hasBet &&
+    hasBets &&
+    amount >= minRaise + (betPreviousPlayer - betCurrentPlayer);
 };
 
 /**
