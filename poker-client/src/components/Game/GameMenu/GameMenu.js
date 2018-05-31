@@ -35,9 +35,13 @@ class GameMenu extends React.Component {
   }
 
   renderStartButton() {
-    const { minPlayerNo, table: { status, playerNo } } = this.props;
+    const { minPlayerNo, table: { status, players } } = this.props;
     return (
-      <GameButton name="Start" onClick={this.start} disabled={minPlayerNo > playerNo || status === 'starting'} />
+      <GameButton
+        name="Start"
+        onClick={this.start}
+        disabled={minPlayerNo > players.length || status === 'starting' || status === 'in-game'}
+      />
     );
   }
 

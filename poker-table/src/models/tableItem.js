@@ -9,7 +9,6 @@ function TableItem(table) {
   this.timestamp = table.timestamp;
   this.turnTime = table.turnTime;
   this.name = table.name;
-  this.playerNo = table.players.length;
   this.minPlayerNo = table.minPlayerNo;
   this.maxPlayerNo = table.maxPlayerNo;
   this.minBet = table.minBet;
