@@ -80,13 +80,17 @@ G.setupTableAsync = function setupTableAsync() {
  * @return {Boolean} [description]
  */
 G.checkRoundFinished = function checkRoundFinished() {
-  const currentPlayer = this.table.players.find(p => p.hasTurn);
-  const nextPlayer = this.getNextPlayer(currentPlayer);
-  // The next player must have had a turn is this round.
-  // The current player has to either checked, called or folded his turn.
-  // Both results concludes that every player has the same bet on the table.
-  return (nextPlayer.status !== 'waiting' || nextPlayer.status !== 'big-bet' || nextPlayer.status !== 'small-bet') &&
-    (currentPlayer.status === 'checked' || currentPlayer.status === 'called' || currentPlayer.status === 'folded');
+  const { players, bets } = this.table;
+  const activePlayers = players.filter(player => player.status !== 'folded');
+  const previousBet = bets[activePlayers[0].id];
+  for (let i = 1; i < activePlayers.length; i += 1) {
+    const activePlayer = activePlayers[i];
+    const playerBet = bets[activePlayers.id];
+    if (activePlayer.turnNo === 0 || playerBet !== previousBet) {
+      return false;
+    }
+  }
+  return true;
 };
 
 /**
@@ -128,7 +132,7 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
       this.resetRound();
       this.setSmallBlindBet();
       this.setBigBlindBet();
-      this.setInitialTurn();
+      this.setPreFlopTurn();
       this.table.gameRound = 'pre-flop';
       resolve(true);
     }).catch((err) => {
@@ -138,9 +142,15 @@ G.startPreFlopRoundAsync = function startPreFlopRoundAsync() {
 };
 
 G.startFlopRoundAsync = function startFlopRoundAsync() {
-  return new Promise((resolve) => {
-    this.resetRound();
-    resolve();
+  return new Promise((resolve, reject) => {
+    this.addCommunityCardsAsync(3).then(() => {
+      this.resetRound();
+      this.setInitialTurn();
+      this.table.gameRound = 'flop';
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
   });
 };
 
@@ -173,6 +183,7 @@ G.nextTurn = function nextTurn() {
   const nextPlayer = this.getNextPlayer(currentPlayer);
   currentPlayer.hasTurn = false;
   nextPlayer.hasTurn = true;
+  nextPlayer.turnNo += 1;
   nextPlayer.status = 'turn';
   return true;
 };
@@ -333,18 +344,28 @@ G.setBigBlindBet = function setBigBlindBet() {
 
 G.setInitialTurn = function setInitialTurn() {
   const { players } = this.table;
-  const bigBlindPlayer = players.find(p => p.isBigBlind);
-  if (bigBlindPlayer) {
-    let index = players.indexOf(bigBlindPlayer) + 1;
-    if (index === players.length) {
-      index = 0;
-    }
-    const currentPlayer = players[index];
-    currentPlayer.status = 'turn';
-    currentPlayer.hasTurn = true;
+  const smallBlindPlayer = players.find(p => p.isBigBlind);
+  if (smallBlindPlayer) {
+    const previousPlayer = this.getPreviousPlayer(smallBlindPlayer);
+    const nextPlayer = this.getNextPlayer(previousPlayer);
+    nextPlayer.status = 'turn';
+    nextPlayer.hasTurn = true;
     return true;
   }
-  return new Error('Can\'t set initial turn without a big blind');
+  return new Error('Can\'t set initial turn without a small blind');
+};
+
+G.setPreFlopTurn = function setPreFlopTurn() {
+  const { players } = this.table;
+  const bigBlindPlayer = players.find(p => p.isBigBlind);
+  if (bigBlindPlayer) {
+    const nextPlayer = this.getNextPlayer(bigBlindPlayer);
+    nextPlayer.status = 'turn';
+    nextPlayer.hasTurn = true;
+    nextPlayer.turnNo += 1;
+    return true;
+  }
+  return new Error('Can\'t set pre flop turn without a big blind');
 };
 
 G.setPlayerCardsAsync = function setPlayerCardsAsync() {
@@ -360,6 +381,20 @@ G.setPlayerCardsAsync = function setPlayerCardsAsync() {
           this.table.playerCards[card.ownerId] = [];
           this.table.playerCards[card.ownerId].push(card);
         }
+      });
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+G.addCommunityCardsAsync = function addCommunityCardsAsync(numberOfCards) {
+  return new Promise((resolve, reject) => {
+    const { communityCards, dealer } = this.table;
+    this.gameHandler.getCommunityCardsAsync(numberOfCards, dealer.location).then((cards) => {
+      cards.forEach((card) => {
+        communityCards.push(card);
       });
       resolve();
     }).catch((err) => {
@@ -525,7 +560,7 @@ G.canRaise = function canRaise(player, amount) {
  * @return {Boolean}        [description]
  */
 G.canFold = function canFold(player) {
-  return player.status === ' turn';
+  return player.status === 'turn';
 };
 
 /**
@@ -533,9 +568,9 @@ G.canFold = function canFold(player) {
  * @param  {Player} currentPlayer [description]
  * @return {Player}               [description]
  */
-G.getNextPlayer = function getNextPlayer(currentPlayer) {
+G.getNextPlayer = function getNextPlayer(player) {
   const { players } = this.table;
-  let nextIndex = players.indexOf(currentPlayer) + 1;
+  let nextIndex = players.indexOf(player) + 1;
   if (nextIndex === players.length) {
     nextIndex = 0;
   }
@@ -551,9 +586,9 @@ G.getNextPlayer = function getNextPlayer(currentPlayer) {
  * @param  {Player} currentPlayer [description]
  * @return {Player}               [description]
  */
-G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
+G.getPreviousPlayer = function getPreviousPlayer(player) {
   const { players } = this.table;
-  let previousIndex = players.indexOf(currentPlayer) - 1;
+  let previousIndex = players.indexOf(player) - 1;
   if (previousIndex === -1) {
     previousIndex = players.length - 1;
   }
@@ -567,7 +602,7 @@ G.getPreviousPlayer = function getPreviousPlayer(currentPlayer) {
  */
 G.addToTotalBet = function addToTotalBet(player, amount) {
   const currentBet = this.findCurrentBet(player);
-  this.table.bets[player.id] = currentBet ? currentBet + parseInt(amount, 10) : parseInt(amount, 10);
+  this.table.bets[player.id] = currentBet ? currentBet + amount : amount;
   player.amount -= amount; // eslint-disable-line no-param-reassign
   return true;
 };

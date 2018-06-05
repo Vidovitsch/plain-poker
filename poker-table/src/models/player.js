@@ -12,6 +12,7 @@ function Player(args) {
   this.location = `client_${this.id}`;
   this.status = 'waiting';
   this.hasTurn = false;
+  this.turnNo = 0;
   this.hasBet = false;
   this.hasRaised = false;
   this.amount = args.amount;

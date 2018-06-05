@@ -5,25 +5,35 @@ import gameTableImg from './images/gametable.png';
 import CommunityCards from './../CommunityCards/CommunityCards';
 import Players from './../Players/Players';
 
+
 /* eslint-disable react/prefer-stateless-function */
 /**
  * [GameTable description]
  * @extends React
  */
 class GameTable extends React.Component {
+  renderGamePot() {
+    const { pot } = this.props.table;
+    return pot > 0 ? (<span id="GameTable-pot">€{pot}</span>) : '';
+  }
   /**
    * [render description]
    * @return {JSX} [description]
    */
   render() {
-    const { sessionCards, session, table: { communityCards, players, bets } } = this.props;
+    const {
+      sessionCards, session, table: {
+        communityCards, players, bets, pot,
+      },
+    } = this.props;
     return (
       <div className="GameTable">
         <img
-          id="gameTableImg"
+          id="GameTable-img"
           src={gameTableImg}
           alt="gametable"
         />
+        {this.renderGamePot()}
         <CommunityCards
           cards={communityCards}
         />
