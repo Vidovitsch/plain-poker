@@ -176,16 +176,28 @@ G.startFlopRoundAsync = function startFlopRoundAsync() {
 };
 
 G.startTurnRound = function startTurnRound() {
-  return new Promise((resolve) => {
-    this.resetRound();
-    resolve();
+  return new Promise((resolve, reject) => {
+    this.addCommunityCardsAsync(1).then(() => {
+      this.resetRound();
+      this.setInitialTurn();
+      this.table.gameRound = 'turn';
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
   });
 };
 
 G.startRiverRound = function startRiverRound() {
-  return new Promise((resolve) => {
-    this.resetRound();
-    resolve();
+  return new Promise((resolve, reject) => {
+    this.addCommunityCardsAsync(1).then(() => {
+      this.resetRound();
+      this.setInitialTurn();
+      this.table.gameRound = 'river';
+      resolve();
+    }).catch((err) => {
+      reject(err);
+    });
   });
 };
 
@@ -371,6 +383,7 @@ G.setInitialTurn = function setInitialTurn() {
     const nextPlayer = this.getNextPlayer(previousPlayer);
     nextPlayer.status = 'turn';
     nextPlayer.hasTurn = true;
+    nextPlayer.turnNo = 1;
     return true;
   }
   return new Error('Can\'t set initial turn without a small blind');
