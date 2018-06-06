@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import PlainPoker from './PlainPoker';
 import registerServiceWorker from './registerServiceWorker';
 
 ReactDOM.render(
   (
-    <BrowserRouter>
+    <HashRouter>
       <PlainPoker />
-    </BrowserRouter>
+    </HashRouter>
   ), document.getElementById('root'),
 );
 registerServiceWorker();

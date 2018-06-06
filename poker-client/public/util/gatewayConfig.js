@@ -1,10 +1,10 @@
 module.exports = {
   amqp: {
-    host: process.env.RMQ_HOST,
-    exchange: process.env.RMQ_EXCHANGE,
+    host: '127.0.0.1',
+    exchange: 'plain-poker-main',
   },
   ws: {
-    host: process.env.LOBBY_HOST,
-    port: process.env.LOBBY_PORT,
+    host: '127.0.0.1',
+    port: 5000,
   },
 };
