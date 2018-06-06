@@ -19,10 +19,10 @@ const H = HandSolver.prototype;
  */
 H.solve = function solve(cardPool) {
   if (cardPool.length === 7) {
-    const { description, rank, cards } = PokerSolver.solve(this.toWildValues(cardPool));
+    const { name, rank, cards } = PokerSolver.solve(this.toWildValues(cardPool));
     const solvedCards = this.getSolvedCards(cards, cardPool);
     return {
-      description,
+      name,
       points: (rank * 100) + this.getCardScore(solvedCards),
       cards: solvedCards,
     };
@@ -48,7 +48,7 @@ H.toWildValues = function toWildValues(cards) {
 H.getSolvedCards = function getSolvedCards(solvedCards, cardPool) {
   const cardWrappers = [];
   solvedCards.forEach((solvedCard) => {
-    cardWrappers.push(cardPool.find(cardWrapper => cardWrapper.card.wild === solvedCard));
+    cardWrappers.push(cardPool.find(cardWrapper => cardWrapper.card.wild === solvedCard.value + solvedCard.suit));
   });
   return cardWrappers;
 };
@@ -59,7 +59,11 @@ H.getSolvedCards = function getSolvedCards(solvedCards, cardPool) {
  * @return {Number}              [description]
  */
 H.getCardScore = function getCardScore(cardWrappers) {
-  return cardWrappers.reduce((accumulator, currentValue) => accumulator.card.points + currentValue.card.points);
+  let sum = 0;
+  cardWrappers.forEach(({ card }) => {
+    sum += card.points;
+  });
+  return sum;
 };
 
 module.exports = {
