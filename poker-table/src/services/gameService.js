@@ -365,7 +365,7 @@ G.setBigBlindBet = function setBigBlindBet() {
 
 G.setInitialTurn = function setInitialTurn() {
   const { players } = this.table;
-  const smallBlindPlayer = players.find(p => p.isBigBlind);
+  const smallBlindPlayer = players.find(p => p.isSmallBlind);
   if (smallBlindPlayer) {
     const previousPlayer = this.getPreviousPlayer(smallBlindPlayer);
     const nextPlayer = this.getNextPlayer(previousPlayer);
@@ -684,6 +684,7 @@ G.resetPlayerStatus = function resetPlayerStatus(includeFolded) {
       player.hasTurn = false;
       player.hasBet = false;
       player.hasRaised = false;
+      player.turnNo = 0;
       /* eslint-enable no-param-reassign */
     }
   });

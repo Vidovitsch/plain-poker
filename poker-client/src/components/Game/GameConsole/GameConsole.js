@@ -41,13 +41,12 @@ class GameConsole extends React.Component {
   }
 
   bet() {
-    const { minBet } = this.props.table;
+    const { minBet } = this.props;
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
     const title = 'How much do you want to bet?';
     const message = `You have to bet a minimum of €${minBet}`;
     const placeholder = 'Your bet';
-    const initialValue = minBet;
-    Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
+    Popup.prompt(title, message, placeholder, minBet).then((amount) => {
       amount = parseInt(amount, 10); // eslint-disable-line no-param-reassign
       if (amount >= minBet && amount <= currentPlayer.amount) {
         this.props.onBet(amount);
