@@ -44,6 +44,8 @@ class GameTable extends React.Component {
           sessionCards={sessionCards}
           bets={bets}
           players={players}
+          gameRound={gameRound}
+          showdownResults={showdownResults}
         />
       </div>
     );

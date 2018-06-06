@@ -8,13 +8,26 @@ import Card from './../Card/Card';
  * @extends React
  */
 class PlayerCards extends React.Component {
+  renderCardsForShowdown() {
+    const { player, showdownResults } = this.props;
+    const playerCards = showdownResults.playerCards[player.id];
+    return playerCards.map(({ card: playerCard }) => {
+      const isWinningCard = showdownResults.winData.scoreData.cards.some(({ card }) => card.id === playerCard.id);
+      return <Card id={playerCard.id} value={playerCard.wild} hoverable overlap highlight={isWinningCard} />;
+    });
+  }
+
   /**
    * [renderCards description]
    * @return {Array} [description]
    */
   renderCards() {
-    const { session, sessionCards, player } = this.props;
-    if (sessionCards.length > 0) {
+    const {
+      session, sessionCards, player, gameRound,
+    } = this.props;
+    if (gameRound === 'showdown') {
+      return this.renderCardsForShowdown();
+    } else if (sessionCards.length > 0) {
       if (session === player.id) {
         return this.props.sessionCards.map(({ card }) => <Card id={card.id} value={card.wild} hoverable overlap />);
       }

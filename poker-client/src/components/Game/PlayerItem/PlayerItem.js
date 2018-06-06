@@ -47,12 +47,16 @@ class PlayerItem extends React.Component {
    * @return {JSX} [description]
    */
   renderCards() {
-    const { session, player, sessionCards } = this.props;
+    const {
+      session, player, sessionCards, gameRound, showdownResults,
+    } = this.props;
     return (
       <PlayerCards
         session={session}
         sessionCards={sessionCards}
         player={player}
+        gameRound={gameRound}
+        showdownResults={showdownResults}
       />
     );
   }

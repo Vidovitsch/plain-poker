@@ -77,6 +77,8 @@ class Players extends React.Component {
           sessionCards={this.props.sessionCards}
           player={player}
           currentTurn={this.props.currentTurn}
+          gameRound={this.props.gameRound}
+          showdownResults={this.props.showdownResults}
         />
       </div>
     );
