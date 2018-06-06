@@ -44,10 +44,11 @@ class GameConsole extends React.Component {
     const { minBet } = this.props.table;
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
     const title = 'How much do you want to bet?';
-    const message = `You have to bet a minimum of €${minBet}.`;
+    const message = `You have to bet a minimum of €${minBet}`;
     const placeholder = 'Your bet';
     const initialValue = minBet;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
+      amount = parseInt(amount, 10); // eslint-disable-line no-param-reassign
       if (amount >= minBet && amount <= currentPlayer.amount) {
         this.props.onBet(amount);
       }
@@ -61,12 +62,12 @@ class GameConsole extends React.Component {
     const betPreviousPlayer = this.findCurrentBet(previousPlayer);
     const betCurrentPlayer = this.findCurrentBet(currentPlayer);
     const minAmountToRaise = minRaise + (betPreviousPlayer - betCurrentPlayer);
-
     const title = 'How much do you want to raise?';
-    const message = `You have to raise a minimum of €${minAmountToRaise}.`;
+    const message = `You have to raise a minimum of €${minAmountToRaise}`;
     const placeholder = 'Your raise';
     const initialValue = minAmountToRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
+      amount = parseInt(amount, 10); // eslint-disable-line no-param-reassign
       if (amount >= minAmountToRaise && minAmountToRaise <= currentPlayer.amount) {
         this.props.onRaise(amount);
       }
@@ -104,6 +105,10 @@ class GameConsole extends React.Component {
     return currentPlayer.status === 'turn' && !hasBets;
   }
 
+  canRaise(currentPlayer) {
+    return currentPlayer.id === this.props.session && !currentPlayer.hasRaised;
+  }
+
   renderCheckOrCallButton() {
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
     if (currentPlayer) {
@@ -119,7 +124,7 @@ class GameConsole extends React.Component {
     if (currentPlayer) {
       return this.canBet(currentPlayer) ?
         (<GameButton name="Bet" onClick={this.bet} disabled={currentPlayer.id !== this.props.session} />) :
-        (<GameButton name="Raise" onClick={this.raise} disabled={currentPlayer.id !== this.props.session} />);
+        (<GameButton name="Raise" onClick={this.raise} disabled={!this.canRaise(currentPlayer)} />);
     }
     return (<GameButton name="Bet" disabled />);
   }

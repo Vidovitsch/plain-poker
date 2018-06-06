@@ -2,6 +2,17 @@
   text-align: center;
 }
 
-#gameTableImg {
+#GameTable-img {
   width: 750px;
+}
+
+#GameTable-pot {
+  position: absolute;
+  left: 44%;
+  top: 39%;
+  background-color: #394F7A;
+  color: #FFFFFF;
+  border-radius: 1em;
+  text-align: center;
+  padding: 0.2em 1em 0.2em 1em;
 }
