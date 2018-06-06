@@ -327,10 +327,6 @@ G.sendPlayerCards = function sendPlayerCards(table) {
   });
 };
 
-G.sendShowdownResults = function sendShowdownResults(results) {
-
-};
-
 G.sendTableUpdate = function sendTableUpdate(table) {
   const variableTable = VariableTable.createInstance(table);
   this.clientGameAmqpGateway.broadcastUpdateAsync(variableTable, table.location);

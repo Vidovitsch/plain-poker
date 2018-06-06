@@ -12,6 +12,7 @@ function VariableTable(table) {
   this.communityCards = table.communityCards;
   this.pot = table.pot;
   this.minRaise = table.minRaise;
+  this.showdownResults = table.showdownResults;
 }
 
 module.exports = {

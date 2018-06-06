@@ -35,6 +35,9 @@ function Table(ownerId, options) {
 
   // Secret data (variable)
   this.playerCards = {};
+
+  // Only for end-game
+  this.showdownResults = {};
 }
 
 module.exports = {

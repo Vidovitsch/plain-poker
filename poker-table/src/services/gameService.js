@@ -206,9 +206,8 @@ G.startShowdownRound = function startShowdownRound() {
     this.resetRound();
     const winData = this.findShowdownWinner();
     this.setWinner(winData.winner);
-    console.log('Win Data');
-    console.log(winData);
     this.table.gameRound = 'showdown';
+    this.table.showdownResults = { winData, playerCards: this.table.playerCards };
     resolve();
   });
 };
@@ -526,18 +525,18 @@ G.removePlayer = function removePlayer(sessionId) {
  */
 G.findShowdownWinner = function findShowdownWinner() {
   const { communityCards, playerCards } = this.table;
-  let winnerData = null;
+  let winData = null;
   Object.keys(playerCards).forEach((playerId) => {
     const hand = playerCards[playerId];
     const solvedData = this.handSolver.solve(hand.concat(communityCards));
-    if (!winnerData || solvedData.points > winnerData.scoreData.points) {
-      winnerData = {
+    if (!winData || solvedData.points > winData.scoreData.points) {
+      winData = {
         winner: playerId,
         scoreData: solvedData,
       };
     }
   });
-  return winnerData;
+  return winData;
 };
 
 G.setWinner = function setWinner(playerId) {

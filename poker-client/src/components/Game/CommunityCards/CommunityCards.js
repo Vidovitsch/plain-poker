@@ -8,15 +8,25 @@ import Card from './../Card/Card';
  * @extends React
  */
 class CommunityCards extends React.Component {
+  createCard(communityCard) {
+    const { gameRound, showdownResults } = this.props;
+    if (gameRound === 'showdown') {
+      const winningCommunityCard = showdownResults.winData.scoreData.cards.find(({ card }) => card.id === communityCard.id);
+      if (winningCommunityCard) {
+        return (<Card id={communityCard.id} value={communityCard.wild} hoverable highlight />);
+      }
+    }
+    return (<Card id={communityCard.id} value={communityCard.wild} hoverable />);
+  }
+
   /**
    * [renderCards description]
    * @return {Array} [description]
    */
   renderCards() {
-    return this.props.cards.map(({ card }) => (
-      <Card id={card.id} value={card.wild} hoverable />
-    ));
+    return this.props.cards.map(({ card }) => this.createCard(card));
   }
+
   /**
    * [render description]
    * @return {JSX} [description]
