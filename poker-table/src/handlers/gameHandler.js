@@ -258,19 +258,27 @@ G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
     const result = this.gameService.setFold(requestMessage.data.sessionId);
     if (result instanceof Error) {
       logger.error(result);
-    } else if (this.gameService.checkRoundFinished()) {
-      this.gameService.nextRoundAsync().then(() => {
+    } else {
+      const activePlayers = this.gameService.filterPlayers('status', 'folded', true);
+      if (activePlayers.length === 1) {
+        this.gameService.setWinner(activePlayers[0].id);
         // Update after next round has started
         this.sendTableUpdate(this.gameService.table);
         this.sendLobbyUpdateAsync('update', this.gameService.table);
-      }).catch((err) => {
-        logger.error(err);
-      });
-    } else {
-      this.gameService.nextTurn();
-      // Update after next turn has started
-      this.sendTableUpdate(this.gameService.table);
-      this.sendLobbyUpdateAsync('update', this.gameService.table);
+      } else if (this.gameService.checkRoundFinished()) {
+        this.gameService.nextRoundAsync().then(() => {
+          // Update after next round has started
+          this.sendTableUpdate(this.gameService.table);
+          this.sendLobbyUpdateAsync('update', this.gameService.table);
+        }).catch((err) => {
+          logger.error(err);
+        });
+      } else {
+        this.gameService.nextTurn();
+        // Update after next turn has started
+        this.sendTableUpdate(this.gameService.table);
+        this.sendLobbyUpdateAsync('update', this.gameService.table);
+      }
     }
     this.clientGameAmqpGateway.sendFoldReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);

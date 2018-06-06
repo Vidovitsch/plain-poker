@@ -519,7 +519,7 @@ G.removePlayer = function removePlayer(sessionId) {
  * @param  {Array} hands [description]
  * @return {Object}       [description]
  */
-G.findWinner = function findWinner(hands) {
+G.findShowdownWinner = function findShowdownWinner(hands) {
   let winner = [];
   hands.forEach((hand) => {
     const solved = this.handSolver.solve(hand.concat(this.table.communityCards));
@@ -531,6 +531,16 @@ G.findWinner = function findWinner(hands) {
     }
   });
   return winner;
+};
+
+G.setWinner = function setWinner(playerId) {
+  const winner = this.table.players.find(p => p.id === playerId);
+  winner.amount += this.table.pot;
+  Object.values(this.table.bets).forEach((bet) => {
+    winner.amount += bet;
+  });
+  this.table.pot = 0;
+  winner.status = 'winner';
 };
 
 /**
@@ -702,6 +712,22 @@ G.resetPlayerStatus = function resetPlayerStatus(includeFolded) {
     }
   });
   return true;
+};
+
+/**
+ * [filterPlayers description]
+ * @param  {String}  property          [description]
+ * @param  {String}  value             [description]
+ * @param  {Boolean} [filterOut=false] [description]
+ * @return {Array[]}                    [description]
+ */
+G.filterPlayers = function filterPlayers(property, value, filterOut = false) {
+  return this.table.players.filter((player) => {
+    if (filterOut) {
+      return player[property] !== value;
+    }
+    return player[property] === value;
+  });
 };
 
 /**
