@@ -21,8 +21,8 @@ class CreateTable extends React.Component {
   createTable(e) {
     this.props.onCreate({
       name: this.state.name,
-      minBet: this.state.minBet,
-      startupAmount: this.state.startupAmount,
+      minBet: parseInt(this.state.minBet, 10),
+      startupAmount: parseInt(this.state.startupAmount, 10),
     });
     e.preventDefault();
   }
