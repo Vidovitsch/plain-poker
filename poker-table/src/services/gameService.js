@@ -81,16 +81,37 @@ G.setupTableAsync = function setupTableAsync() {
  */
 G.checkRoundFinished = function checkRoundFinished() {
   const { players, bets } = this.table;
-  const activePlayers = players.filter(player => player.status !== 'folded');
-  const previousBet = bets[activePlayers[0].id];
-  for (let i = 1; i < activePlayers.length; i += 1) {
-    const activePlayer = activePlayers[i];
-    const playerBet = bets[activePlayers.id];
-    if (activePlayer.turnNo === 0 || playerBet !== previousBet) {
-      return false;
+  return this.checkEveryPlayerHasSameBet(players, bets) && this.checkEveryPlayerHadTurn(players);
+};
+
+/**
+ * [checkEveryPlayerHasSameBet description]
+ * @param  {Player[]} players [description]
+ * @param  {Object} bets    [description]
+ * @return {Boolean}         [description]
+ */
+G.checkEveryPlayerHasSameBet = function checkEveryPlayerHasSameBet(players, bets) {
+  const activePlayerBets = [];
+  let totalBet = 0;
+  Object.keys(bets).forEach((playerId) => {
+    const player = players.find(p => p.id === playerId);
+    if (player.status !== 'folded') {
+      const activePlayerBet = bets[playerId];
+      totalBet += activePlayerBet;
+      activePlayerBets.push(activePlayerBet);
     }
-  }
-  return true;
+  });
+  const avgBet = totalBet / activePlayerBets.length;
+  return activePlayerBets.every(activeBet => activeBet === avgBet);
+};
+
+/**
+ * [checkEveryPlayerHadTurn description]
+ * @param  {Player[]} players [description]
+ * @return {Boolean}         [description]
+ */
+G.checkEveryPlayerHadTurn = function checkEveryPlayerHadTurn(players) {
+  return players.every(p => p.turnNo > 0);
 };
 
 /**
