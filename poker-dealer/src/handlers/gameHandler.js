@@ -23,6 +23,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
     this.gatewayProvider = gatewayProvider;
     this.startEndGameHandler(channelKey, gameQueue);
     this.startPlayerCardHandler(channelKey, gameQueue);
+    this.startCommunityCardHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -33,6 +34,16 @@ G.startPlayerCardHandler = function startPlayerCardHandler(channelKey, gameQueue
     const { numberOfCards, sessions } = requestMessage.data;
     const cards = this.gameService.getPlayerCards(numberOfCards, sessions);
     this.tableGameAmqpGateway.sendPlayerCardsReplyAsync({ cards }, requestMessage).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+G.startCommunityCardHandler = function startCommunityCardHandler(channelKey, gameQueue) {
+  this.tableGameAmqpGateway.onCommunityCardsRequest(channelKey, gameQueue, (requestMessage) => {
+    const { numberOfCards } = requestMessage.data;
+    const cards = this.gameService.getCommunityCards(numberOfCards);
+    this.tableGameAmqpGateway.sendCommunityCardsReplyAsync({ cards }, requestMessage).catch((err) => {
       logger.error(err);
     });
   });

@@ -278,9 +278,32 @@ G.startFoldHandler = function startFoldHandler(channelKey, gameQueue) {
   });
 };
 
+/**
+ * [getPlayerCardsAsync description]
+ * @param  {Integer} numberOfCards  [description]
+ * @param  {String[]} sessions       [description]
+ * @param  {String} dealerLocation [description]
+ * @return {Promise}                [description]
+ */
 G.getPlayerCardsAsync = function getPlayerCardsAsync(numberOfCards, sessions, dealerLocation) {
   return new Promise((resolve, reject) => {
     this.dealerGameAmqpGateway.sendPlayerCardsRequestAsync(numberOfCards, sessions, dealerLocation).then((replyMessage) => {
+      resolve(replyMessage.data.cards);
+    }).catch((err) => {
+      reject(err);
+    });
+  });
+};
+
+/**
+ * [getCommunityCardsAsync description]
+ * @param  {Integer} numberOfCards  [description]
+ * @param  {String} dealerLocation [description]
+ * @return {Promise}                [description]
+ */
+G.getCommunityCardsAsync = function getCommunityCardsAsync(numberOfCards, dealerLocation) {
+  return new Promise((resolve, reject) => {
+    this.dealerGameAmqpGateway.sendCommunityCardsRequestAsync(numberOfCards, dealerLocation).then((replyMessage) => {
       resolve(replyMessage.data.cards);
     }).catch((err) => {
       reject(err);

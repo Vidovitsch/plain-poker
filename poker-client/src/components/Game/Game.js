@@ -38,6 +38,7 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
+      console.log(data);
       this.setState({
         variableTable: data,
       });
