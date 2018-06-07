@@ -51,8 +51,7 @@ C.startLobbyRequestHandler = function startLobbyRequestHandler() {
     this.clientSocketGateway.onClientDisconnected(client, () => {
     });
     this.clientSocketGateway.onLobbyRequest(client, (requestMessage) => {
-      const { lobby } = this.lobbyManager;
-      this.clientSocketGateway.sendLobbyReply(client, lobby, requestMessage);
+      this.clientSocketGateway.sendLobbyReply(client, this.lobbyManager.lobby, requestMessage);
     });
   });
 };

@@ -34,8 +34,9 @@ class JoinTable extends React.Component {
   }
 
   joinTable() {
-    if (this.props.selectedTableItem) {
-      this.props.onJoin(this.props.selectedTableItem.id);
+    const { selectedTableItem, onJoin } = this.props;
+    if (selectedTableItem) {
+      onJoin(selectedTableItem.staticTable.id);
     }
   }
 

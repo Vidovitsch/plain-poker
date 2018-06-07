@@ -39,18 +39,16 @@ class Lobby extends React.Component {
   getLobby() {
     this.ipcRenderer.send('lobby-request');
     this.ipcRenderer.on('lobby-reply', (e, data) => {
-      this.setState({
-        tableItems: data,
-      });
+      this.setTableItems(data);
     });
     this.ipcRenderer.on('lobby-update', (e, data) => {
-      this.setState({
-        tableItems: data,
-      });
-      if (this.selectedTableItem) {
-        const updatedTableItem = data.find(t => t.id === this.state.selectedTableItem.id);
-        this.setSelectedTableItem(updatedTableItem);
-      }
+      this.handleLobbyUpdate(data);
+    });
+  }
+
+  setTableItems(tableItems) {
+    this.setState({
+      tableItems,
     });
   }
 
@@ -58,6 +56,15 @@ class Lobby extends React.Component {
     this.setState({
       selectedTableItem: tableItem,
     });
+  }
+
+  handleLobbyUpdate(tableData) {
+    const { selectedTableItem } = this.state;
+    this.setTableItems(tableData);
+    if (selectedTableItem) {
+      const updatedTableItem = tableData.find(t => t.staticTable.id === selectedTableItem.staticTable.id);
+      this.setSelectedTableItem(updatedTableItem || null);
+    }
   }
 
   createTable(options) {
