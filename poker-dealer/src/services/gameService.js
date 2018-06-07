@@ -76,6 +76,20 @@ G.checkDeckForCompletion = function checkDeckForCompletion() {
   return this.dealer.deck.length === 52;
 };
 
+/**
+ * [returnCards description]
+ * @param  {CardWrapper[]} gameCards [description]
+ * @return {Boolean}           [description]
+ * @return {Error}           [description]
+ */
+G.returnCards = function returnCards(gameCards) {
+  const { deck } = this.dealer.deck;
+  gameCards.forEach(({ card }) => {
+    deck.push(card);
+  });
+  return deck.length === 52 ? true : new Error('Not all cards are returned');
+};
+
 G.stop = function stop() {
   this.removeDealer(this.dealer.id);
   this.dealer = null;

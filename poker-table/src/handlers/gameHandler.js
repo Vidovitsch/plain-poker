@@ -31,6 +31,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
     this.startLeaveGameHandler(channelKey, gameQueue);
     this.startStartGameHandler(channelKey, gameQueue);
     this.startReadyGameHandler(channelKey, gameQueue);
+    this.startResetGameHandler(channelKey, gameQueue);
     this.startCheckHandler(channelKey, gameQueue);
     this.startCallHandler(channelKey, gameQueue);
     this.startBetHandler(channelKey, gameQueue);
@@ -125,6 +126,24 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
         logger.error(err);
       });
     }
+  });
+};
+
+/**
+ * [startResetGameHandler description]
+ * @param {String} channelKey [description]
+ * @param {String} gameQueue  [description]
+ */
+G.startResetGameHandler = function startResetGameHandler(channelKey, gameQueue) {
+  this.clientGameAmqpGateway.onResetGameRequestAsync(channelKey, gameQueue, (requestMessage) => {
+    const gameCards = this.gameService.getAllGameCards();
+    return this.dealerGameAmqpGateway.sendReturnCardsRequestAsync(gameCards, requestMessage);
+  }).then(() => {
+    this.gameService.resetGame();
+    this.sendTableUpdate(this.gameService.table);
+    this.sendLobbyUpdateAsync('update', this.gameService.table);
+  }).catch((err) => {
+    logger.error(err);
   });
 };
 

@@ -31,6 +31,7 @@ G.startAsync = function startAsync() {
           this.startEnterGameHandler();
           this.startStartGameHandler();
           this.startReadyGameHandler();
+          this.startResetGameHandler();
           this.startCheckHandler();
           this.startCallHandler();
           this.startBetHandler();
@@ -101,6 +102,18 @@ G.startStartGameHandler = function startStartGameHandler() {
 G.startReadyGameHandler = function startReadyGameHandler() {
   this.ipcMain.on('ready-game-request', (e, tableLocation) => {
     this.tableGameAmqpGateway.sendReadyGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
+      if (replyMessage.hasErrors) {
+        logger.error(replyMessage.data);
+      }
+    }).catch((err) => {
+      logger.error(err);
+    });
+  });
+};
+
+G.startResetGameHandler = function startResetGameHandler() {
+  this.ipcMain.on('reset-game-request', (e, tableLocation) => {
+    this.tableGameAmqpGateway.sendResetGameRequestAsync(this.sessionId, tableLocation).then((replyMessage) => {
       if (replyMessage.hasErrors) {
         logger.error(replyMessage.data);
       }

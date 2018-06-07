@@ -24,6 +24,7 @@ G.start = function start(gatewayProvider, channelKey, gameQueue) {
     this.startEndGameHandler(channelKey, gameQueue);
     this.startPlayerCardHandler(channelKey, gameQueue);
     this.startCommunityCardHandler(channelKey, gameQueue);
+    this.startReturnCardsHandler(channelKey, gameQueue);
     return true;
   }
   return false;
@@ -64,6 +65,20 @@ G.startEndGameHandler = function startEndGameHandler(channelKey, gameQueue) {
       this.stop(channelKey);
     }).catch((ex) => {
       logger.error(ex);
+    });
+  });
+};
+
+/**
+ * [startReturnCardsHandler description]
+ * @param  {String} channelKey [description]
+ * @param  {String} gameQueue  [description]
+ */
+G.startReturnCardsHandler = function startReturnCardsHandler(channelKey, gameQueue) {
+  this.tableGameAmqpGateway.onReturnCardsRequestAsync(channelKey, gameQueue, (requestMessage) => {
+    const result = this.gameService.returnCards(requestMessage.data);
+    this.tableGameAmqpGateway.sendReturnCardsReplyAsync(result, requestMessage).catch((err) => {
+      logger.error(err);
     });
   });
 };

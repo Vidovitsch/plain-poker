@@ -679,6 +679,22 @@ G.findCurrentBet = function findCurrentBet(player) {
 };
 
 /**
+ * [getAllGameCards description]
+ * @return {CardWrapper[]} [description]
+ */
+G.getAllGameCards = function getAllGameCards() {
+  const { playerCards, communityCards, players } = this.table;
+  const gameCards = [];
+  Object.keys(playerCards).forEach((playerId) => {
+    const hand = players[playerId];
+    gameCards.push(hand[0]);
+    gameCards.push(hand[1]);
+  });
+  gameCards.push(communityCards);
+  return gameCards;
+};
+
+/**
  * [findPlayer description]
  * @param  {String} playerId [description]
  * @return {Player}          [description]
@@ -687,6 +703,25 @@ G.findCurrentBet = function findCurrentBet(player) {
 G.findPlayer = function findPlayer(playerId) {
   const player = this.table.players.find(p => p.id === playerId);
   return player || new Error(`Player not found with id ${playerId}`);
+};
+
+/**
+ * [resetGame description]
+ */
+G.resetGame = function resetGame() {
+  this.resetPlayerStatus(true);
+  this.table.players.forEach((player) => {
+    player.isSmallBlind = false;
+    player.isBigBlind = false;
+  });
+  this.status = 'waiting';
+  this.gameRound = '';
+  this.bets = {};
+  this.communityCards = [];
+  this.playerCards = {};
+  this.pot = 0;
+  this.minRaise = this.table.minBet;
+  this.showdownResults = {};
 };
 
 /**
