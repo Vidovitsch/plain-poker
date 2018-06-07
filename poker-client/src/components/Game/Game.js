@@ -38,7 +38,6 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
-      console.log(data);
       this.setState({
         variableTable: data,
       });
@@ -63,6 +62,10 @@ class Game extends React.Component {
 
   ready() {
     this.ipcRenderer.send('ready-game-request', this.state.staticTable.location);
+  }
+
+  reset() {
+    this.ipcRenderer.send('reset-game-request', this.state.staticTable.location);
   }
 
   check() {
@@ -101,6 +104,7 @@ class Game extends React.Component {
         onLeave={this.leave}
         onStart={this.start}
         onReady={this.ready}
+        onReset={this.reset}
       />
     );
   }

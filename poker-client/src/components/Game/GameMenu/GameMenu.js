@@ -34,15 +34,23 @@ class GameMenu extends React.Component {
     this.props.onReady();
   }
 
-  renderStartButton() {
+  reset() {
+    Popup.confirm('Are you sure?', 'A new game will start').then((isConfirmed) => {
+      if (isConfirmed) {
+        this.props.onReset();
+      }
+    });
+  }
+
+  renderStartOrResetButton() {
     const { minPlayerNo, table: { status, players } } = this.props;
-    return (
-      <GameButton
+    return status === 'showdown' ?
+      (<GameButton name="Leave" onClick={this.reset} />) :
+      (<GameButton
         name="Start"
         onClick={this.start}
         disabled={minPlayerNo > players.length || status === 'starting' || status === 'in-game'}
-      />
-    );
+      />);
   }
 
   renderReadyButton() {
@@ -71,7 +79,7 @@ class GameMenu extends React.Component {
     return (
       <div className="GameMenu">
         <div className="menu-console">
-          {ownerId === session ? this.renderStartButton() : this.renderReadyButton()}
+          {ownerId === session ? this.renderStartOrResetButton() : this.renderReadyButton()}
           {this.renderLeaveButton()}
         </div>
         {this.renderTimer()};
