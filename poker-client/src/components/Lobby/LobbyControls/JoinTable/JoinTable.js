@@ -9,13 +9,28 @@ class JoinTable extends React.Component {
     this.getDetailValue = this.getDetailValue.bind(this);
   }
 
-  getDetailValue(prop) {
-    if (this.props.selectedTableItem) {
-      return this.props.selectedTableItem[prop] || '-';
-    } else if (prop === 'name') {
-      return 'No table selected';
+  getPlayerNo() {
+    const { selectedTableItem } = this.props;
+    return selectedTableItem ? selectedTableItem.variableTable.players.length : 'no table selected';
+  }
+
+  getTableStatus() {
+    const { selectedTableItem } = this.props;
+    if (selectedTableItem) {
+      const { status } = selectedTableItem.variableTable;
+      return status.charAt(0).toUpperCase() + status.slice(1);
     }
-    return '-';
+    return 'no table selected';
+  }
+
+  getDetailValue(prop) {
+    const { selectedTableItem } = this.props;
+    if (prop === 'playerNo') {
+      return this.getPlayerNo();
+    } else if (prop === 'status') {
+      return this.getTableStatus();
+    }
+    return selectedTableItem ? selectedTableItem.staticTable[prop] : 'no table selected';
   }
 
   joinTable() {

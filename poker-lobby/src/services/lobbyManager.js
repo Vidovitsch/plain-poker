@@ -17,18 +17,18 @@ const L = LobbyManager.prototype;
  * [handleUpdate description]
  * @param  {TableItem} tableItem [description]
  */
-L.handleUpdate = function handleUpdate({ action, tableItem }) {
+L.handleUpdate = function handleUpdate(action, tableData) {
   const { tableItems } = this.lobby;
-  const existingTableItem = tableItems.find(t => t.id === tableItem.id);
+  const existingTableItem = tableItems.find(t => t.staticTable.id === tableData.staticTable.id);
   if (existingTableItem) {
     const index = tableItems.indexOf(existingTableItem);
     if (action === 'delete') {
       tableItems.splice(index, 1);
     } else {
-      tableItems[index] = tableItem;
+      tableItems[index] = tableData;
     }
   } else {
-    tableItems.push(tableItem);
+    tableItems.push(tableData);
   }
 };
 

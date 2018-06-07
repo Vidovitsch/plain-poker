@@ -16,7 +16,7 @@ class TableItem extends Component {
     return (
       <div className="TableItem" onClick={this.setSelectedTableItem} onKeyUp={this.setSelectedTableItem} role="button" tabIndex={0}>
         <div className="TableItem-item">
-          {this.props.tableItem.name}
+          {this.props.tableItem.staticTable.name}
         </div>
       </div>
     );

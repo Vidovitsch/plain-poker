@@ -58,7 +58,7 @@ L.startCreateTableHandler = function startCreateTableHandler(channelKey) {
         this.clientAmqpGateway.sendCreateTableReplyAsync({ tableItem, variableTable }, requestMessage).catch((ex) => {
           logger.error(ex);
         });
-        this.sendLobbyUpdate('create', tableItem);
+        this.sendLobbyUpdate('create', newTable);
       }).catch((ex) => {
         logger.error(ex);
       });
@@ -85,7 +85,7 @@ L.startJoinTableHandler = function startJointableHandler(channelKey) {
           logger.error(ex);
         });
         this.sendTableUpdate(table);
-        this.sendLobbyUpdate('update', tableItem);
+        this.sendLobbyUpdate('update', table);
       }
     }
   });
@@ -100,8 +100,10 @@ L.sendTableUpdate = function sendTableUpdate(table) {
  * [sendUpdateToLobby description]
  * @param  {Table} table [description]
  */
-L.sendLobbyUpdate = function sendLobbyUpdate(action, tableItem) {
-  this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, tableItem).catch((ex) => {
+L.sendLobbyUpdate = function sendLobbyUpdate(action, table) {
+  const variableTable = VariableTable.createInstance(table);
+  const staticTable = TableItem.createInstance(table);
+  this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, { variableTable, staticTable }).catch((ex) => {
     logger.error(ex);
   });
 };

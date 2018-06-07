@@ -338,8 +338,9 @@ G.sendTableUpdate = function sendTableUpdate(table) {
  */
 G.sendLobbyUpdateAsync = function sendLobbyUpdateAsync(action, table) {
   return new Promise((resolve, reject) => {
-    const tableItem = TableItem.createInstance(table);
-    this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, tableItem).then(() => {
+    const variableTable = VariableTable.createInstance(table);
+    const staticTable = TableItem.createInstance(table);
+    this.lobbyAmqpGateway.sendLobbyUpdateAsync(action, { variableTable, staticTable }).then(() => {
       resolve();
     }).catch((ex) => {
       reject(ex);

@@ -38,7 +38,7 @@ C.start = function start(gatewayProvider, channelKey) {
  */
 C.startLobbyUpdateHandler = function startLobbyUpdateHandler(channelKey) {
   this.tableAmqpGateway.onLobbyUpdate(channelKey, (err, message) => {
-    this.lobbyManager.handleUpdate(message.data);
+    this.lobbyManager.handleUpdate(message.data.action, message.data.tableData);
     this.clientSocketGateway.broadcastLobbyUpdate(this.lobbyManager.lobby);
   });
 };
