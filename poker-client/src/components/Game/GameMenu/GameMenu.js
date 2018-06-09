@@ -11,6 +11,7 @@ class GameMenu extends React.Component {
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);
+    this.reset = this.reset.bind(this);
   }
 
   leave() {
@@ -35,7 +36,7 @@ class GameMenu extends React.Component {
   }
 
   reset() {
-    Popup.confirm('Are you sure?', 'A new game will start').then((isConfirmed) => {
+    Popup.confirm('Are you sure?', 'The game will reset and new players are able to join!').then((isConfirmed) => {
       if (isConfirmed) {
         this.props.onReset();
       }
@@ -43,9 +44,9 @@ class GameMenu extends React.Component {
   }
 
   renderStartOrResetButton() {
-    const { minPlayerNo, table: { status, players } } = this.props;
-    return status === 'showdown' ?
-      (<GameButton name="Leave" onClick={this.reset} />) :
+    const { minPlayerNo, table: { status, players, gameRound } } = this.props;
+    return gameRound === 'showdown' ?
+      (<GameButton name="Reset" onClick={this.reset} />) :
       (<GameButton
         name="Start"
         onClick={this.start}
@@ -95,6 +96,7 @@ GameMenu.propTypes = {
   onLeave: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
   onReady: PropTypes.func.isRequired,
+  onReset: PropTypes.func.isRequired,
   table: PropTypes.shape({
     status: PropTypes.string.isRequired,
     ownerId: PropTypes.string.isRequired,

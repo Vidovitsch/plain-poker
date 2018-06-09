@@ -21,6 +21,7 @@ class Game extends React.Component {
     this.leave = this.leave.bind(this);
     this.start = this.start.bind(this);
     this.ready = this.ready.bind(this);
+    this.reset = this.reset.bind(this);
     this.check = this.check.bind(this);
     this.call = this.call.bind(this);
     this.bet = this.bet.bind(this);

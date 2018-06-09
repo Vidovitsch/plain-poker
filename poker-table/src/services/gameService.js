@@ -683,10 +683,10 @@ G.findCurrentBet = function findCurrentBet(player) {
  * @return {CardWrapper[]} [description]
  */
 G.getAllGameCards = function getAllGameCards() {
-  const { playerCards, communityCards, players } = this.table;
+  const { playerCards, communityCards } = this.table;
   const gameCards = [];
   Object.keys(playerCards).forEach((playerId) => {
-    const hand = players[playerId];
+    const hand = playerCards[playerId];
     gameCards.push(hand[0]);
     gameCards.push(hand[1]);
   });
