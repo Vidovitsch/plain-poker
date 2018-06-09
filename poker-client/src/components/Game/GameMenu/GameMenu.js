@@ -23,8 +23,7 @@ class GameMenu extends React.Component {
   }
 
   start() {
-    const { turnTime } = this.props;
-    Popup.confirm('Are you sure?', `Every player gets ${turnTime} seconds to get ready!`).then((isConfirmed) => {
+    Popup.confirm('Are you sure?', 'No new players can join!').then((isConfirmed) => {
       if (isConfirmed) {
         this.props.onStart();
       }
