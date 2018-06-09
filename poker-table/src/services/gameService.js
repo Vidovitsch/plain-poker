@@ -529,6 +529,7 @@ G.findShowdownWinner = function findShowdownWinner() {
   Object.keys(playerCards).forEach((playerId) => {
     const hand = playerCards[playerId];
     const solvedData = this.handSolver.solve(hand.concat(communityCards));
+    console.log(solvedData);
     if (!winData || solvedData.points > winData.scoreData.points) {
       winData = {
         winner: playerId,
@@ -714,14 +715,14 @@ G.resetGame = function resetGame() {
     player.isSmallBlind = false;
     player.isBigBlind = false;
   });
-  this.status = 'waiting';
-  this.gameRound = '';
-  this.bets = {};
-  this.communityCards = [];
-  this.playerCards = {};
-  this.pot = 0;
-  this.minRaise = this.table.minBet;
-  this.showdownResults = {};
+  this.table.status = 'waiting';
+  this.table.gameRound = '';
+  this.table.bets = {};
+  this.table.communityCards = [];
+  this.table.playerCards = {};
+  this.table.pot = 0;
+  this.table.minRaise = this.table.minBet;
+  this.table.showdownResults = {};
 };
 
 /**

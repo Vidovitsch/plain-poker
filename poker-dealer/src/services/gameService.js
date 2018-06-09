@@ -83,7 +83,7 @@ G.checkDeckForCompletion = function checkDeckForCompletion() {
  * @return {Error}           [description]
  */
 G.returnCards = function returnCards(gameCards) {
-  const { deck } = this.dealer.deck;
+  const { deck } = this.dealer;
   gameCards.forEach(({ card }) => {
     deck.push(card);
   });

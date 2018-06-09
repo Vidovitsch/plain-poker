@@ -76,7 +76,7 @@ G.startEndGameHandler = function startEndGameHandler(channelKey, gameQueue) {
  */
 G.startReturnCardsHandler = function startReturnCardsHandler(channelKey, gameQueue) {
   this.tableGameAmqpGateway.onReturnCardsRequestAsync(channelKey, gameQueue, (requestMessage) => {
-    const result = this.gameService.returnCards(requestMessage.data);
+    const result = this.gameService.returnCards(requestMessage.data.cards);
     this.tableGameAmqpGateway.sendReturnCardsReplyAsync(result, requestMessage).catch((err) => {
       logger.error(err);
     });

@@ -23,7 +23,7 @@ class GameTable extends React.Component {
   render() {
     const {
       sessionCards, session, table: {
-        communityCards, players, bets, showdownResults, gameRound,
+        communityCards, players, bets, showdownResults, gameRound, status,
       },
     } = this.props;
     return (
@@ -41,7 +41,7 @@ class GameTable extends React.Component {
         />
         <Players
           session={session}
-          sessionCards={sessionCards}
+          sessionCards={status === 'waiting' ? [] : sessionCards}
           bets={bets}
           players={players}
           gameRound={gameRound}

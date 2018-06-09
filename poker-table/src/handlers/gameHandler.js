@@ -135,9 +135,9 @@ G.startReadyGameHandler = function startReadyGameHandler(channelKey, gameQueue) 
  * @param {String} gameQueue  [description]
  */
 G.startResetGameHandler = function startResetGameHandler(channelKey, gameQueue) {
-  this.clientGameAmqpGateway.onResetGameRequestAsync(channelKey, gameQueue, (requestMessage) => {
+  this.clientGameAmqpGateway.onResetGameRequestAsync(channelKey, gameQueue, () => {
     const gameCards = this.gameService.getAllGameCards();
-    this.dealerGameAmqpGateway.sendReturnCardsRequestAsync(gameCards, requestMessage).then(() => {
+    this.dealerGameAmqpGateway.sendReturnCardsRequestAsync(gameCards, this.gameService.table.dealer.location).then(() => {
       this.gameService.resetGame();
       this.sendTableUpdate(this.gameService.table);
       this.sendLobbyUpdateAsync('update', this.gameService.table);

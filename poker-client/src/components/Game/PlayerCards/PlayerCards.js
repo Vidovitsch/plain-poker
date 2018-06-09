@@ -23,7 +23,7 @@ class PlayerCards extends React.Component {
    */
   renderCards() {
     const {
-      session, sessionCards, player, gameRound,
+      session, sessionCards, player, gameRound, status,
     } = this.props;
     if (gameRound === 'showdown') {
       return this.renderCardsForShowdown();
