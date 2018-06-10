@@ -112,7 +112,6 @@ class GameConsole extends React.Component {
   }
 
   canRaise(currentPlayer) {
-    console.log(this.getMinRaise());
     return currentPlayer.id === this.props.session && !currentPlayer.hasRaised && currentPlayer.amount >= this.getMinRaise();
   }
 

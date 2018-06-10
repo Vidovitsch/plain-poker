@@ -41,7 +41,7 @@ class GameTable extends React.Component {
         />
         <Players
           session={session}
-          sessionCards={status === 'waiting' ? [] : sessionCards}
+          sessionCards={status === 'waiting' || status === 'starting' ? [] : sessionCards}
           bets={bets}
           players={players}
           gameRound={gameRound}
