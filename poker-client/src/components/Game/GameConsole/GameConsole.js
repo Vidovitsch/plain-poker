@@ -28,8 +28,19 @@ class GameConsole extends React.Component {
   }
 
   findCurrentBet(player) {
-    const currentBet = this.props.table.bets[player.id];
-    return currentBet || 0;
+    if (player) {
+      const currentBet = this.props.table.bets[player.id];
+      return currentBet || 0;
+    }
+  }
+
+  getMinRaise() {
+    const { minRaise } = this.props.table;
+    const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    const previousPlayer = this.getPreviousPlayer(currentPlayer);
+    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+    const betCurrentPlayer = this.findCurrentBet(currentPlayer);
+    return minRaise + (betPreviousPlayer - betCurrentPlayer);
   }
 
   check() {
@@ -55,19 +66,15 @@ class GameConsole extends React.Component {
   }
 
   raise() {
-    const { minRaise } = this.props.table;
+    const minRaise = this.getMinRaise();
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
-    const previousPlayer = this.getPreviousPlayer(currentPlayer);
-    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
-    const betCurrentPlayer = this.findCurrentBet(currentPlayer);
-    const minAmountToRaise = minRaise + (betPreviousPlayer - betCurrentPlayer);
     const title = 'How much do you want to raise?';
-    const message = `You have to raise a minimum of €${minAmountToRaise}`;
+    const message = `You have to raise a minimum of €${minRaise}`;
     const placeholder = 'Your raise';
-    const initialValue = minAmountToRaise;
+    const initialValue = minRaise;
     Popup.prompt(title, message, placeholder, initialValue).then((amount) => {
       amount = parseInt(amount, 10); // eslint-disable-line no-param-reassign
-      if (amount >= minAmountToRaise && minAmountToRaise <= currentPlayer.amount) {
+      if (amount >= minRaise && minRaise <= currentPlayer.amount) {
         this.props.onRaise(amount);
       }
     });
@@ -105,24 +112,30 @@ class GameConsole extends React.Component {
   }
 
   canRaise(currentPlayer) {
-    return currentPlayer.id === this.props.session && !currentPlayer.hasRaised;
+    console.log(this.getMinRaise());
+    return currentPlayer.id === this.props.session && !currentPlayer.hasRaised && currentPlayer.amount >= this.getMinRaise();
   }
 
   renderCheckOrCallButton() {
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    const self = this.props.table.players.find(p => p.id === this.props.session);
+    const previousPlayer = this.getPreviousPlayer(self);
+    const betPreviousPlayer = this.findCurrentBet(previousPlayer);
+    const betCurrentPlayer = this.findCurrentBet(currentPlayer);
     if (currentPlayer) {
       return this.canCheck(currentPlayer) ?
-        (<GameButton name="Check" onClick={this.check} disabled={currentPlayer.id !== this.props.session} />) :
-        (<GameButton name="Call" onClick={this.call} disabled={currentPlayer.id !== this.props.session} />);
+        (<GameButton name="Check" onClick={this.check} disabled={currentPlayer.id !== self.id} />) :
+        (<GameButton name="Call" onClick={this.call} disabled={currentPlayer.id !== self.id || self.amount < betPreviousPlayer - betCurrentPlayer} />);
     }
     return (<GameButton name="Check" disabled />);
   }
 
   renderBetOrRaiseButton() {
     const currentPlayer = this.props.table.players.find(p => p.hasTurn);
+    const self = this.props.table.players.find(p => p.id === this.props.session);
     if (currentPlayer) {
       return this.canBet(currentPlayer) ?
-        (<GameButton name="Bet" onClick={this.bet} disabled={currentPlayer.id !== this.props.session} />) :
+        (<GameButton name="Bet" onClick={this.bet} disabled={currentPlayer.id !== self.id || self.amount < this.props.minBet} />) :
         (<GameButton name="Raise" onClick={this.raise} disabled={!this.canRaise(currentPlayer)} />);
     }
     return (<GameButton name="Bet" disabled />);
