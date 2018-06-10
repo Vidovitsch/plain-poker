@@ -2,7 +2,7 @@ require('dotenv').config();
 const logger = require('./src/util/logger');
 const http = require('http');
 const gatewayConfig = require('./src/util/gatewayConfig');
-const gatewayProvider = require('D:\\Documents\\Fonyts\\Semester 6\\DPI\\Casus\\plain-poker-gateway')(gatewayConfig);
+const gatewayProvider = require('plain-poker-gateway')(gatewayConfig);
 const DealerManager = require('./src/services/dealerManager');
 const TableHandler = require('./src/handlers/tableHandler');
 
