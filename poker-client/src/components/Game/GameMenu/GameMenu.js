@@ -44,7 +44,7 @@ class GameMenu extends React.Component {
 
   renderStartOrResetButton() {
     const { minPlayerNo, table: { status, players, gameRound } } = this.props;
-    return gameRound === 'showdown' ?
+    return gameRound === 'showdown' || status === 'finished' ?
       (<GameButton name="Reset" onClick={this.reset} />) :
       (<GameButton
         name="Start"

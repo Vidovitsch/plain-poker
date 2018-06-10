@@ -548,6 +548,7 @@ G.setWinner = function setWinner(playerId) {
   });
   this.table.pot = 0;
   winner.status = 'winner';
+  this.table.status = 'finished';
 };
 
 /**
