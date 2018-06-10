@@ -39,9 +39,14 @@ class Game extends React.Component {
   startUpdateListener() {
     this.ipcRenderer.send('game-entered', this.state.staticTable.location);
     this.ipcRenderer.on('table-update', (e, data) => {
-      this.setState({
-        variableTable: data,
-      });
+      const self = data.players.find(p => p.id === this.state.session);
+      if (!self) {
+        this.goToLobbyView();
+      } else {
+        this.setState({
+          variableTable: data,
+        });
+      }
     });
     this.ipcRenderer.on('player-cards', (e, data) => {
       this.setState({

@@ -724,6 +724,12 @@ G.resetGame = function resetGame() {
   this.table.pot = 0;
   this.table.minRaise = this.table.minBet;
   this.table.showdownResults = {};
+
+  // Remove players with a too small amount to play further
+  const lowAmountPlayers = this.table.players.filter(p => p.amount < this.table.minBet);
+  lowAmountPlayers.forEach((player) => {
+    this.removePlayer(player.id);
+  });
 };
 
 /**
