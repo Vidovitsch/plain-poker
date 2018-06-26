@@ -13,7 +13,6 @@ const sessionId = uuidv4();
 
 let mainWindow;
 
-// Start
 HandlerSwitch.getInstance({
   sessionId,
   gatewayProvider,
