@@ -8,7 +8,6 @@ const isDev = require('electron-is-dev');
 const uuidv4 = require('uuid/v4');
 const HandlerSwitch = require('./util/handlerSwitch');
 
-// in-memory session
 const sessionId = uuidv4();
 
 let mainWindow;
