@@ -418,6 +418,10 @@ G.checkDealerGameAmqpGateway = function checkDealerGameAmqpGateway(gatewayProvid
   return true;
 };
 
+/**
+ * [stop description]
+ * @param  {String} channelKey [description]
+ */
 G.stop = function stop(channelKey) {
   this.gatewayProvider.closeSharedChannel(channelKey);
   this.gameService.stop();
