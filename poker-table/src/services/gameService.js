@@ -201,6 +201,10 @@ G.startRiverRound = function startRiverRound() {
   });
 };
 
+/**
+ * [startShowdownRound description]
+ * @return {Promise} [description]
+ */
 G.startShowdownRound = function startShowdownRound() {
   return new Promise((resolve) => {
     this.resetRound();
