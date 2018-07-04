@@ -330,6 +330,9 @@ G.setFold = function setFold(playerId) {
   return new Error('Player can\'t fold');
 };
 
+/**
+ * [setSmallBlind description]
+ */
 G.setSmallBlind = function setSmallBlind() {
   const { players } = this.table;
   const randomIndex = Math.floor(Math.random() * players.length);
@@ -337,6 +340,9 @@ G.setSmallBlind = function setSmallBlind() {
   return true;
 };
 
+/**
+ * [setBigBlind description]
+ */
 G.setBigBlind = function setBigBlind() {
   const { players } = this.table;
   const smallBlindPlayer = players.find(p => p.isSmallBlind);
