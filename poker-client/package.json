@@ -34,7 +34,7 @@
     "react-popup": "^0.9.3",
     "react-router-dom": "^4.3.1",
     "react-s-alert": "^1.4.1",
-    "react-scripts": "^3.4.0",
+    "react-scripts": "^5.0.1",
     "uuid": "^3.4.0",
     "winston": "^2.4.4"
   },
